@@ -7,6 +7,10 @@
    - The board draws itself from this data, so there's no HTML to touch.
    - Questions are listed top-to-bottom as they appear on the board.
    - Each round has its own category names (the "name" lines).
+   - "image" (optional) shows a picture on the question card, e.g.
+       image: "assets/images/flags/japan.svg"
+     Put picture files in assets/images/. "imageAlt" (optional) describes
+     the picture for screen readers — never include the answer in it.
    - "special" is reserved for the hidden bonus event (coming later).
      Leave it false for now.
    ========================================================= */
@@ -76,53 +80,55 @@ const gameData = {
   round2: {
     categories: [
       {
-        name: "Category 1",
+        name: "4 Syllable Words",
         questions: [
-          { value: 200,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 400,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 600,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 800,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 1000, question: "Placeholder question", answer: "Placeholder answer", special: false },
+          { value: 200,  question: "This big summer fruit is green on the outside, with juicy red flesh and black seeds on the inside", answer: "Watermelon", special: false },
+          { value: 400,  question: "This fuzzy, many-legged creature munches on leaves before wrapping itself in a cocoon and turning into a butterfly", answer: "Caterpillar", special: false },
+          { value: 600,  question: "This small instrument is held to the mouth and played by breathing in and out through a row of holes. It's often heard in blues and folk music", answer: "Harmonica", special: false },
+          { value: 800,  question: "This large, hairy spider lives in deserts and rainforests, and some people even keep one as a pet", answer: "Tarantula", special: false },
+          { value: 1000, question: "This performer makes their voice seem like it's coming from somewhere else, usually a puppet or dummy sitting on their lap", answer: "Ventriloquist", special: false },
         ],
       },
       {
-        name: "Category 2",
+        name: "Quick Maths",
         questions: [
-          { value: 200,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 400,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 600,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 800,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 1000, question: "Placeholder question", answer: "Placeholder answer", special: false },
+          { value: 200,  question: "What is 12 × 12?", answer: "144", special: false },
+          { value: 400,  question: "What is 15% of 200?", answer: "30", special: false },
+          { value: 600,  question: "What is 7 × 8 + 6 × 9?", answer: "110", special: false },
+          { value: 800,  question: "If you drive at 90 km per hour for 2 hours and 20 minutes, how many kilometres do you travel?", answer: "210 km", special: false },
+          { value: 1000, question: "What is the square root of 1,764?", answer: "42", special: false },
         ],
       },
       {
-        name: "Category 3",
+        name: "Flags",
         questions: [
-          { value: 200,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 400,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 600,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 800,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 1000, question: "Placeholder question", answer: "Placeholder answer", special: false },
+          { value: 200,  question: "Which country does this flag belong to?", answer: "Japan", image: "assets/images/flags/japan.svg", imageAlt: "A country's flag", special: false },
+          { value: 400,  question: "Which country does this flag belong to?", answer: "Sweden", image: "assets/images/flags/sweden.svg", imageAlt: "A country's flag", special: false },
+          { value: 600,  question: "Which country does this flag belong to?", answer: "Greece", image: "assets/images/flags/greece.svg", imageAlt: "A country's flag", special: false },
+          { value: 800,  question: "Which country does this flag belong to?", answer: "Jamaica", image: "assets/images/flags/jamaica.svg", imageAlt: "A country's flag", special: false },
+          { value: 1000, question: "Which country does this flag belong to?", answer: "Bangladesh", image: "assets/images/flags/bangladesh.svg", imageAlt: "A country's flag", special: false },
         ],
       },
       {
-        name: "Category 4",
+        // Prices are Canada-wide averages from Statistics Canada (July 2026).
+        // Closest guess wins — or accept anything within about $1.
+        name: "Guess the Price",
         questions: [
-          { value: 200,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 400,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 600,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 800,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 1000, question: "Placeholder question", answer: "Placeholder answer", special: false },
+          { value: 200,  question: "On average, how much does 4 litres of milk cost at a grocery store in Canada?", answer: "$6.99", special: false },
+          { value: 400,  question: "On average, how much does a dozen eggs cost at a grocery store in Canada?", answer: "$4.95", special: false },
+          { value: 600,  question: "On average, how much does a 675 gram loaf of white bread cost at a grocery store in Canada?", answer: "$3.60", special: false },
+          { value: 800,  question: "On average, how much does a 1 kilogram jar of peanut butter cost at a grocery store in Canada?", answer: "$5.62", special: false },
+          { value: 1000, question: "On average, how much does a 4.43 litre jug of laundry detergent cost at a store in Canada?", answer: "$13.36", special: false },
         ],
       },
       {
-        name: "Category 5",
+        name: "Spelling Bee",
         questions: [
-          { value: 200,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 400,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 600,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 800,  question: "Placeholder question", answer: "Placeholder answer", special: false },
-          { value: 1000, question: "Placeholder question", answer: "Placeholder answer", special: false },
+          { value: 200,  question: "Spell the word that means: the day after today", answer: "Tomorrow", special: false },
+          { value: 400,  question: "Spell the word that means: needed or required; something you must have", answer: "Necessary", special: false },
+          { value: 600,  question: "Spell the word that means: to provide someone with a place to stay, or to make room for their needs", answer: "Accommodate", special: false },
+          { value: 800,  question: "Spell the word that means: the inner voice that tells you whether something is right or wrong", answer: "Conscience", special: false },
+          { value: 1000, question: "Spell the word that means: a word that imitates the sound it describes, like \"buzz,\" \"sizzle,\" or \"boom\"", answer: "Onomatopoeia", special: false },
         ],
       },
     ],

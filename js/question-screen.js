@@ -17,6 +17,7 @@ const questionRoundElement = document.getElementById("question-round");
 const questionCategoryElement = document.getElementById("question-category");
 const questionValueElement = document.getElementById("question-value");
 const questionTextElement = document.getElementById("question-text");
+const questionImageElement = document.getElementById("question-image");
 const answerBlock = document.getElementById("answer-block");
 const answerTextElement = document.getElementById("answer-text");
 const showAnswerButton = document.getElementById("show-answer-button");
@@ -47,6 +48,17 @@ function openQuestionScreen(categoryIndex, questionIndex) {
   answerTextElement.textContent = question.answer;
   questionCard.classList.toggle("has-long-question", question.question.length > LONG_QUESTION_LENGTH);
   questionCard.classList.toggle("has-long-answer", question.answer.length > LONG_ANSWER_LENGTH);
+
+  // Optional picture (e.g. a flag). The alt text must never give away the answer.
+  if (question.image) {
+    questionImageElement.src = question.image;
+    questionImageElement.alt = question.imageAlt || "Picture for this question";
+    questionImageElement.hidden = false;
+  } else {
+    questionImageElement.removeAttribute("src");
+    questionImageElement.hidden = true;
+  }
+  questionCard.classList.toggle("has-image", Boolean(question.image));
 
   // Start in the "question only" state
   isAnswerShown = false;

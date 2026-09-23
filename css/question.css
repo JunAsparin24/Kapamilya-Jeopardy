@@ -157,17 +157,13 @@ body.is-question-open .board-footer {
   margin: clamp(12px, 2.5vh, 28px) 0;
   overflow-y: auto; /* very long questions scroll instead of spilling out */
   text-align: center;
-}
 
-/* Centres the content vertically. (Using justify-content: center here
-   would cut off the top of long questions so it couldn't be scrolled to.) */
-.question-card__body::before,
-.question-card__body::after {
-  content: "";
+  /* Centre vertically. "safe" means: if the content is too tall, line it up
+     at the top instead, so the start of a long question is never cut off.
+     (Older browsers ignore the second line and use plain centring.) */
+  justify-content: center;
+  justify-content: safe center;
 }
-
-.question-card__body::before { margin-top: auto; }
-.question-card__body::after  { margin-bottom: auto; }
 
 .question-card__label {
   margin-bottom: 0.6em;
@@ -195,7 +191,12 @@ body.is-question-open .board-footer {
   transition: font-size 0.4s var(--ease-out);
 }
 
-/* Once the answer is shown, the question steps back a little */
+/* Once the answer is shown, the "QUESTION" label goes away to make room */
+.question-card.is-answer-shown .question-card__label:not(.question-card__label--gold) {
+  display: none;
+}
+
+/* ...and the question steps back a little */
 .question-card.is-answer-shown .question-card__question {
   font-size: clamp(1.15rem, min(2.8vw, 4.2vh), 2.8rem);
   color: rgba(255, 244, 220, 0.85);
@@ -209,6 +210,41 @@ body.is-question-open .board-footer {
 
 .question-card.has-long-question.is-answer-shown .question-card__question {
   font-size: clamp(1.05rem, min(2.2vw, 3.3vh), 2.2rem);
+}
+
+/* ---------- Optional picture (e.g. Flags) ---------- */
+.question-card__image {
+  display: block;
+  flex: none;
+  align-self: center;
+  width: auto;
+  height: auto;
+  max-width: min(88%, 760px);
+  max-height: 42vh;
+  object-fit: contain;
+  border-radius: 6px;
+  /* A thin light edge so white flags (like Japan's) stand out from the card */
+  border: 2px solid rgba(255, 244, 220, 0.6);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(154, 88, 255, 0.35);
+  transition: max-height 0.4s var(--ease-out);
+}
+
+/* Picture questions: the picture is the star, so the question text is
+   smaller and everything shrinks once the answer is shown */
+.question-card.has-image .question-card__image {
+  max-height: 30vh;
+}
+
+.question-card.has-image .question-card__question {
+  font-size: clamp(1.2rem, min(3vw, 4.4vh), 3rem);
+}
+
+.question-card.has-image.is-answer-shown .question-card__image {
+  max-height: 17vh;
+}
+
+.question-card.has-image .question-card__answer-text {
+  font-size: clamp(2.2rem, min(8vw, 10vh), 6rem);
 }
 
 .question-card__answer {
