@@ -1,0 +1,335 @@
+/* =========================================================
+   question.css — The question card that opens over the board
+   ========================================================= */
+
+/* ---------- Board behind the card ----------
+   question-screen.js adds .is-question-open to <body>. */
+.board-frame,
+.game-header,
+.board-footer {
+  transition: filter 0.35s ease, transform 0.35s var(--ease-out), opacity 0.35s ease;
+}
+
+body.is-question-open .board-frame,
+body.is-question-open .game-header,
+body.is-question-open .board-footer {
+  filter: blur(3px) brightness(0.55);
+  transform: scale(0.985);
+}
+
+/* ---------- Overlay ---------- */
+.question-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(10px, 2.5vh, 32px) clamp(10px, 2.5vw, 40px);
+}
+
+.question-screen__backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(34, 9, 74, 0.55), rgba(5, 2, 12, 0.85));
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.question-screen.is-open .question-screen__backdrop {
+  opacity: 1;
+}
+
+/* ---------- The card ---------- */
+.question-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(1600px, 100%);
+  height: 100%; /* fills almost the whole screen */
+  padding: clamp(22px, 4vh, 48px) clamp(20px, 4vw, 64px);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(154, 88, 255, 0.35), transparent 60%),
+    linear-gradient(180deg, #3a1679 0%, #24094f 55%, #170636 100%);
+  border: 1px solid var(--color-gold);
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.65),
+    0 0 60px rgba(118, 54, 234, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  /* Start state for the open animation */
+  opacity: 0;
+  transform: scale(0.88) translateY(20px);
+  transition: opacity 0.35s ease, transform 0.35s var(--ease-out);
+}
+
+.question-screen.is-open .question-card {
+  opacity: 1;
+  transform: none;
+}
+
+/* Thin inner frame, like the home card */
+.question-card::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border-radius: calc(var(--radius-lg) - 8px);
+  border: 1px solid var(--color-border-lilac);
+  pointer-events: none;
+}
+
+/* × button */
+.question-card__close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--color-lilac);
+  cursor: pointer;
+  border-radius: 50%;
+  background: rgba(12, 5, 26, 0.5);
+  border: 1px solid var(--color-border-lilac);
+  transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s var(--ease-out);
+}
+
+.question-card__close:hover {
+  color: var(--color-gold-light);
+  border-color: var(--color-gold);
+  transform: rotate(90deg);
+}
+
+.question-card__close:focus-visible {
+  outline: 3px solid var(--color-gold-light);
+  outline-offset: 3px;
+}
+
+/* ---------- Header: round / category / value ---------- */
+.question-card__header {
+  text-align: center;
+}
+
+.question-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2em 0.9em;
+  padding: 0 44px; /* keep clear of the × button */
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, min(2.8vw, 4.2vh), 2.5rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-cream);
+}
+
+#question-round {
+  color: var(--color-lilac);
+}
+
+.question-card__dot {
+  font-size: 0.6em;
+  color: var(--color-gold);
+}
+
+.question-card__value {
+  margin-top: 0.1em;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, min(7.5vw, 10vh), 6.2rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Body: question and answer ---------- */
+.question-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 3vh, 32px);
+  min-height: 0;
+  margin: clamp(12px, 2.5vh, 28px) 0;
+  overflow-y: auto; /* very long questions scroll instead of spilling out */
+  text-align: center;
+}
+
+/* Centres the content vertically. (Using justify-content: center here
+   would cut off the top of long questions so it couldn't be scrolled to.) */
+.question-card__body::before,
+.question-card__body::after {
+  content: "";
+}
+
+.question-card__body::before { margin-top: auto; }
+.question-card__body::after  { margin-bottom: auto; }
+
+.question-card__label {
+  margin-bottom: 0.6em;
+  font-size: clamp(0.8rem, 1.2vw, 1.05rem);
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--color-lilac);
+}
+
+.question-card__label--gold {
+  color: var(--color-gold);
+}
+
+.question-card__question {
+  max-width: 28ch;
+  margin: 0 auto;
+  font-size: clamp(1.5rem, min(4.2vw, 6.4vh), 4.4rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-transform: uppercase; /* shown in ALL CAPS, whatever the case in questions.js */
+  color: var(--color-cream);
+  text-wrap: balance;
+  transition: font-size 0.4s var(--ease-out);
+}
+
+/* Once the answer is shown, the question steps back a little */
+.question-card.is-answer-shown .question-card__question {
+  font-size: clamp(1.15rem, min(2.8vw, 4.2vh), 2.8rem);
+  color: rgba(255, 244, 220, 0.85);
+}
+
+/* Long questions (question-screen.js adds this class) use smaller text */
+.question-card.has-long-question .question-card__question {
+  max-width: 36ch;
+  font-size: clamp(1.3rem, min(3.2vw, 4.8vh), 3.3rem);
+}
+
+.question-card.has-long-question.is-answer-shown .question-card__question {
+  font-size: clamp(1.05rem, min(2.2vw, 3.3vh), 2.2rem);
+}
+
+.question-card__answer {
+  position: relative;
+  padding-top: clamp(18px, 3.5vh, 32px);
+}
+
+/* Gold divider line between question and answer */
+.question-card__answer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(420px, 70%);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  transform: translateX(-50%);
+}
+
+.question-card__answer-text {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, min(8vw, 12vh), 7.5rem);
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+  color: var(--color-gold-light);
+  text-shadow: 0 0 28px rgba(244, 199, 106, 0.5);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+/* Long answers (question-screen.js adds this class) use smaller text */
+.question-card.has-long-answer .question-card__answer-text {
+  font-size: clamp(1.9rem, min(5.4vw, 8.5vh), 4.8rem);
+}
+
+/* Answer reveal animation */
+.question-card.is-answer-shown .question-card__answer::before {
+  animation: divider-grow 0.6s var(--ease-out) backwards;
+}
+
+.question-card.is-answer-shown .question-card__label--gold {
+  animation: rise-in 0.5s var(--ease-out) 0.15s backwards;
+}
+
+.question-card.is-answer-shown .question-card__answer-text {
+  animation: answer-in 0.7s var(--ease-out) 0.25s backwards;
+}
+
+@keyframes divider-grow {
+  from { width: 0; opacity: 0; }
+}
+
+@keyframes answer-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* ---------- Buttons ---------- */
+.question-card__actions {
+  display: flex;
+  justify-content: center;
+}
+
+.question-card__actions .btn--primary {
+  font-size: clamp(1.5rem, min(3vw, 4.6vh), 2.5rem);
+  animation: rise-in 0.45s var(--ease-out) backwards;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 600px) {
+  .question-card::before {
+    inset: 6px;
+  }
+
+  .question-card__close {
+    top: 12px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .question-card__actions .btn--primary {
+    width: 100%;
+    padding-inline: 1em;
+  }
+
+  /* Phones are narrow but tall, so size text by width more generously */
+  .question-card__question {
+    font-size: clamp(1.4rem, 7vw, 2.4rem);
+  }
+
+  .question-card.is-answer-shown .question-card__question {
+    font-size: clamp(1.1rem, 5vw, 1.7rem);
+  }
+
+  .question-card.has-long-question .question-card__question {
+    font-size: clamp(1.2rem, 5.6vw, 2rem);
+  }
+
+  .question-card.has-long-question.is-answer-shown .question-card__question {
+    font-size: clamp(1rem, 4.4vw, 1.5rem);
+  }
+
+  .question-card__answer-text {
+    font-size: clamp(2.6rem, 14vw, 4.5rem);
+  }
+
+  .question-card.has-long-answer .question-card__answer-text {
+    font-size: clamp(1.9rem, 9vw, 3rem);
+  }
+
+  /* The music button would sit on top of the card's button */
+  body.is-question-open .music-toggle {
+    display: none;
+  }
+}

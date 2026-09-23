@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(New-Item -ItemType Directory -Force \"assets\\\\images\" | Out-Null; New-Item -ItemType File \"assets\\\\images\\\\.gitkeep\" | Out-Null; \\(Get-Command node -ErrorAction SilentlyContinue\\).Source; Test-Path \"C:\\\\Program Files \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe\"; Test-Path \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\")"
+    ]
+  }
+}

@@ -1,0 +1,204 @@
+/* =========================================================
+   rounds.css — "Round Complete" screen shown between rounds,
+   and the "Game Over" screen at the end
+   ========================================================= */
+
+/* Slowly turning gold rays behind the card (both screens) */
+.sunburst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 160vmax;
+  height: 160vmax;
+  margin: -80vmax 0 0 -80vmax;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(244, 199, 106, 0.09) 0deg 6deg,
+    transparent 6deg 18deg
+  );
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 55%);
+  mask-image: radial-gradient(circle, #000 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.screen.is-active .sunburst {
+  animation:
+    sunburst-in 1.2s var(--ease-out) backwards,
+    sunburst-spin 90s linear infinite;
+}
+
+@keyframes sunburst-in {
+  from { opacity: 0; }
+}
+
+@keyframes sunburst-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Title ---------- */
+.round-complete__title {
+  margin-top: 0.25em;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(3.4rem, min(11vw, 13vh), 7.5rem); /* shrinks on short laptop screens too */
+  line-height: 0.9;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.round-complete__title > span {
+  display: block;
+}
+
+.round-complete__title-accent {
+  color: var(--color-cream);
+  text-shadow:
+    0 4px 0 var(--color-purple-dark),
+    0 0 30px rgba(154, 88, 255, 0.7);
+}
+
+/* ---------- "Up next" preview ---------- */
+.next-round {
+  margin-bottom: clamp(30px, 5vh, 46px);
+}
+
+.next-round__label {
+  margin-bottom: 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-lilac);
+}
+
+.next-round__values {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(6px, 1.2vw, 12px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Mini versions of the board tiles */
+.value-chip {
+  min-width: 4.2em;
+  padding: 0.45em 0.7em 0.3em;
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.6vw, 1.7rem);
+  letter-spacing: 0.04em;
+  color: var(--color-gold-light);
+  text-shadow: 0 2px 0 rgba(50, 10, 110, 0.8);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 227, 163, 0.35);
+  background: linear-gradient(180deg, #8f4cff 0%, var(--color-purple) 45%, var(--color-purple-dark) 100%);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Chips flip in one after another (delay set by main.js) */
+.screen.is-active .value-chip {
+  animation: chip-flip-in 0.5s var(--ease-out) var(--chip-delay, 0ms) backwards;
+}
+
+@keyframes chip-flip-in {
+  from {
+    opacity: 0;
+    transform: perspective(400px) rotateX(-80deg);
+  }
+}
+
+/* =========================================================
+   GAME OVER
+   ========================================================= */
+.game-over__title {
+  margin-top: 0.25em;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(3.6rem, min(13vw, 13vh), 8.5rem); /* shrinks on short laptop screens too */
+  line-height: 0.88;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.game-over__title > span {
+  display: block;
+}
+
+.game-over__title-accent {
+  color: var(--color-cream);
+  text-shadow:
+    0 4px 0 var(--color-purple-dark),
+    0 0 30px rgba(154, 88, 255, 0.7);
+}
+
+.game-over__message {
+  margin: -0.5em 0 clamp(26px, 4.5vh, 40px); /* sits a little closer to the stats above */
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.6vw, 1.8rem);
+  letter-spacing: 0.1em;
+  color: var(--color-gold-light);
+}
+
+.game-over__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px 22px;
+}
+
+/* ---------- Confetti ----------
+   main.js adds the pieces each time the screen opens.
+   Each piece falls once, then stays hidden. */
+.confetti {
+  position: absolute;
+  inset: 0;
+  z-index: 2; /* in front of the card, but ignores clicks */
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti__piece {
+  position: absolute;
+  top: -24px;
+  left: var(--x);
+  width: var(--width);
+  height: calc(var(--width) * 1.6);
+  border-radius: 2px;
+  background: var(--color);
+  opacity: 0;
+  animation: confetti-fall var(--duration) cubic-bezier(0.3, 0.6, 0.6, 1) var(--delay) forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--drift), 105vh, 0) rotate(var(--spin));
+  }
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 520px) {
+  .value-chip {
+    min-width: 0;
+    flex: 1 1 0;
+    padding-inline: 0.3em;
+  }
+
+  /* "$22,500" needs a bit more room than the other stats */
+  #final-total-value {
+    font-size: clamp(1.4rem, 7vw, 2.4rem);
+  }
+
+  .game-over__actions {
+    flex-direction: column;
+  }
+}

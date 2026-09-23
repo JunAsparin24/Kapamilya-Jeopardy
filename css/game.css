@@ -1,0 +1,503 @@
+/* =========================================================
+   game.css — Game screen: header, board, tiles, footer
+   ========================================================= */
+
+.screen--game {
+  flex-direction: column;
+  gap: clamp(10px, 1.8vh, 20px);
+  width: 100%;
+  max-width: 1680px;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0 auto;
+  padding: clamp(12px, 2.2vh, 28px) clamp(12px, 2.5vw, 40px);
+}
+
+/* =========================================================
+   HEADER — title / round / score
+   ========================================================= */
+.game-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+}
+
+.game-header__left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.game-header__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.4vw, 2.2rem);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.round-badge {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4em;
+  padding: 0.35em 1.4em 0.22em;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.3vw, 2.1rem);
+  letter-spacing: 0.14em;
+  color: var(--color-cream);
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--color-violet), var(--color-violet-deep));
+  border: 1px solid var(--color-border-gold);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.round-badge__number {
+  color: var(--color-gold);
+}
+
+/* "Questions left" counter on the right of the header */
+.header-counter {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0.4em 1.1em;
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, rgba(58, 22, 121, 0.95), rgba(30, 10, 62, 0.95));
+  border: 1px solid var(--color-border-gold);
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.header-counter__label {
+  font-family: var(--font-display);
+  font-size: clamp(0.9rem, 1.3vw, 1.15rem);
+  letter-spacing: 0.2em;
+  color: var(--color-lilac);
+}
+
+.header-counter__value {
+  min-width: 2ch;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+  line-height: 1;
+  text-align: right;
+  color: var(--color-gold-light);
+  text-shadow: 0 0 14px rgba(244, 199, 106, 0.45);
+}
+
+/* =========================================================
+   BOARD
+   ========================================================= */
+
+/* The framed panel that holds the board */
+.board-frame {
+  flex: 1;
+  min-height: 0;
+  padding: clamp(8px, 1.1vw, 16px);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, rgba(34, 9, 74, 0.6), rgba(12, 5, 26, 0.75));
+  border: 1px solid var(--color-border-gold);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.5),
+    inset 0 0 40px rgba(118, 54, 234, 0.15);
+}
+
+/* --category-count and --row-count are set by board.js from questions.js */
+.board {
+  --category-count: 5;
+  --row-count: 5;
+  display: grid;
+  grid-template-columns: repeat(var(--category-count), minmax(0, 1fr));
+  grid-template-rows: minmax(64px, 0.85fr) repeat(var(--row-count), minmax(48px, 1fr));
+  gap: clamp(6px, 0.9vw, 14px);
+  height: 100%;
+}
+
+/* ---------- Category headers ---------- */
+.category {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em 0.6em;
+  text-align: center;
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, #2f1164, #1c0940);
+  border: 1px solid var(--color-border-gold);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.category__name {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, min(2vw, 3.3vh), 2.1rem);
+  line-height: 1.05;
+  letter-spacing: 0.06em;
+  color: var(--color-cream);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Question tiles ---------- */
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 0;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 227, 163, 0.35);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.18), transparent 60%),
+    linear-gradient(180deg, #8f4cff 0%, var(--color-purple) 45%, var(--color-purple-dark) 100%);
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -6px 14px rgba(30, 0, 80, 0.35);
+  transition:
+    transform 0.22s var(--ease-out),
+    box-shadow 0.22s ease,
+    border-color 0.22s ease,
+    filter 0.22s ease,
+    opacity 0.3s ease;
+}
+
+/* Thin inner border that gives the tile a "framed" look */
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: calc(var(--radius-md) - 4px);
+  border: 1px solid rgba(255, 227, 163, 0.18);
+  pointer-events: none;
+}
+
+.tile__value {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, min(3.4vw, 6vh), 3.6rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--color-gold-light);
+  text-shadow:
+    0 2px 0 rgba(50, 10, 110, 0.8),
+    0 0 16px rgba(244, 199, 106, 0.45);
+}
+
+/* "Played" label — only shown once a tile is answered */
+.tile__played {
+  display: none;
+}
+
+/* Hover lift only on devices with a mouse — on touch screens the
+   hover style would otherwise "stick" to the last tapped tile */
+@media (hover: hover) {
+  .tile:hover:not(:disabled) {
+    transform: translateY(-3px) scale(1.02);
+    border-color: rgba(255, 227, 163, 0.85);
+    filter: brightness(1.08);
+    box-shadow:
+      0 12px 24px rgba(0, 0, 0, 0.4),
+      0 0 26px rgba(154, 88, 255, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.35),
+      inset 0 -6px 14px rgba(30, 0, 80, 0.35);
+  }
+}
+
+.tile:active:not(:disabled) {
+  transform: scale(0.97);
+  transition-duration: 0.08s;
+}
+
+.tile:focus-visible {
+  outline: 3px solid var(--color-gold-light);
+  outline-offset: 3px;
+}
+
+/* ---------- Tile states ----------
+   board.js copies the state from game.js into data-state:
+   "unused" (default look above), "active", or "answered". */
+
+/* ACTIVE — the question currently being played */
+.tile[data-state="active"] {
+  z-index: 2;
+  border-color: var(--color-cream);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.5), transparent 60%),
+    linear-gradient(180deg, var(--color-gold-light), var(--color-gold) 50%, #d59a35);
+  animation:
+    tile-select 0.55s var(--ease-out) both,
+    tile-active-glow 0.9s ease-in-out 0.55s infinite alternate;
+}
+
+.tile[data-state="active"] .tile__value {
+  color: var(--color-violet-deep);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* ANSWERED — already played, can't be picked again */
+.tile[data-state="answered"] {
+  cursor: default;
+  border-color: rgba(199, 166, 255, 0.12);
+  background: linear-gradient(180deg, #24103e, #190a2d);
+  box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.5);
+  animation: tile-retire 0.5s var(--ease-out);
+}
+
+.tile[data-state="answered"]::before {
+  border-color: rgba(199, 166, 255, 0.07);
+}
+
+.tile[data-state="answered"] .tile__value {
+  color: rgba(199, 166, 255, 0.2);
+  text-shadow: none;
+}
+
+.tile[data-state="answered"] .tile__played {
+  display: block;
+  margin-top: 0.35em;
+  font-size: clamp(0.5rem, 0.75vw, 0.72rem);
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(199, 166, 255, 0.4);
+}
+
+@keyframes tile-select {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.1); }
+  100% { transform: scale(1.04); }
+}
+
+@keyframes tile-active-glow {
+  from { box-shadow: 0 0 18px rgba(244, 199, 106, 0.55), 0 10px 24px rgba(0, 0, 0, 0.4); }
+  to   { box-shadow: 0 0 42px rgba(244, 199, 106, 0.9), 0 10px 24px rgba(0, 0, 0, 0.4); }
+}
+
+@keyframes tile-retire {
+  from { transform: scale(0.93); filter: brightness(1.8); }
+  to   { transform: none; filter: none; }
+}
+
+/* While a question is being played, the rest of the board can't be clicked */
+.board--locked .tile:not([data-state="active"]) {
+  pointer-events: none;
+}
+
+.board--locked .tile[data-state="unused"] {
+  opacity: 0.75;
+}
+
+/* ---------- Board entrance animation ----------
+   board.js adds .board--pre-enter (hidden) while the transition
+   wipe covers the screen, then .board--entering as it reveals.
+   Each item's --enter-delay creates the staggered cascade. */
+.board--pre-enter .category,
+.board--pre-enter .tile {
+  opacity: 0;
+}
+
+.board--entering {
+  pointer-events: none;
+}
+
+.board--entering .category {
+  animation: category-drop 0.55s var(--ease-out) var(--enter-delay) backwards;
+}
+
+.board--entering .tile {
+  animation: tile-flip-in 0.5s var(--ease-out) var(--enter-delay) backwards;
+}
+
+@keyframes category-drop {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes tile-flip-in {
+  from { opacity: 0; transform: perspective(600px) rotateX(-70deg) translateY(-8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* =========================================================
+   FOOTER — status message + round progress
+   ========================================================= */
+.board-footer {
+  display: grid;
+  grid-template-columns: 1fr minmax(120px, 280px);
+  align-items: center;
+  padding-right: 64px; /* room for the music button in the corner */
+  gap: 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-lilac);
+}
+
+.board-footer__status {
+  min-height: 1.3em;
+  transition: color 0.3s ease;
+}
+
+.board-footer__status.is-highlight {
+  color: var(--color-gold-light);
+}
+
+.progress {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(199, 166, 255, 0.15);
+}
+
+.progress__bar {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-purple-bright), var(--color-gold));
+  box-shadow: 0 0 10px rgba(244, 199, 106, 0.6);
+  transition: width 0.6s var(--ease-out);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+/* Short laptop screens (e.g. 1366×768): tighten vertical spacing */
+@media (max-height: 800px) and (min-width: 761px) {
+  .board {
+    grid-template-rows: minmax(56px, 0.75fr) repeat(var(--row-count), minmax(44px, 1fr));
+  }
+}
+
+/* Portrait tablets: tiles are tall, so give the text more presence */
+@media (orientation: portrait) and (min-width: 761px) {
+  .category__name {
+    font-size: clamp(1.1rem, 2.6vw, 1.7rem);
+  }
+
+  .tile__value {
+    font-size: clamp(1.8rem, 4.6vw, 3rem);
+  }
+}
+
+/* Tablets & phones: board grows with content instead of filling the viewport */
+@media (max-width: 760px), (max-height: 560px) {
+  .screen--game {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .board-frame {
+    flex: none;
+  }
+
+  .board {
+    height: auto;
+    grid-template-rows:
+      minmax(56px, auto)
+      repeat(var(--row-count), clamp(52px, 12vw, 84px));
+  }
+}
+
+/* Phones held sideways: shorter rows so most of the board fits on screen */
+@media (max-height: 560px) {
+  .board {
+    grid-template-rows:
+      minmax(48px, auto)
+      repeat(var(--row-count), max(44px, 12vh));
+  }
+
+  .tile__value {
+    font-size: clamp(1.2rem, 7vh, 2rem);
+  }
+
+  .tile[data-state="answered"] .tile__played {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  /* Header: menu + counter on top, round badge below */
+  .game-header {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "left  counter"
+      "round round";
+    row-gap: 12px;
+  }
+
+  .game-header__left { grid-area: left; }
+  .header-counter    { grid-area: counter; }
+  .round-badge       { grid-area: round; justify-self: center; }
+
+  .game-header__title {
+    display: none;
+  }
+
+  .board {
+    gap: 6px;
+  }
+
+  .category {
+    padding: 0.4em 0.15em;
+    border-radius: var(--radius-sm);
+  }
+
+  .category__name {
+    font-size: clamp(0.66rem, 2.8vw, 1.1rem);
+    letter-spacing: 0.01em;
+    overflow-wrap: break-word;
+    hyphens: auto; /* a word that still doesn't fit splits with a hyphen */
+  }
+
+  .tile {
+    border-radius: var(--radius-sm);
+  }
+
+  .tile::before {
+    inset: 3px;
+    border-radius: calc(var(--radius-sm) - 2px);
+  }
+
+  .tile__value {
+    font-size: clamp(1.05rem, 5vw, 1.8rem);
+  }
+
+  .tile[data-state="answered"] .tile__played {
+    display: none;
+  }
+
+  .board-footer {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .progress {
+    width: min(280px, 100%);
+  }
+}
+
+@media (max-width: 420px) {
+  .board-frame {
+    padding: 6px;
+    border-radius: var(--radius-md);
+  }
+
+  .board {
+    gap: 4px;
+  }
+
+  .header-counter {
+    padding: 0.35em 0.8em;
+  }
+}
