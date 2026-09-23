@@ -18,6 +18,7 @@ const questionCategoryElement = document.getElementById("question-category");
 const questionValueElement = document.getElementById("question-value");
 const questionTextElement = document.getElementById("question-text");
 const questionImageElement = document.getElementById("question-image");
+const goldenBadge = document.getElementById("golden-badge");
 const answerBlock = document.getElementById("answer-block");
 const answerTextElement = document.getElementById("answer-text");
 const showAnswerButton = document.getElementById("show-answer-button");
@@ -59,6 +60,10 @@ function openQuestionScreen(categoryIndex, questionIndex) {
     questionImageElement.hidden = true;
   }
   questionCard.classList.toggle("has-image", Boolean(question.image));
+
+  // The Golden Boost question gets a gold card and a badge (golden-boost.css)
+  questionCard.classList.toggle("is-golden", Boolean(question.special));
+  goldenBadge.hidden = !question.special;
 
   // Start in the "question only" state
   isAnswerShown = false;

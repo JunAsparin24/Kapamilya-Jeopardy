@@ -9,8 +9,9 @@
      menu — a brassy, horn-heavy fanfare for the home screen
      game — a bouncy groove for the board
 
-   One sound effect:
-     playRoundSting() — a horn fanfare when Round 2 begins
+   Sound effects:
+     playRoundSting()       — a horn fanfare when Round 2 begins
+     playGoldenBoostSting() — chimes + horns when the Golden Boost is found
 
    Browsers only allow sound after the player clicks something,
    so the menu music starts on the first click anywhere.
@@ -192,6 +193,38 @@ function playRoundSting() {
   playKick(hit, effectsBus);
   playKick(hit + 0.14, effectsBus);
   playCrash(hit, 0.3, effectsBus);
+}
+
+// GOLDEN BOOST sound: a whoosh, a fast glittering run of chimes up the
+// scale, then a big bright horn chord with a cymbal crash.
+function playGoldenBoostSting() {
+  if (!isMusicOn || !setUpAudio()) return;
+  audioContext.resume();
+
+  const start = audioContext.currentTime + 0.05;
+  const chimeGap = 0.055;
+  const chimeNotes = [72, 76, 79, 84, 88, 91, 96, 100]; // C major, climbing
+  const hit = start + 0.3 + chimeNotes.length * chimeGap;
+
+  // Dip the music so the effect stands out; it comes back afterwards
+  clearTimeout(duckRestoreTimer);
+  fadeMusicTo(0.01, 0.15);
+  duckRestoreTimer = setTimeout(() => fadeMusicTo(currentTargetVolume(), 0.8), 3000);
+
+  playWhoosh(start, 0.35, effectsBus);
+
+  chimeNotes.forEach((note, index) => {
+    playNote({ note, time: start + 0.3 + index * chimeGap, duration: 0.05, wave: "sine", volume: 0.35, release: 0.5, output: effectsBus });
+  });
+
+  playBrass({ notes: [67, 72, 76, 79, 84], time: hit, duration: 1.6, volume: 0.6, output: effectsBus });
+  playKick(hit, effectsBus);
+  playCrash(hit, 0.35, effectsBus);
+
+  // A few high sparkles ringing out over the chord
+  [96, 100, 103, 108].forEach((note, index) => {
+    playNote({ note, time: hit + 0.15 + index * 0.12, duration: 0.04, wave: "sine", volume: 0.18, release: 0.6, output: effectsBus });
+  });
 }
 
 /* ---------- Menu music starts on the first click anywhere ---------- */

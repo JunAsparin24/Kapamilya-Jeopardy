@@ -1,0 +1,283 @@
+/* =========================================================
+   golden-boost.css — The GOLDEN BOOST reveal, the golden
+   question card, and the golden tile left on the board
+   ========================================================= */
+
+/* =========================================================
+   FULL-SCREEN REVEAL
+   ========================================================= */
+.golden-boost {
+  position: fixed;
+  inset: 0;
+  z-index: 55; /* above the board and question card, below the music button */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: radial-gradient(circle at center, rgba(120, 72, 8, 0.97) 0%, rgba(40, 20, 4, 0.98) 45%, rgba(10, 4, 16, 0.99) 100%);
+  opacity: 0;
+}
+
+.golden-boost.is-playing {
+  animation: golden-fade-in 0.3s ease forwards;
+}
+
+.golden-boost.is-leaving {
+  animation: golden-fade-out 0.4s ease forwards;
+}
+
+@keyframes golden-fade-in  { to { opacity: 1; } }
+@keyframes golden-fade-out { from { opacity: 1; } to { opacity: 0; } }
+
+/* Bright flash the moment it's revealed */
+.golden-boost::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, #fffbe8 0%, rgba(255, 227, 163, 0.9) 35%, transparent 75%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.golden-boost.is-playing::after {
+  animation: golden-flash 0.7s ease-out 0.1s;
+}
+
+@keyframes golden-flash {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Spinning gold rays */
+.golden-boost__rays {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 180vmax;
+  height: 180vmax;
+  margin: -90vmax 0 0 -90vmax;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(255, 214, 120, 0.28) 0deg 7deg,
+    transparent 7deg 20deg
+  );
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 60%);
+  mask-image: radial-gradient(circle, #000 0%, transparent 60%);
+}
+
+.golden-boost.is-playing .golden-boost__rays {
+  animation:
+    golden-rays-in 0.9s var(--ease-out) backwards,
+    golden-rays-spin 14s linear infinite;
+}
+
+@keyframes golden-rays-in {
+  from { opacity: 0; transform: scale(0.3); }
+}
+
+@keyframes golden-rays-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Title */
+.golden-boost__content {
+  position: relative;
+  z-index: 1;
+  padding: 0 16px;
+  text-align: center;
+}
+
+.golden-boost__eyebrow {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 3vw, 2.2rem);
+  letter-spacing: 0.5em;
+  padding-left: 0.5em;
+  text-transform: uppercase;
+  color: var(--color-cream);
+  opacity: 0;
+}
+
+.golden-boost.is-playing .golden-boost__eyebrow {
+  animation: rise-in 0.6s var(--ease-out) 0.2s forwards;
+}
+
+.golden-boost__title {
+  margin-top: 0.1em;
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, min(17vw, 24vh), 13rem);
+  line-height: 0.85;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.golden-boost__word {
+  display: block;
+  background: linear-gradient(180deg, #fffbe8 0%, #ffe3a3 35%, var(--color-gold) 60%, #b87a1e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 6px 0 rgba(90, 50, 0, 0.6)) drop-shadow(0 0 40px rgba(255, 214, 120, 0.7));
+  opacity: 0;
+}
+
+/* The words slam in from big and blurry, one after the other */
+.golden-boost.is-playing .golden-boost__word {
+  animation: golden-word-in 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
+}
+
+.golden-boost.is-playing .golden-boost__word:nth-child(1) { animation-delay: 0.3s; }
+.golden-boost.is-playing .golden-boost__word:nth-child(2) { animation-delay: 0.55s; }
+
+@keyframes golden-word-in {
+  from {
+    opacity: 0;
+    transform: scale(2.4);
+    filter: blur(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Sparkles bursting outward (created by golden-boost.js) */
+.golden-boost__sparkles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.golden-boost__sparkle {
+  position: absolute;
+  width: var(--size);
+  height: var(--size);
+  margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
+  background: #fffbe8;
+  /* four-pointed star shape */
+  clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+  filter: drop-shadow(0 0 6px rgba(255, 214, 120, 1));
+  opacity: 0;
+}
+
+.golden-boost.is-playing .golden-boost__sparkle {
+  animation: golden-sparkle var(--duration) cubic-bezier(0.1, 0.8, 0.3, 1) var(--delay) forwards;
+}
+
+@keyframes golden-sparkle {
+  0%   { opacity: 1; transform: translate(0, 0) scale(0.4) rotate(0deg); }
+  70%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.2) rotate(180deg); }
+}
+
+/* =========================================================
+   GOLDEN QUESTION CARD
+   question-screen.js adds .is-golden to the card
+   ========================================================= */
+.question-card.is-golden {
+  overflow: hidden; /* keeps the shimmer inside the rounded corners */
+  border-color: #fff4dc;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.55), transparent 60%),
+    linear-gradient(160deg, #ffeab0 0%, #f4c76a 40%, #e2aa45 70%, #c98f2c 100%);
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.65),
+    0 0 90px rgba(244, 199, 106, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.question-card.is-golden::before {
+  border-color: rgba(90, 50, 0, 0.3);
+}
+
+/* A slow band of light that sweeps across the card */
+.question-card.is-golden::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.5) 50%, transparent 65%);
+  background-size: 300% 100%;
+  animation: golden-shimmer 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes golden-shimmer {
+  from { background-position: 150% 0; }
+  to   { background-position: -150% 0; }
+}
+
+/* "★ GOLDEN BOOST ★" badge at the top of the card */
+.question-card__badge {
+  display: inline-block;
+  margin-bottom: 0.5em;
+  padding: 0.35em 1.2em 0.25em;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, min(1.8vw, 2.8vh), 1.5rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-gold-light);
+  border-radius: 999px;
+  background: var(--color-violet-deep);
+  box-shadow: 0 4px 14px rgba(90, 50, 0, 0.4);
+}
+
+/* Dark purple text on gold, so everything stays easy to read */
+.question-card.is-golden .question-card__meta,
+.question-card.is-golden #question-round {
+  color: #4a2a00;
+}
+
+.question-card.is-golden .question-card__dot {
+  color: var(--color-violet);
+}
+
+.question-card.is-golden .question-card__value {
+  background: none;
+  color: var(--color-violet);
+  filter: none;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.45);
+}
+
+.question-card.is-golden .question-card__label {
+  color: #6b3f00;
+}
+
+.question-card.is-golden .question-card__label--gold {
+  color: var(--color-violet);
+}
+
+.question-card.is-golden .question-card__question,
+.question-card.is-golden.is-answer-shown .question-card__question {
+  color: var(--color-violet-deep);
+}
+
+.question-card.is-golden .question-card__answer::before {
+  background: linear-gradient(90deg, transparent, #6b3f00, transparent);
+}
+
+.question-card.is-golden .question-card__answer-text {
+  color: var(--color-violet);
+  text-shadow: 0 0 24px rgba(255, 255, 255, 0.7);
+}
+
+.question-card.is-golden .question-card__close {
+  color: #4a2a00;
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(74, 42, 0, 0.35);
+}
+
+/* =========================================================
+   BOARD TILE — after the Golden Boost has been played
+   ========================================================= */
+.tile.tile--golden-played[data-state="answered"] {
+  border-color: rgba(244, 199, 106, 0.45);
+  background: linear-gradient(180deg, #3d2a0c, #241705);
+}
+
+.tile.tile--golden-played[data-state="answered"] .tile__value {
+  color: rgba(244, 199, 106, 0.5);
+}
+
+.tile.tile--golden-played[data-state="answered"] .tile__played {
+  color: rgba(244, 199, 106, 0.7);
+}

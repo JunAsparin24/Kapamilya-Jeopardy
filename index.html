@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="css/game.css">
   <link rel="stylesheet" href="css/question.css">
   <link rel="stylesheet" href="css/rounds.css">
+  <link rel="stylesheet" href="css/golden-boost.css">
 </head>
 <body data-screen="home">
 
@@ -201,6 +202,8 @@
               aria-label="Back to board — question stays available">&times;</button>
 
       <header class="question-card__header">
+        <!-- Only shown on the Golden Boost question -->
+        <p id="golden-badge" class="question-card__badge" hidden>&#9733; Golden Boost &#9733;</p>
         <p class="question-card__meta">
           <span id="question-round">Round 1</span>
           <span class="question-card__dot" aria-hidden="true">&#9733;</span>
@@ -228,6 +231,23 @@
     </article>
   </div>
 
+  <!-- ===================================================
+       GOLDEN BOOST REVEAL (plays before the golden question opens)
+       See golden-boost.js
+       =================================================== -->
+  <div id="golden-boost" class="golden-boost" hidden role="alert">
+    <div class="golden-boost__rays" aria-hidden="true"></div>
+    <!-- Sparkles are added here by golden-boost.js -->
+    <div id="golden-boost-sparkles" class="golden-boost__sparkles" aria-hidden="true"></div>
+    <div class="golden-boost__content">
+      <p class="golden-boost__eyebrow">You found the</p>
+      <p class="golden-boost__title">
+        <span class="golden-boost__word">Golden</span>
+        <span class="golden-boost__word">Boost</span>
+      </p>
+    </div>
+  </div>
+
   <!-- Music on/off button (bottom-right, on every screen) — see music.js -->
   <button id="music-button" class="music-toggle" type="button" aria-pressed="true" aria-label="Music on — click to mute">
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -251,6 +271,7 @@
   <script src="js/music.js"></script>
   <script src="js/board.js"></script>
   <script src="js/question-screen.js"></script>
+  <script src="js/golden-boost.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

@@ -11,8 +11,9 @@
        image: "assets/images/flags/japan.svg"
      Put picture files in assets/images/. "imageAlt" (optional) describes
      the picture for screen readers — never include the answer in it.
-   - "special" is reserved for the hidden bonus event (coming later).
-     Leave it false for now.
+   - "special: true" makes a question the hidden GOLDEN BOOST. It looks
+     like a normal tile until someone picks it. To move the Golden Boost,
+     set it back to false here and true on another question.
    ========================================================= */
 
 const gameData = {
@@ -27,7 +28,7 @@ const gameData = {
           { value: 100, question: "These are the three primary colors", answer: "Red, Blue, Yellow", special: false },
           { value: 200, question: "This is the name for the thing in the center of a cell", answer: "Nucleus", special: false },
           { value: 300, question: "This is the largest bone in the human body", answer: "Femur", special: false },
-          { value: 400, question: "This is the name of that thing that hangs down in the back of your throat", answer: "Uvula", special: false },
+          { value: 400, question: "This is the name of that thing that hangs down in the back of your throat", answer: "Uvula", special: true }, // ★ GOLDEN BOOST
           { value: 500, question: "This is the longest side of a triangle, opposite the right angle", answer: "Hypotenuse", special: false },
         ],
       },

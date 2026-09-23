@@ -129,6 +129,12 @@ function updateTile(tile, categoryIndex, questionIndex) {
   tile.dataset.state = state;
   tile.disabled = state === QUESTION_STATE.ANSWERED;
 
+  // Once the Golden Boost has been played, its tile stays gold so everyone
+  // remembers where it was. (Before that it looks like any other tile.)
+  const isGoldenPlayed = question.special && state === QUESTION_STATE.ANSWERED;
+  tile.classList.toggle("tile--golden-played", isGoldenPlayed);
+  tile.querySelector(".tile__played").textContent = isGoldenPlayed ? "Golden Boost" : "Played";
+
   const playedNote = state === QUESTION_STATE.ANSWERED ? ", already played" : "";
   tile.setAttribute("aria-label", `${categoryName} for ${formatMoney(question.value)}${playedNote}`);
 }
@@ -181,8 +187,12 @@ function handleTileClick(categoryIndex, questionIndex) {
   refreshTile(categoryIndex, questionIndex); // tile turns ACTIVE (gold glow)
   setBoardStatus(`${getCategory(categoryIndex).name} for ${formatMoney(question.value)}`, true);
 
-  // Let the tile glow for a moment, then open the question (question-screen.js)
-  tilePickTimer = setTimeout(() => {
+  // Let the tile glow for a moment, then open the question (question-screen.js).
+  // The hidden Golden Boost question gets its big reveal first (golden-boost.js).
+  tilePickTimer = setTimeout(async () => {
+    if (question.special) {
+      await playGoldenBoostIntro();
+    }
     openQuestionScreen(categoryIndex, questionIndex);
   }, TILE_PICK_DELAY_MS);
 }
