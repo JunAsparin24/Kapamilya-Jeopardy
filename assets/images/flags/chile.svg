@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
+  <rect width="900" height="300" fill="#ffffff"/>
+  <rect y="300" width="900" height="300" fill="#d52b1e"/>
+  <rect width="300" height="300" fill="#0039a6"/>
+  <!-- five-pointed star centred in the blue square, diameter = half the square -->
+  <polygon fill="#ffffff" points="150,75 166.84,126.82 221.33,126.82 177.25,158.85 194.08,210.68 150,178.65 105.92,210.68 122.75,158.85 78.67,126.82 133.16,126.82"/>
+</svg>

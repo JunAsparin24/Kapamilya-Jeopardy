@@ -93,11 +93,11 @@ const gameData = {
       {
         name: "Quick Maths",
         questions: [
-          { value: 200,  question: "What is 12 × 12?", answer: "144", special: false },
-          { value: 400,  question: "What is 15% of 200?", answer: "30", special: false },
-          { value: 600,  question: "What is 7 × 8 + 6 × 9?", answer: "110", special: false },
-          { value: 800,  question: "If you drive at 90 km per hour for 2 hours and 20 minutes, how many kilometres do you travel?", answer: "210 km", special: false },
-          { value: 1000, question: "What is the square root of 1,764?", answer: "42", special: false },
+          { value: 200,  question: "Maria has 12 apples. She gives 5 to her friend, then buys 8 more. How many apples does she have now?", answer: "15 apples", special: false },
+          { value: 400,  question: "How many seconds are in 7 minutes?", answer: "420 seconds", special: false },
+          { value: 600,  question: "A pizza is cut into 8 slices. If 6 friends each eat 3 slices, how many whole pizzas do they need to order?", answer: "3 pizzas", special: false },
+          { value: 800,  question: "How many hours are in 3 weeks?", answer: "504 hours", special: false },
+          { value: 1000, question: "How many seconds are in one full day?", answer: "86,400 seconds", special: false },
         ],
       },
       {
@@ -107,29 +107,29 @@ const gameData = {
           { value: 400,  question: "Which country does this flag belong to?", answer: "Sweden", image: "assets/images/flags/sweden.svg", imageAlt: "A country's flag", special: false },
           { value: 600,  question: "Which country does this flag belong to?", answer: "Greece", image: "assets/images/flags/greece.svg", imageAlt: "A country's flag", special: false },
           { value: 800,  question: "Which country does this flag belong to?", answer: "Jamaica", image: "assets/images/flags/jamaica.svg", imageAlt: "A country's flag", special: false },
-          { value: 1000, question: "Which country does this flag belong to?", answer: "Bangladesh", image: "assets/images/flags/bangladesh.svg", imageAlt: "A country's flag", special: false },
+          { value: 1000, question: "Which country does this flag belong to?", answer: "Chile", image: "assets/images/flags/chile.svg", imageAlt: "A country's flag", special: false },
         ],
       },
       {
-        // Prices are Canada-wide averages from Statistics Canada (July 2026).
-        // Closest guess wins — or accept anything within about $1.
-        name: "Guess the Price",
+        // Which was searched more on Google? Based on worldwide Google Trends
+        // interest over the past 5 years. Check any pair at trends.google.com.
+        name: "Higher or Lower",
         questions: [
-          { value: 200,  question: "On average, how much does 4 litres of milk cost at a grocery store in Canada?", answer: "$6.99", special: false },
-          { value: 400,  question: "On average, how much does a dozen eggs cost at a grocery store in Canada?", answer: "$4.95", special: false },
-          { value: 600,  question: "On average, how much does a 675 gram loaf of white bread cost at a grocery store in Canada?", answer: "$3.60", special: false },
-          { value: 800,  question: "On average, how much does a 1 kilogram jar of peanut butter cost at a grocery store in Canada?", answer: "$5.62", special: false },
-          { value: 1000, question: "On average, how much does a 4.43 litre jug of laundry detergent cost at a store in Canada?", answer: "$13.36", special: false },
+          { value: 200,  question: "Which was searched more on Google over the past 5 years: YouTube or Netflix?", answer: "YouTube", special: false },
+          { value: 400,  question: "Which was searched more on Google over the past 5 years: Pizza or Sushi?", answer: "Pizza", special: false },
+          { value: 600,  question: "Which was searched more on Google over the past 5 years: Taylor Swift or Beyoncé?", answer: "Taylor Swift", special: false },
+          { value: 800,  question: "Which was searched more on Google over the past 5 years: Christmas or Halloween?", answer: "Christmas", special: false },
+          { value: 1000, question: "Which was searched more on Google over the past 5 years: Minecraft or Jesus?", answer: "Minecraft", special: false },
         ],
       },
       {
         name: "Spelling Bee",
         questions: [
-          { value: 200,  question: "Spell the word that means: the day after today", answer: "Tomorrow", special: false },
-          { value: 400,  question: "Spell the word that means: needed or required; something you must have", answer: "Necessary", special: false },
-          { value: 600,  question: "Spell the word that means: to provide someone with a place to stay, or to make room for their needs", answer: "Accommodate", special: false },
-          { value: 800,  question: "Spell the word that means: the inner voice that tells you whether something is right or wrong", answer: "Conscience", special: false },
-          { value: 1000, question: "Spell the word that means: a word that imitates the sound it describes, like \"buzz,\" \"sizzle,\" or \"boom\"", answer: "Onomatopoeia", special: false },
+          { value: 200,  question: "Spell the word for: the building where you go to borrow books", answer: "Library", special: false },
+          { value: 400,  question: "Spell the word for: the season after summer, when the leaves change colour and fall", answer: "Autumn", special: false },
+          { value: 600,  question: "Spell the word for: the second month of the year", answer: "February", special: true }, // ★ GOLDEN BOOST
+          { value: 800,  question: "Spell the word for: the green vegetable that looks like a tiny tree", answer: "Broccoli", special: false },
+          { value: 1000, question: "Spell the word for: a place where you pay to sit down and eat a meal someone cooks for you", answer: "Restaurant", special: false },
         ],
       },
     ],
