@@ -142,24 +142,42 @@ const gameData = {
 // The teams agree on ONE category, wager on their phones (up to
 // the points they have), then answer on their whiteboards within
 // FINAL_WAGER_SECONDS. Right = + wager, wrong = − wager.
+//
+// Each category has several questions; one is picked AT RANDOM
+// every game. Add or remove questions freely (at least one each).
 // -------------------------------------------------------
 const FINAL_WAGER_SECONDS = 90;
 
 const finalWagerQuestions = [
   {
     name: "Pop Culture",
-    question: "The very first Star Wars movie came out in 1977. Its full title is \"Star Wars: Episode IV – ______.\" Fill in the blank",
-    answer: "A New Hope",
+    questions: [
+      { question: "The very first Star Wars movie came out in 1977. Its full title is \"Star Wars: Episode IV – ______.\" Fill in the blank", answer: "A New Hope" },
+      { question: "In Harry Potter, what is the name of the house-elf who is set free when Harry tricks Lucius Malfoy into giving him a sock?", answer: "Dobby" },
+      { question: "What is the name of the hidden African country ruled by Black Panther in the Marvel movies?", answer: "Wakanda" },
+      { question: "In the TV show Friends, what is the name of the coffee shop where the group always hangs out?", answer: "Central Perk" },
+      { question: "Which Filipino band released the hit song \"Tadhana\" in 2012?", answer: "Up Dharma Down" },
+    ],
   },
   {
     name: "History",
-    question: "On what date did the Philippines proclaim its independence from Spain?",
-    answer: "June 12, 1898",
+    questions: [
+      { question: "On what date did the Philippines proclaim its independence from Spain?", answer: "June 12, 1898" },
+      { question: "In what year did World War II end?", answer: "1945" },
+      { question: "Which Filipino national hero wrote the novels \"Noli Me Tángere\" and \"El Filibusterismo\"?", answer: "José Rizal" },
+      { question: "In what year did the Berlin Wall fall?", answer: "1989" },
+      { question: "Who was the first woman to become President of the Philippines?", answer: "Corazon Aquino" },
+    ],
   },
   {
     name: "Miscellaneous",
-    question: "What is the name of the small dot above a lowercase \"i\" or \"j\"?",
-    answer: "A tittle",
+    questions: [
+      { question: "What is the name of the small dot above a lowercase \"i\" or \"j\"?", answer: "A tittle" },
+      { question: "How many hearts does an octopus have?", answer: "3" },
+      { question: "What is the only letter of the alphabet that doesn't appear in the name of any U.S. state?", answer: "Q" },
+      { question: "What is the little plastic tip at the end of a shoelace called?", answer: "An aglet" },
+      { question: "How many keys does a standard piano have?", answer: "88" },
+    ],
   },
 ];
 

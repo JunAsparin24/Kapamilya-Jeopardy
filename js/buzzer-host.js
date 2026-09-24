@@ -37,6 +37,9 @@ const joinPanelClose = document.getElementById("join-panel-close");
 const buzzerQrElement = document.getElementById("buzzer-qr");
 const buzzerJoinUrl = document.getElementById("buzzer-join-url");
 const buzzerPlayerCount = document.getElementById("buzzer-player-count");
+const onlineJoin = document.getElementById("online-join");
+const onlineQrElement = document.getElementById("online-qr");
+const onlineJoinUrl = document.getElementById("online-join-url");
 const hostScreenInfo = document.getElementById("host-screen-info");
 const hostScreenUrl = document.getElementById("host-screen-url");
 const hostScreenCode = document.getElementById("host-screen-code");
@@ -45,6 +48,7 @@ let isBuzzerConnected = false;
 let buzzerState = null;      // the latest state from the server
 let lastSeenBuzzId = null;   // to spot a *new* buzz
 let qrCodeMadeFor = "";
+let onlineQrMadeFor = "";
 let blockedTeamIds = [];     // teams that ran out of time on this question
 let answerTimer = null;      // { teamId, deadline, intervalId } while a team is answering
 
@@ -216,11 +220,40 @@ function renderBuzzerUi(isNewBuzz) {
   }
   highlightBuzzedTeam(getBuzzedTeamId()); // scoreboard.js — marks them on the ✓/✗ row
 
-  // How to join
+  // How to join: same Wi-Fi, and the online link for everyone else
   const joinUrl = (buzzerState.joinUrls && buzzerState.joinUrls[0]) || "";
-  homeBuzzerUrl.textContent = joinUrl || "(no Wi-Fi address found)";
+  const onlineUrl = buzzerState.onlineUrl || "";
+  homeBuzzerUrl.textContent = (joinUrl || "(no Wi-Fi address found)") + (onlineUrl ? "  ·  online link ready" : "");
   buzzerJoinUrl.textContent = (buzzerState.joinUrls || []).join("  or  ") || "No Wi-Fi address found — is this laptop on Wi-Fi?";
   buzzerPlayerCount.textContent = playerText;
+
+  const onlineStatus = buzzerState.onlineStatus || "off";
+  onlineJoin.hidden = onlineStatus === "off";
+  onlineJoinUrl.textContent =
+    onlineStatus === "on" ? onlineUrl :
+    onlineStatus === "starting" ? "Starting the online link…" :
+    "Online link unavailable — see the buzzer window";
+  if (!joinPanel.hidden) makeJoinQrCodes(); // the online link can arrive while the panel is open
+}
+
+// QR codes for both links (needs the qrcodejs library, which loads from the internet)
+function makeJoinQrCodes() {
+  const joinUrl = (buzzerState && buzzerState.joinUrls && buzzerState.joinUrls[0]) || "";
+  const onlineUrl = (buzzerState && buzzerState.onlineUrl) || "";
+
+  if (joinUrl && window.QRCode && qrCodeMadeFor !== joinUrl) {
+    buzzerQrElement.innerHTML = "";
+    new QRCode(buzzerQrElement, { text: joinUrl, width: 200, height: 200, colorDark: "#173d2e", colorLight: "#ffffff" });
+    qrCodeMadeFor = joinUrl;
+  }
+  buzzerQrElement.hidden = !qrCodeMadeFor;
+
+  if (onlineUrl && window.QRCode && onlineQrMadeFor !== onlineUrl) {
+    onlineQrElement.innerHTML = "";
+    new QRCode(onlineQrElement, { text: onlineUrl, width: 200, height: 200, colorDark: "#173d2e", colorLight: "#ffffff" });
+    onlineQrMadeFor = onlineUrl;
+  }
+  onlineQrElement.hidden = !onlineUrl || onlineQrMadeFor !== onlineUrl;
 }
 
 // The host screen's address and code, shown in the join panel
@@ -238,16 +271,7 @@ async function showHostScreenInfo() {
 /* ---------- Join panel (QR code + link) ---------- */
 
 function openJoinPanel() {
-  const joinUrl = (buzzerState && buzzerState.joinUrls && buzzerState.joinUrls[0]) || "";
-
-  // QR code (needs the qrcodejs library, which loads from the internet)
-  if (joinUrl && window.QRCode && qrCodeMadeFor !== joinUrl) {
-    buzzerQrElement.innerHTML = "";
-    new QRCode(buzzerQrElement, { text: joinUrl, width: 220, height: 220, colorDark: "#173d2e", colorLight: "#ffffff" });
-    qrCodeMadeFor = joinUrl;
-  }
-  buzzerQrElement.hidden = !qrCodeMadeFor;
-
+  makeJoinQrCodes();
   joinPanel.hidden = false;
   joinPanelClose.focus({ preventScroll: true });
 }

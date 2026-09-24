@@ -380,9 +380,20 @@
   <div id="buzzer-join-panel" class="join-panel" hidden role="dialog" aria-modal="true" aria-labelledby="join-panel-title">
     <div class="join-panel__card">
       <h2 id="join-panel-title" class="join-panel__title text-gold">Buzzers</h2>
-      <p class="join-panel__text">On the <strong>same Wi-Fi</strong>, scan the code or open:</p>
-      <div id="buzzer-qr" class="join-panel__qr" aria-hidden="true"></div>
-      <p id="buzzer-join-url" class="join-panel__url"></p>
+      <div class="join-panel__options">
+        <!-- Players in the room -->
+        <div class="join-option">
+          <p class="join-panel__text">On the <strong>same Wi-Fi</strong></p>
+          <div id="buzzer-qr" class="join-panel__qr" aria-hidden="true"></div>
+          <p id="buzzer-join-url" class="join-panel__url"></p>
+        </div>
+        <!-- Players anywhere else (other Wi-Fi or mobile data) — see "Online link" in buzzer-server.ps1 -->
+        <div id="online-join" class="join-option" hidden>
+          <p class="join-panel__text"><strong>Anywhere</strong> (other Wi-Fi or data)</p>
+          <div id="online-qr" class="join-panel__qr" aria-hidden="true"></div>
+          <p id="online-join-url" class="join-panel__url join-panel__url--online"></p>
+        </div>
+      </div>
       <p id="buzzer-player-count" class="join-panel__count"></p>
       <!-- Host screen (question + answer on the host's phone) — keep the code to yourself -->
       <p id="host-screen-info" class="join-panel__host" hidden>

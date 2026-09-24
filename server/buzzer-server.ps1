@@ -1,4 +1,4 @@
-<#
+﻿<#
   =========================================================
   buzzer-server.ps1 — The PANALO! buzzer server.
 
@@ -15,7 +15,9 @@
       code every time the server starts). Answers are never sent
       to the players' buzzers.
 
-  Phones must be on the SAME Wi-Fi as this laptop.
+  Phones on the SAME Wi-Fi use the address above. Players anywhere
+  else (other Wi-Fi or mobile data) use the ONLINE link printed in
+  this window — see "Online link" below. It's a new link every time.
   Close this window (or press Ctrl+C) to stop the server.
 
   The first time, Windows needs permission for phones to connect.
@@ -26,7 +28,8 @@
 param(
   [int]$Port = 8080,
   [switch]$LocalOnly,   # this laptop only (no phones) - handy for testing
-  [switch]$NoBrowser    # don't open the game automatically
+  [switch]$NoBrowser,   # don't open the game automatically
+  [switch]$NoOnline     # don't create the online link for players on other Wi-Fi
 )
 
 $ErrorActionPreference = "Stop"
@@ -99,13 +102,122 @@ function Get-JoinUrls {
 }
 
 function Get-HostUrls {
-  if (-not $script:lanReady) { return @() }
-  return @(Get-LanAddresses | ForEach-Object { "http://${_}:$Port/host" })
+  $urls = @()
+  if ($script:lanReady) { $urls += @(Get-LanAddresses | ForEach-Object { "http://${_}:$Port/host" }) }
+  if ($script:onlineStatus -eq "on") { $urls += "$($script:onlineBase)/host" }
+  return @($urls)
 }
 
 function Get-PlayerCount {
   $cutoff = (Get-Date).AddSeconds(-$PlayerTimeoutSeconds)
   return @($lastSeenPlayers.Values | Where-Object { $_ -gt $cutoff }).Count
+}
+
+# Is this request from the host's own browser on this laptop?
+# Requests that come in through the online link ALSO arrive "from this
+# laptop" (via cloudflared), so they're recognised by the headers
+# Cloudflare adds to every request and never count as the host.
+function Test-IsHost($request) {
+  if (-not $request.IsLocal) { return $false }
+  foreach ($header in "Cf-Connecting-Ip", "Cf-Ray", "X-Forwarded-For") {
+    if ($request.Headers[$header]) { return $false }
+  }
+  return $true
+}
+
+# ---------------------------------------------------------
+# Online link — for players on a different Wi-Fi or mobile data
+#
+# A free Cloudflare "quick tunnel" gives this laptop a temporary public
+# address like https://random-words.trycloudflare.com (a new one every
+# time the buzzer starts). The helper program, cloudflared.exe, is
+# downloaded into this folder the first time — nothing is installed.
+# ---------------------------------------------------------
+$script:onlineStatus = "off"    # off | starting | on | failed
+$script:onlineBase = $null      # e.g. https://random-words.trycloudflare.com
+$script:tunnelProcess = $null
+$script:tunnelStartedAt = $null
+$TunnelLog = Join-Path $env:TEMP "trivia-buzzer-tunnel.log"
+$TunnelExe = Join-Path $PSScriptRoot "cloudflared.exe"
+
+function Start-OnlineTunnel {
+  if (-not (Test-Path -LiteralPath $TunnelExe)) {
+    Write-Host "   Downloading the online-link helper (cloudflared, about 50 MB - first time only)..." -ForegroundColor Cyan
+    try {
+      [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+      $arch = if ([Environment]::Is64BitOperatingSystem) { "amd64" } else { "386" }
+      $ProgressPreference = "SilentlyContinue"   # the progress bar makes downloads very slow
+      Invoke-WebRequest -UseBasicParsing -OutFile "$TunnelExe.part" `
+        -Uri "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-$arch.exe"
+      Move-Item -LiteralPath "$TunnelExe.part" -Destination $TunnelExe -Force
+    } catch {
+      Remove-Item -LiteralPath "$TunnelExe.part" -ErrorAction SilentlyContinue
+      Write-Host "   Couldn't download it: $($_.Exception.Message)" -ForegroundColor Yellow
+      Write-Host "   The online link is off for now. Same Wi-Fi still works." -ForegroundColor Yellow
+      $script:onlineStatus = "failed"
+      return
+    }
+  }
+
+  # Stop a helper left over from last time (e.g. if this window was closed)
+  Get-Process cloudflared -ErrorAction SilentlyContinue |
+    Where-Object { $_.Path -eq $TunnelExe } |
+    Stop-Process -Force -ErrorAction SilentlyContinue
+  Remove-Item -LiteralPath $TunnelLog -ErrorAction SilentlyContinue
+
+  try {
+    # --http-host-header localhost: requests reach this server looking like normal local ones
+    $script:tunnelProcess = Start-Process -FilePath $TunnelExe -PassThru -WindowStyle Hidden `
+      -ArgumentList "tunnel --no-autoupdate --url http://localhost:$Port --http-host-header localhost" `
+      -RedirectStandardError $TunnelLog
+    $script:tunnelStartedAt = Get-Date
+    $script:onlineStatus = "starting"
+    Write-Host "   Online link: starting up (takes a few seconds)..." -ForegroundColor Cyan
+  } catch {
+    Write-Host "   Couldn't start the online link: $($_.Exception.Message)" -ForegroundColor Yellow
+    $script:onlineStatus = "failed"
+  }
+}
+
+# Called about once a second: watches for the tunnel's public address
+function Update-OnlineTunnel {
+  if ($script:onlineStatus -ne "starting") { return }
+
+  if ($script:tunnelProcess.HasExited) {
+    Write-Host "   The online link stopped unexpectedly. Same Wi-Fi still works." -ForegroundColor Yellow
+    $script:onlineStatus = "failed"
+    return
+  }
+
+  # cloudflared keeps its log file open, so read it in "shared" mode
+  $log = ""
+  try {
+    $stream = [System.IO.File]::Open($TunnelLog, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+    $reader = New-Object System.IO.StreamReader($stream)
+    $log = $reader.ReadToEnd()
+    $reader.Close()
+  } catch { }   # not created yet
+  if ($log -match 'https://[a-z0-9-]+\.trycloudflare\.com') {
+    $script:onlineBase = $Matches[0]
+    $script:onlineStatus = "on"
+    Write-Host ""
+    Write-Host "   ONLINE (any Wi-Fi or data):  $($script:onlineBase)/buzz" -ForegroundColor Green
+    Write-Host ""
+  } elseif (((Get-Date) - $script:tunnelStartedAt).TotalSeconds -gt 60) {
+    Write-Host "   The online link didn't start (is this laptop online?). Same Wi-Fi still works." -ForegroundColor Yellow
+    $script:onlineStatus = "failed"
+  }
+}
+
+function Stop-OnlineTunnel {
+  if ($script:tunnelProcess -and -not $script:tunnelProcess.HasExited) {
+    try { $script:tunnelProcess.Kill() } catch { }
+  }
+}
+
+function Get-OnlineJoinUrl {
+  if ($script:onlineStatus -eq "on") { return "$($script:onlineBase)/buzz" }
+  return $null
 }
 
 function Get-FastMoneyRemainingMs([string]$teamId) {
@@ -163,6 +275,8 @@ function Get-PublicState {
     blocked   = @($state.blocked)
     players   = Get-PlayerCount
     joinUrls  = @(Get-JoinUrls)
+    onlineUrl = Get-OnlineJoinUrl        # the link for players on other Wi-Fi (or null)
+    onlineStatus = $script:onlineStatus  # off | starting | on | failed
     fastMoney = Get-FastMoneyState
     finalWager = Get-FinalWagerState
   }
@@ -271,7 +385,7 @@ function Handle-Request($context) {
 
   # --- Host only (this laptop): unlock, and the team list ------------
   if ($path -eq "/api/unlock" -and $method -eq "POST") {
-    if (-not $request.IsLocal) { Send-Text $context "Only the host can unlock" 403; return }
+    if (-not (Test-IsHost $request)) { Send-Text $context "Only the host can unlock" 403; return }
     # The game says whether a question is up, and which teams stay
     # locked out (they already guessed this question)
     $body = Read-JsonBody $context
@@ -287,19 +401,19 @@ function Handle-Request($context) {
 
   # The game tells us which question is open (null = back on the board)
   if ($path -eq "/api/question" -and $method -eq "POST") {
-    if (-not $request.IsLocal) { Send-Text $context "Only the host can do that" 403; return }
+    if (-not (Test-IsHost $request)) { Send-Text $context "Only the host can do that" 403; return }
     $script:hostQuestion = Read-JsonBody $context
     Send-Json $context @{ ok = $true }; return
   }
 
   # The game asks for the host screen address and code, to show them on the laptop
   if ($path -eq "/api/host-info" -and $method -eq "GET") {
-    if (-not $request.IsLocal) { Send-Text $context "Only the host can do that" 403; return }
+    if (-not (Test-IsHost $request)) { Send-Text $context "Only the host can do that" 403; return }
     Send-Json $context @{ code = $HostCode; urls = @(Get-HostUrls) }; return
   }
 
   # --- Final Wager ------------------------------------------------------
-  if ($path -like "/api/fw/*" -and $path -ne "/api/fw/wager" -and -not $request.IsLocal) {
+  if ($path -like "/api/fw/*" -and $path -ne "/api/fw/wager" -and -not (Test-IsHost $request)) {
     Send-Text $context "Only the host can do that" 403; return
   }
 
@@ -345,7 +459,7 @@ function Handle-Request($context) {
   }
 
   # --- Fast Money: the game (this laptop) runs it ----------------------
-  if ($path -like "/api/fm/*" -and $path -ne "/api/fm/answer" -and -not $request.IsLocal) {
+  if ($path -like "/api/fm/*" -and $path -ne "/api/fm/answer" -and -not (Test-IsHost $request)) {
     Send-Text $context "Only the host can do that" 403; return
   }
 
@@ -435,7 +549,7 @@ function Handle-Request($context) {
   }
 
   if ($path -eq "/api/teams" -and $method -eq "POST") {
-    if (-not $request.IsLocal) { Send-Text $context "Only the host can change teams" 403; return }
+    if (-not (Test-IsHost $request)) { Send-Text $context "Only the host can change teams" 403; return }
     $body = Read-JsonBody $context
     $state.teams = @($body | Select-Object -First 8 | ForEach-Object {
       @{
@@ -445,6 +559,12 @@ function Handle-Request($context) {
       }
     })
     Send-Json $context (Get-PublicState); return
+  }
+
+  # Players who open the main address (e.g. the online link without /buzz)
+  # get the buzzer, not the host's game screen
+  if ($method -eq "GET" -and ($path -eq "/" -or $path -eq "/index.html") -and -not (Test-IsHost $request)) {
+    $context.Response.Redirect("/buzz"); return
   }
 
   # --- Everything else: files (the game, the buzzer page, images) ----
@@ -536,13 +656,21 @@ Write-Host ""
 Write-Host "   Keep this window open during the game. Close it to stop." -ForegroundColor Gray
 Write-Host ""
 
+if (-not $NoOnline) { Start-OnlineTunnel }       # the online link (see "Online link" above)
+Write-Host ""
+
 if (-not $NoBrowser) { Start-Process $hostUrl }   # open the game in the default browser
 
 try {
   while ($listener.IsListening) {
     # Wait for the next request in short slices so Ctrl+C still works
     $pending = $listener.BeginGetContext($null, $null)
-    while (-not $pending.AsyncWaitHandle.WaitOne(250)) { }
+    $ticks = 0
+    while (-not $pending.AsyncWaitHandle.WaitOne(250)) {
+      $ticks++
+      if ($ticks % 4 -eq 0) { Update-OnlineTunnel }
+    }
+    Update-OnlineTunnel
     $context = $listener.EndGetContext($pending)
 
     try {
@@ -555,6 +683,7 @@ try {
     }
   }
 } finally {
+  Stop-OnlineTunnel
   $listener.Stop()
   $listener.Close()
 }

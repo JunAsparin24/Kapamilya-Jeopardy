@@ -51,6 +51,9 @@ function prepareFinalWager() {
     step: "category",
     usePhones: isBuzzerConnected, // buzzer-host.js
     categoryIndex: null,
+    // A random question from each category, picked fresh every game
+    // (questionPicks[categoryIndex] = which question in that category)
+    questionPicks: finalWagerQuestions.map((category) => Math.floor(Math.random() * category.questions.length)),
     maxes: {},          // teamId -> most they may wager
     lockedTeamIds: [],  // teams whose phone has sent a wager
     wagers: {},         // teamId -> amount (known after the reveal step starts)
@@ -64,8 +67,12 @@ function prepareFinalWager() {
   renderFinalWager();
 }
 
+// The chosen category with this game's randomly picked question:
+// { name, question, answer }
 function getFinalWagerCategory() {
-  return finalWagerQuestions[finalWager.categoryIndex];
+  const category = finalWagerQuestions[finalWager.categoryIndex];
+  const picked = category.questions[finalWager.questionPicks[finalWager.categoryIndex]];
+  return { name: category.name, question: picked.question, answer: picked.answer };
 }
 
 function finalWagerRequest(path, data = {}) {
