@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2e6a51">
+  <title>PANALO! Host</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232e6a51'/%3E%3Cpath d='M32 11l6.2 12.6 13.8 2-10 9.8 2.4 13.8L32 42.7l-12.4 6.5 2.4-13.8-10-9.8 13.8-2z' fill='%23f4c76a'/%3E%3C/svg%3E">
+
+  <!-- Fonts (falls back to Impact / system fonts if the phone is offline) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@600;700&family=Sancreek&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/host/host.css">
+</head>
+<body>
+  <!-- =========================================================
+       HOST SCREEN — for the host's phone only, at http://<laptop>:8080/host
+       Shows the open question and its answer the moment a tile is
+       picked. Needs the host code shown in the buzzer window and in
+       the game's Buzzers panel. Talks to server/buzzer-server.ps1.
+       ========================================================= -->
+  <header class="top-bar">
+    <span class="top-bar__title">PANALO!</span>
+    <span class="top-bar__tag">Host</span>
+  </header>
+
+  <p id="connection-banner" class="connection-banner" hidden>Reconnecting to the game&hellip;</p>
+
+  <!-- Step 1: enter the host code -->
+  <form id="code-screen" class="code-screen" hidden>
+    <h1 class="code-screen__heading">Host code</h1>
+    <p class="code-screen__note">It's in the black buzzer window on the laptop, and in the game's <strong>Buzzers</strong> panel.</p>
+    <input id="code-input" class="code-screen__input" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="Host code">
+    <p id="code-error" class="code-screen__error" hidden>That code didn't work. Try again.</p>
+    <button class="code-screen__button" type="submit">Open host screen</button>
+  </form>
+
+  <!-- Step 2: the question and answer -->
+  <main id="host-screen" class="host-screen" hidden>
+    <p id="waiting" class="waiting">Waiting for a question to be picked&hellip;</p>
+
+    <article id="question-card" class="card" hidden>
+      <p id="golden" class="card__golden" hidden></p>
+      <p class="card__meta">
+        <span id="round"></span> &middot; <span id="category"></span>
+      </p>
+      <p id="value" class="card__value"></p>
+
+      <p class="card__label">Question</p>
+      <p id="question" class="card__question"></p>
+      <img id="image" class="card__image" alt="Picture shown with this question" hidden>
+
+      <p class="card__label card__label--gold">Answer</p>
+      <p id="answer" class="card__answer"></p>
+    </article>
+
+    <!-- Fast Money: all five questions and their survey answers -->
+    <section id="fast-money-card" class="card" hidden>
+      <p class="card__value">Fast Money</p>
+      <ol id="fast-money-list" class="fm-list"></ol>
+    </section>
+
+    <p id="buzz" class="buzz" hidden></p>
+  </main>
+
+  <script src="/host/host.js"></script>
+</body>
+</html>

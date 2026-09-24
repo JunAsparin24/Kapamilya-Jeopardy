@@ -7,8 +7,9 @@
 
      Stage 1: gold flash, spinning rays, sparkles and a big
               "GOLDEN BOOST" title (plus a sound from music.js)
-     Stage 2: the host picks which team found it and types in
-              their wager (up to the points they have), then
+     Stage 2: the team that has the board found it (if nobody has
+              the board yet, the host picks the team). The host types
+              in their wager (up to the points they have), then
               clicks REVEAL QUESTION
 
    Nothing about the question is shown until that click, so teams
@@ -19,6 +20,7 @@
 const goldenBoostOverlay = document.getElementById("golden-boost");
 const goldenBoostSparkles = document.getElementById("golden-boost-sparkles");
 const goldenWagerForm = document.getElementById("golden-wager");
+const goldenWagerPrompt = document.getElementById("golden-wager-prompt");
 const goldenWagerTeams = document.getElementById("golden-wager-teams");
 const goldenWagerAmount = document.getElementById("golden-wager-amount");
 const goldenWagerHint = document.getElementById("golden-wager-hint");
@@ -97,13 +99,17 @@ function showWagerStep(question) {
     button.dataset.teamId = team.id;
   });
 
-  // With only one team, it must be them
-  if (getTeams().length === 1) selectWagerTeam(getTeams()[0].id);
+  // The team with the board picked this question, so it's theirs.
+  // (With only one team, it must be them.)
+  const boardTeam = getTeam(getBoardTeamId()) || (getTeams().length === 1 ? getTeams()[0] : null);
+  goldenWagerTeams.hidden = Boolean(boardTeam);
+  goldenWagerPrompt.textContent = boardTeam ? `${boardTeam.name} found it!` : "Who found it?";
+  if (boardTeam) selectWagerTeam(boardTeam.id);
   updateWagerHint();
 
   goldenWagerForm.hidden = false;
   goldenBoostOverlay.classList.add("is-wagering");
-  if (getTeams().length > 1) {
+  if (!boardTeam) {
     goldenWagerTeams.querySelector("button").focus({ preventScroll: true });
   } else {
     goldenWagerAmount.focus({ preventScroll: true });

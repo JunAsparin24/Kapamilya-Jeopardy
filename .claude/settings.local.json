@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell(New-Item -ItemType Directory -Force \"assets\\\\images\" | Out-Null; New-Item -ItemType File \"assets\\\\images\\\\.gitkeep\" | Out-Null; \\(Get-Command node -ErrorAction SilentlyContinue\\).Source; Test-Path \"C:\\\\Program Files \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe\"; Test-Path \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\")"
+      "PowerShell(New-Item -ItemType Directory -Force \"assets\\\\images\" | Out-Null; New-Item -ItemType File \"assets\\\\images\\\\.gitkeep\" | Out-Null; \\(Get-Command node -ErrorAction SilentlyContinue\\).Source; Test-Path \"C:\\\\Program Files \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe\"; Test-Path \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\")",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File server/buzzer-server.ps1 -Port 8099 -LocalOnly -NoBrowser)",
+      "PowerShell(Get-CimInstance Win32_Process -Filter \"Name='powershell.exe'\" | Where-Object { $_.CommandLine -match 'buzzer-server.ps1 -Port 8099' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -Confirm:$false })",
+      "PowerShell($t = [IO.File]::ReadAllText\\(\\(Resolve-Path js/questions.js\\)\\); \"CRLF: \" + \\([regex]::Matches\\($t, \"`r`n\"\\).Count\\) + \"  LF-only: \" + \\([regex]::Matches\\($t, \"\\(?<!`r\\)`n\"\\).Count\\))"
     ]
   }
 }

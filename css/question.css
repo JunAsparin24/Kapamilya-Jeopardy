@@ -31,7 +31,7 @@ body.is-question-open .board-footer {
 .question-screen__backdrop {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, rgba(34, 9, 74, 0.55), rgba(5, 2, 12, 0.85));
+  background: radial-gradient(ellipse at center, rgba(23, 61, 46, 0.55), rgba(3, 12, 8, 0.85));
   opacity: 0;
   transition: opacity 0.35s ease;
 }
@@ -50,12 +50,12 @@ body.is-question-open .board-footer {
   padding: clamp(22px, 4vh, 48px) clamp(20px, 4vw, 64px);
   border-radius: var(--radius-lg);
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(154, 88, 255, 0.35), transparent 60%),
-    linear-gradient(180deg, #3a1679 0%, #24094f 55%, #170636 100%);
+    radial-gradient(ellipse at 50% 0%, rgba(79, 156, 120, 0.35), transparent 60%),
+    linear-gradient(180deg, #245a43 0%, #1b4535 55%, #123226 100%);
   border: 1px solid var(--color-gold);
   box-shadow:
     0 40px 100px rgba(0, 0, 0, 0.65),
-    0 0 60px rgba(118, 54, 234, 0.35),
+    0 0 60px rgba(47, 117, 86, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
 
   /* Start state for the open animation */
@@ -75,7 +75,7 @@ body.is-question-open .board-footer {
   position: absolute;
   inset: 10px;
   border-radius: calc(var(--radius-lg) - 8px);
-  border: 1px solid var(--color-border-lilac);
+  border: 1px solid var(--color-border-sage);
   pointer-events: none;
 }
 
@@ -92,11 +92,11 @@ body.is-question-open .board-footer {
   padding: 0;
   font-size: 1.8rem;
   line-height: 1;
-  color: var(--color-lilac);
+  color: var(--color-sage);
   cursor: pointer;
   border-radius: 50%;
-  background: rgba(12, 5, 26, 0.5);
-  border: 1px solid var(--color-border-lilac);
+  background: rgba(8, 26, 19, 0.5);
+  border: 1px solid var(--color-border-sage);
   transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s var(--ease-out);
 }
 
@@ -131,7 +131,7 @@ body.is-question-open .board-footer {
 }
 
 #question-round {
-  color: var(--color-lilac);
+  color: var(--color-sage);
 }
 
 .question-card__dot {
@@ -171,7 +171,7 @@ body.is-question-open .board-footer {
   font-weight: 700;
   letter-spacing: 0.35em;
   text-transform: uppercase;
-  color: var(--color-lilac);
+  color: var(--color-sage);
 }
 
 .question-card__label--gold {
@@ -189,6 +189,37 @@ body.is-question-open .board-footer {
   color: var(--color-cream);
   text-wrap: balance;
   transition: font-size 0.4s var(--ease-out);
+}
+
+/* Word-by-word reveal (question-screen.js). Hidden words still take up
+   their space, so the text doesn't shift as it fills in. */
+/* Each word drifts up into place and comes into focus. The fade is longer
+   than the gap between words, so they blend into each other smoothly. */
+.question-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.3em);
+  filter: blur(6px);
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.3s ease-out;
+}
+
+.question-word.is-shown {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.question-card.is-revealing .question-card__question {
+  cursor: pointer; /* click to show the whole question at once */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .question-word {
+    transition: none;
+  }
 }
 
 /* Once the answer is shown, the "QUESTION" label goes away to make room */
@@ -225,8 +256,13 @@ body.is-question-open .board-footer {
   border-radius: 6px;
   /* A thin light edge so white flags (like Japan's) stand out from the card */
   border: 2px solid rgba(255, 244, 220, 0.6);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(154, 88, 255, 0.35);
-  transition: max-height 0.4s var(--ease-out);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(79, 156, 120, 0.35);
+  transition: max-height 0.4s var(--ease-out), opacity 0.4s ease;
+}
+
+/* The picture appears once the question has finished revealing */
+.question-card.is-revealing .question-card__image {
+  opacity: 0;
 }
 
 /* Picture questions: the picture is the star, so the question text is

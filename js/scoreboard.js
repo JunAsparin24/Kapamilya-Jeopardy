@@ -2,12 +2,15 @@
    scoreboard.js — Everything on screen to do with teams:
 
    1. The scoreboard under the game board
+        - ♛ shows who "has the board" (picks the next question);
+          click a team's ♛ to hand them the board
         - click a team name to rename it
         - click a score to type in a correction
         - × removes a team (asks "Remove?" first), + Team adds one
    2. The ✓ / ✗ buttons on the question card after the answer
       is shown (✓ adds the question's value, ✗ subtracts it —
-      click again to undo)
+      click again to undo). A ✓ also gives that team the board;
+      if nobody gets it right, the board stays where it was.
    3. The standings on the Round Complete and Game Over screens
 
    The team data itself lives in teams.js.
@@ -20,6 +23,7 @@ const awardRowElement = document.getElementById("award-row");
 let currentAwards = {};
 let currentAwardAmount = 0;
 let currentAwardTeamIds = null; // null = every team can score
+let boardTeamBeforeQuestion = null; // who had the board when this question opened
 
 const REMOVE_CONFIRM_MS = 3000;
 
@@ -29,6 +33,7 @@ const REMOVE_CONFIRM_MS = 3000;
 
 function renderScoreboard() {
   scoreboardElement.innerHTML = "";
+  scoreboardElement.classList.toggle("needs-board", !getBoardTeamId());
 
   getTeams().forEach((team) => {
     scoreboardElement.appendChild(createTeamChip(team));
@@ -57,6 +62,13 @@ function createTeamChip(team) {
   chip.dataset.teamId = team.id;
   chip.style.setProperty("--team-color", team.color);
 
+  // ♛ — lights up for the team with the board; click to give them the board
+  const boardButton = document.createElement("button");
+  boardButton.type = "button";
+  boardButton.className = "team-chip__board";
+  boardButton.textContent = "♛";
+  boardButton.addEventListener("click", () => setBoardTeam(team.id));
+
   // Name — an input that looks like plain text until you click it
   const nameInput = document.createElement("input");
   nameInput.className = "team-chip__name";
@@ -82,7 +94,8 @@ function createTeamChip(team) {
   scoreButton.title = "Click to change this score";
   scoreButton.addEventListener("click", () => startEditingScore(chip, team));
 
-  chip.append(nameInput, scoreButton);
+  chip.append(boardButton, nameInput, scoreButton);
+  updateBoardMarker(chip, team);
 
   // Remove (only when there's more than one team)
   if (getTeams().length > 1) {
@@ -144,10 +157,12 @@ function startEditingScore(chip, team) {
 // redrawing, so a name being typed isn't interrupted
 function updateScoreboardScores() {
   let needsFullRender = scoreboardElement.querySelectorAll(".team-chip").length !== getTeams().length;
+  scoreboardElement.classList.toggle("needs-board", !getBoardTeamId());
 
   getTeams().forEach((team) => {
     const chip = scoreboardElement.querySelector(`.team-chip[data-team-id="${team.id}"]`);
     if (!chip) { needsFullRender = true; return; }
+    updateBoardMarker(chip, team);
 
     const scoreButton = chip.querySelector(".team-chip__score");
     const nameInput = chip.querySelector(".team-chip__name");
@@ -166,6 +181,15 @@ function updateScoreboardScores() {
   if (needsFullRender) renderScoreboard();
 }
 
+function updateBoardMarker(chip, team) {
+  const hasBoard = team.id === getBoardTeamId();
+  const boardButton = chip.querySelector(".team-chip__board");
+  chip.classList.toggle("has-board", hasBoard);
+  boardButton.setAttribute("aria-pressed", String(hasBoard));
+  boardButton.title = hasBoard ? `${team.name} has the board` : `Give ${team.name} the board`;
+  boardButton.setAttribute("aria-label", boardButton.title);
+}
+
 onTeamsChanged(updateScoreboardScores);
 
 /* =========================================================
@@ -178,6 +202,7 @@ function prepareAwards(amount, teamIds = null) {
   currentAwards = {};
   currentAwardAmount = amount;
   currentAwardTeamIds = teamIds;
+  boardTeamBeforeQuestion = getBoardTeamId();
   awardRowElement.hidden = true;
   awardRowElement.innerHTML = "";
 }
@@ -206,6 +231,7 @@ function showAwardRow() {
       createAwardButton(team, -1, "✗", `${team.name} got it wrong: −${formatMoney(currentAwardAmount)}`)
     );
     awardRowElement.appendChild(award);
+    renderAward(team.id); // e.g. ✗ already pressed for a team that ran out of time
   });
 
   highlightBuzzedTeam(getBuzzedTeamId()); // buzzer-host.js
@@ -229,17 +255,45 @@ function createAwardButton(team, direction, symbol, label) {
 function toggleAward(teamId, direction) {
   const previous = currentAwards[teamId] || 0;
   const next = previous === direction ? 0 : direction;
+  setAward(teamId, next);
+  if (next === 1) playCorrectSound(); // sound-effects.js
+  if (next === -1) playWrongSound();
+}
 
+// A team's buzzer time ran out (buzzer-host.js): counts as ✗.
+// Does nothing for a team that can't score on this question.
+function markTeamWrong(teamId) {
+  if (currentAwardTeamIds && !currentAwardTeamIds.includes(teamId)) return;
+  setAward(teamId, -1);
+}
+
+function setAward(teamId, next) {
+  const previous = currentAwards[teamId] || 0;
   currentAwards[teamId] = next;
   changeScore(teamId, (next - previous) * currentAwardAmount);
+  renderAward(teamId);
+  updateBoardFromAwards(teamId, next);
+}
 
-  const award = awardRowElement.querySelector(`.award[data-team-id="${teamId}"]`);
-  if (award) {
-    award.querySelector(".award__btn--right").setAttribute("aria-pressed", String(next === 1));
-    award.querySelector(".award__btn--wrong").setAttribute("aria-pressed", String(next === -1));
-    award.classList.toggle("is-right", next === 1);
-    award.classList.toggle("is-wrong", next === -1);
+// A correct answer takes the board. If that ✓ is undone, the board goes to
+// another team marked ✓, or back to whoever had it before this question.
+function updateBoardFromAwards(teamId, value) {
+  if (value === 1) {
+    setBoardTeam(teamId);
+  } else if (getBoardTeamId() === teamId) {
+    const otherRightTeamId = Object.keys(currentAwards).find((id) => currentAwards[id] === 1);
+    setBoardTeam(otherRightTeamId || boardTeamBeforeQuestion);
   }
+}
+
+function renderAward(teamId) {
+  const award = awardRowElement.querySelector(`.award[data-team-id="${teamId}"]`);
+  if (!award) return;
+  const value = currentAwards[teamId] || 0;
+  award.querySelector(".award__btn--right").setAttribute("aria-pressed", String(value === 1));
+  award.querySelector(".award__btn--wrong").setAttribute("aria-pressed", String(value === -1));
+  award.classList.toggle("is-right", value === 1);
+  award.classList.toggle("is-wrong", value === -1);
 }
 
 // Marks the team that buzzed in first, so the host can find them quickly

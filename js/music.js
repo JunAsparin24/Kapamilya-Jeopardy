@@ -9,10 +9,11 @@
      menu — a brassy, horn-heavy fanfare for the home screen
      game — a bouncy groove for the board
 
-   Sound effects:
-     playRoundSting()       — a horn fanfare when Round 2 begins
+   Sound effects here:
      playGoldenBoostSting() — chimes + horns when the Golden Boost is found
      playBuzzSound()        — "ding-ding!" when a team buzzes in
+     playTimesUpSound()     — "bwaa-bwaa" when a team runs out of time
+   Every other sound effect is in sound-effects.js.
 
    Browsers only allow sound after the player clicks something,
    so the menu music starts on the first click anywhere.
@@ -169,33 +170,6 @@ function setMusicDucked(shouldDuck) {
   }
 }
 
-// Horn fanfare for the start of Round 2: whoosh → quick horn run up →
-// big held chord with drums and a cymbal crash.
-function playRoundSting() {
-  if (!isMusicOn || !setUpAudio()) return;
-  audioContext.resume();
-
-  const start = audioContext.currentTime + 0.05;
-  const run = 0.09; // length of each note in the run-up
-  const hit = start + 0.35 + run * 3;
-
-  // Dip the music so the fanfare stands out, then bring it back
-  clearTimeout(duckRestoreTimer);
-  fadeMusicTo(0.02, 0.15);
-  duckRestoreTimer = setTimeout(() => fadeMusicTo(currentTargetVolume(), 0.8), 2200);
-
-  playWhoosh(start, 0.45, effectsBus);
-
-  [67, 72, 76].forEach((note, index) => {
-    playBrass({ notes: [note], time: start + 0.35 + index * run, duration: run * 0.9, volume: 0.35, output: effectsBus });
-  });
-
-  playBrass({ notes: [60, 64, 67, 72, 76], time: hit, duration: 1.3, volume: 0.55, output: effectsBus });
-  playKick(hit, effectsBus);
-  playKick(hit + 0.14, effectsBus);
-  playCrash(hit, 0.3, effectsBus);
-}
-
 // GOLDEN BOOST sound: a whoosh, a fast glittering run of chimes up the
 // scale, then a big bright horn chord with a cymbal crash.
 function playGoldenBoostSting() {
@@ -236,6 +210,16 @@ function playBuzzSound() {
   const start = audioContext.currentTime + 0.02;
   playNote({ note: 88, time: start, duration: 0.08, wave: "triangle", volume: 0.5, release: 0.25, output: effectsBus });
   playNote({ note: 93, time: start + 0.12, duration: 0.12, wave: "triangle", volume: 0.5, release: 0.4, output: effectsBus });
+}
+
+// TIME'S UP: a low falling "bwaa-bwaa" when a team runs out of time
+function playTimesUpSound() {
+  if (!isMusicOn || !setUpAudio()) return;
+  audioContext.resume();
+
+  const start = audioContext.currentTime + 0.02;
+  playNote({ note: 55, time: start, duration: 0.22, wave: "sawtooth", volume: 0.35, filterFrequency: 1200, release: 0.1, output: effectsBus });
+  playNote({ note: 50, time: start + 0.3, duration: 0.45, wave: "sawtooth", volume: 0.35, filterFrequency: 900, release: 0.3, output: effectsBus });
 }
 
 /* ---------- Menu music starts on the first click anywhere ---------- */

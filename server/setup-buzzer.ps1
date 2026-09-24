@@ -1,4 +1,4 @@
-﻿<#
+<#
   setup-buzzer.ps1 — One-time Windows setup so phones can reach the buzzer.
 
   buzzer-server.ps1 runs this automatically (as administrator) the
@@ -14,7 +14,7 @@ param(
   [int]$Port = 8080
 )
 
-Write-Host "Setting up the Trivia Night buzzer on port $Port..." -ForegroundColor Cyan
+Write-Host "Setting up the PANALO! buzzer on port $Port..." -ForegroundColor Cyan
 
 # 1. Allow the server to listen on this port without being administrator
 #    (D:(A;;GX;;;WD) = everyone on this computer may use it)

@@ -4,7 +4,11 @@
    1. The player picks their team (the list comes from the game)
    2. A big button: TAP TO ANSWER
    3. The first team to tap locks everyone else out until the
-      host clicks "Unlock buzzers" in the game
+      host clicks "Unlock buzzers" in the game (or their 15
+      seconds run out). A team that already guessed stays locked
+      until the next question.
+   4. During Fast Money the phone becomes a questionnaire for the
+      team that's answering (fast-money-phone.js)
 
    The phone checks in with the laptop a few times a second.
    ========================================================= */
@@ -46,7 +50,8 @@ async function checkIn() {
 }
 
 async function buzz() {
-  if (isSendingBuzz || !latestState || latestState.locked) return;
+  if (isSendingBuzz || !latestState || latestState.locked || latestState.open === false) return;
+  if ((latestState.blocked || []).includes(myTeamId)) return;
   isSendingBuzz = true;
   showButton("sending", "…", "");
 
@@ -80,14 +85,29 @@ function render() {
   }
 
   teamScreen.hidden = true;
-  buzzScreen.hidden = false;
   changeTeamButton.hidden = false;
   changeTeamButton.textContent = `${myTeam.name} · change`;
   document.documentElement.style.setProperty("--team-color", myTeam.color);
 
-  const winner = latestState.locked ? latestState.winner : null;
+  // Final Wager and Fast Money take over the phone
+  // (final-wager-phone.js, fast-money-phone.js)
+  const isFinalWager = Boolean(latestState.finalWager && latestState.finalWager.active);
+  const isFastMoney = !isFinalWager && Boolean(latestState.fastMoney && latestState.fastMoney.active);
+  buzzScreen.hidden = isFinalWager || isFastMoney;
+  renderFinalWagerPhone(isFinalWager ? latestState.finalWager : null);
+  renderFastMoneyPhone(isFastMoney ? latestState.fastMoney : null, teams);
+  if (isFinalWager || isFastMoney) return;
 
-  if (!winner) {
+  const winner = latestState.locked ? latestState.winner : null;
+  const alreadyGuessed = (latestState.blocked || []).includes(myTeamId);
+
+  if (latestState.open === false) {
+    showButton("locked", "Get ready", "Waiting for a question");
+    buzzStatus.textContent = "";
+  } else if (alreadyGuessed && (!winner || winner.id !== myTeamId)) {
+    showButton("locked", "Locked", "Your team can't buzz on this question");
+    buzzStatus.textContent = "Wait for the next question";
+  } else if (!winner) {
     showButton("ready", "Tap to answer", "");
     buzzStatus.textContent = "";
   } else if (winner.id === myTeamId) {
@@ -102,6 +122,8 @@ function render() {
 
 function renderTeamPicker(teams) {
   buzzScreen.hidden = true;
+  renderFinalWagerPhone(null);
+  renderFastMoneyPhone(null, teams);
   teamScreen.hidden = false;
   changeTeamButton.hidden = true;
   noTeamsMessage.hidden = teams.length > 0;

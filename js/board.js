@@ -47,7 +47,7 @@ function renderGameScreen() {
   updateHeader();
   renderBoard();
   updateBoardFooter();
-  setBoardStatus("Pick a category and a value to begin");
+  showWhoPicksNext();
 
   boardElement.classList.remove("board--entering", "board--locked");
   boardElement.classList.add("board--pre-enter");
@@ -162,6 +162,22 @@ function setBoardStatus(message, isHighlighted = false) {
   boardStatusElement.classList.toggle("is-highlight", isHighlighted);
 }
 
+// "Team 1 has the board — pick a question", or asks who goes first
+function showWhoPicksNext() {
+  const boardTeam = getTeam(getBoardTeamId()); // teams.js
+  if (boardTeam) {
+    setBoardStatus(`${boardTeam.name} has the board — pick a question`);
+  } else {
+    setBoardStatus("Who picks first? Click the ♛ next to their team", true);
+  }
+}
+
+// The board changing hands (or a team being renamed) updates the line,
+// unless a question is being played or the round is over
+onTeamsChanged(() => {
+  if (gameState.activeQuestion === null && !isRoundComplete()) showWhoPicksNext();
+});
+
 /* ---------- Animations ---------- */
 
 // Plays the cascade-in animation for the categories and tiles.
@@ -185,6 +201,7 @@ function handleTileClick(categoryIndex, questionIndex) {
   }
 
   refreshTile(categoryIndex, questionIndex); // tile turns ACTIVE (gold glow)
+  playTileSelectSound(); // sound-effects.js
   setBoardStatus(`${getCategory(categoryIndex).name} for ${formatMoney(question.value)}`, true);
 
   // Let the tile glow for a moment, then open the question (question-screen.js).
@@ -210,7 +227,7 @@ function handleQuestionClosed(categoryIndex, questionIndex) {
     return;
   }
 
-  setBoardStatus("Pick your next question");
+  showWhoPicksNext();
 
   // Keep keyboard focus on the board. A played tile is disabled,
   // so focus goes back to the tile only if it's still playable.

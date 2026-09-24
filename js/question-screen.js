@@ -2,7 +2,10 @@
    question-screen.js — The question card that opens on top
    of the board.
 
-   Flow:  tile clicked → card opens with the question
+   Flow:  tile clicked → card opens and the question appears
+            word by word, at about the pace it's read aloud
+            (it pauses while a team is buzzed in; click the
+            question to show it all at once)
           → SHOW ANSWER → answer appears
           → BACK TO BOARD → question is marked as played
 
@@ -33,8 +36,17 @@ const QUESTION_SCREEN_ANIMATION_MS = 350;
 const LONG_QUESTION_LENGTH = 110;
 const LONG_ANSWER_LENGTH = 24;
 
+// Question reveal speed: about 375 words a minute, with a short
+// breath after commas and full stops. Smaller numbers = faster.
+const REVEAL_WORD_MS = 160;
+const REVEAL_PUNCTUATION_PAUSE_MS = 120;
+
 let isQuestionScreenOpen = false;
 let isAnswerShown = false;
+
+let revealWords = [];   // one <span> per word of the question
+let revealIndex = 0;    // how many words are showing
+let revealTimer = null; // null while paused (team buzzed in) or finished
 
 /* ---------- Opening ---------- */
 
@@ -47,7 +59,7 @@ function openQuestionScreen(categoryIndex, questionIndex, goldenWager = null) {
   questionRoundElement.textContent = `Round ${gameState.currentRound}`;
   questionCategoryElement.textContent = getCategory(categoryIndex).name;
   questionValueElement.textContent = formatMoney(question.value);
-  questionTextElement.textContent = question.question;
+  prepareQuestionReveal(question.question);
   answerTextElement.textContent = question.answer;
   questionCard.classList.toggle("has-long-question", question.question.length > LONG_QUESTION_LENGTH);
   questionCard.classList.toggle("has-long-answer", question.answer.length > LONG_ANSWER_LENGTH);
@@ -78,8 +90,6 @@ function openQuestionScreen(categoryIndex, questionIndex, goldenWager = null) {
     prepareAwards(question.value);
   }
 
-  unlockBuzzers(); // buzzer-host.js — a fresh question means everyone can buzz again
-
   // Start in the "question only" state
   isAnswerShown = false;
   questionCard.classList.remove("is-answer-shown");
@@ -96,9 +106,99 @@ function openQuestionScreen(categoryIndex, questionIndex, goldenWager = null) {
   document.body.classList.add("is-question-open"); // dims the board behind
   appElement.inert = true; // board can't be clicked or tabbed to while the card is open
   setMusicDucked(true); // music.js — quieter while people think
+  if (!isGolden) playQuestionOpenSound(); // sound-effects.js (the Golden Boost has its own sting)
 
   isQuestionScreenOpen = true;
+  // buzzer-host.js — opens the buzzers (Golden Boost: only for the wagering team)
+  const lockedOutTeamIds = wagerTeam ? getTeams().filter((team) => team.id !== wagerTeam.id).map((team) => team.id) : [];
+  resetBuzzersForQuestion(lockedOutTeamIds);
+
+  // buzzer-host.js — the full question and answer, straight away, on the host's phone
+  sendQuestionToHostScreen({
+    round: gameState.currentRound,
+    category: getCategory(categoryIndex).name,
+    value: formatMoney(question.value),
+    question: question.question,
+    answer: question.answer,
+    image: question.image || null,
+    golden: isGolden ? goldenBadge.textContent : null,
+  });
   showAnswerButton.focus({ preventScroll: true });
+
+  // First word once the card has finished opening
+  if (isQuestionRevealing()) scheduleNextWord(QUESTION_SCREEN_ANIMATION_MS);
+  else finishQuestionReveal();
+}
+
+/* ---------- Word-by-word question ---------- */
+
+function prepareQuestionReveal(text) {
+  stopQuestionReveal();
+
+  // Every word is on the card from the start, just invisible, so the
+  // text doesn't jump around as it fills in
+  questionTextElement.textContent = "";
+  revealWords = text.split(/\s+/).filter(Boolean).map((word, index) => {
+    const span = document.createElement("span");
+    span.className = "question-word";
+    span.textContent = word;
+    if (index > 0) questionTextElement.append(" ");
+    questionTextElement.append(span);
+    return span;
+  });
+  revealIndex = 0;
+  questionCard.classList.add("is-revealing"); // hides the picture until the text is done
+}
+
+function scheduleNextWord(delay) {
+  clearTimeout(revealTimer);
+  revealTimer = setTimeout(revealNextWord, delay);
+}
+
+function revealNextWord() {
+  revealTimer = null;
+  if (getBuzzedTeamId()) return; // buzzer-host.js — paused; handleBuzzersChanged() resumes it
+
+  const word = revealWords[revealIndex];
+  revealIndex += 1;
+  word.classList.add("is-shown");
+
+  if (revealIndex >= revealWords.length) {
+    finishQuestionReveal();
+  } else {
+    const hasPunctuation = /[,.;:?!]$/.test(word.textContent);
+    scheduleNextWord(REVEAL_WORD_MS + (hasPunctuation ? REVEAL_PUNCTUATION_PAUSE_MS : 0));
+  }
+}
+
+// Shows the whole question straight away
+function finishQuestionReveal() {
+  stopQuestionReveal();
+  revealWords.forEach((word) => word.classList.add("is-shown"));
+  revealIndex = revealWords.length;
+  questionCard.classList.remove("is-revealing");
+}
+
+function stopQuestionReveal() {
+  clearTimeout(revealTimer);
+  revealTimer = null;
+}
+
+function isQuestionRevealing() {
+  return revealIndex < revealWords.length;
+}
+
+// buzzer-host.js calls this whenever the buzzers change:
+// a team buzzing in pauses the question, unlocking carries on
+function handleBuzzersChanged() {
+  if (!isQuestionScreenOpen || !isQuestionRevealing()) return;
+  if (!getBuzzedTeamId() && !revealTimer) scheduleNextWord(REVEAL_WORD_MS);
+}
+
+// True while a team could still be answering (buzzer-host.js uses
+// this to decide whether to start the 15-second clock)
+function isQuestionAwaitingAnswer() {
+  return isQuestionScreenOpen && !isAnswerShown;
 }
 
 /* ---------- Revealing the answer ---------- */
@@ -107,6 +207,9 @@ function showAnswer() {
   if (!isQuestionScreenOpen || isAnswerShown) return;
   isAnswerShown = true;
 
+  finishQuestionReveal();
+  stopAnswerTimer(); // buzzer-host.js — no more countdown once the answer is out
+  playAnswerRevealSound(); // sound-effects.js
   questionCard.classList.add("is-answer-shown"); // triggers the reveal animation
   answerBlock.hidden = false;
   showAnswerButton.hidden = true;
@@ -140,7 +243,9 @@ async function closeQuestionScreen(markAsPlayed) {
     cancelActiveQuestion();
   }
   awardRowElement.hidden = true;
-  unlockBuzzers(); // buzzer-host.js — clear any buzz before going back to the board
+  stopQuestionReveal();
+  resetBuzzersForQuestion(); // buzzer-host.js — clears any buzz and closes the buzzers
+  sendQuestionToHostScreen(null); // buzzer-host.js — host's phone goes back to "waiting"
 
   // Play the closing animation, then hide
   questionScreen.classList.remove("is-open");
@@ -158,6 +263,7 @@ async function closeQuestionScreen(markAsPlayed) {
 showAnswerButton.addEventListener("click", showAnswer);
 backToBoardButton.addEventListener("click", () => closeQuestionScreen(true));
 questionCloseButton.addEventListener("click", () => closeQuestionScreen(false));
+questionTextElement.addEventListener("click", () => { if (isQuestionScreenOpen) finishQuestionReveal(); });
 
 document.addEventListener("keydown", (event) => {
   if (!isQuestionScreenOpen || event.key !== "Escape") return;

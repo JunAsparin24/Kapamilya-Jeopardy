@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trivia Night</title>
-  <!-- Browser tab icon: a gold star on purple (drawn inline, no image file needed) -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%235320bf'/%3E%3Cpath d='M32 11l6.2 12.6 13.8 2-10 9.8 2.4 13.8L32 42.7l-12.4 6.5 2.4-13.8-10-9.8 13.8-2z' fill='%23f4c76a'/%3E%3C/svg%3E">
+  <title>PANALO!</title>
+  <!-- Browser tab icon: a gold star on green (drawn inline, no image file needed) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232e6a51'/%3E%3Cpath d='M32 11l6.2 12.6 13.8 2-10 9.8 2.4 13.8L32 42.7l-12.4 6.5 2.4-13.8-10-9.8 13.8-2z' fill='%23f4c76a'/%3E%3C/svg%3E">
 
-  <!-- Fonts (falls back to Impact / Segoe UI if you're offline) -->
+  <!-- Fonts (falls back to Georgia / Impact / Segoe UI if you're offline) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@500;600;700&family=Sancreek&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/menu.css">
@@ -20,6 +20,9 @@
   <link rel="stylesheet" href="css/golden-boost.css">
   <link rel="stylesheet" href="css/teams.css">
   <link rel="stylesheet" href="css/buzzer-host.css">
+  <link rel="stylesheet" href="css/rules.css">
+  <link rel="stylesheet" href="css/final-wager.css">
+  <link rel="stylesheet" href="css/fast-money.css">
 </head>
 <body data-screen="home">
 
@@ -45,10 +48,7 @@
       <div class="showcase-card">
         <p class="eyebrow reveal" style="--reveal-delay: 100ms">Welcome to</p>
 
-        <h1 id="home-title" class="game-title reveal reveal--title" style="--reveal-delay: 200ms">
-          <span class="game-title__line text-gold">Trivia</span>
-          <span class="game-title__line game-title__line--accent">Night</span>
-        </h1>
+        <h1 id="home-title" class="game-title title-lettering reveal reveal--title" style="--reveal-delay: 200ms">PANALO!</h1>
 
         <div class="star-divider reveal" style="--reveal-delay: 450ms" aria-hidden="true">
           <span class="star-divider__star">&#9733;</span>
@@ -88,7 +88,7 @@
       <header class="game-header">
         <div class="game-header__left">
           <button id="menu-button" class="btn btn--ghost" type="button">&larr; Menu</button>
-          <span class="game-header__title text-gold">Trivia Night</span>
+          <span class="game-header__title title-lettering">PANALO!</span>
           <!-- Only appears when the buzzer server is running — see buzzer-host.js -->
           <button id="buzzer-button" class="btn btn--ghost buzzer-button" type="button" hidden>
             <span class="buzzer-button__dot" aria-hidden="true"></span>
@@ -133,7 +133,7 @@
         <p class="eyebrow reveal" style="--reveal-delay: 100ms">Board cleared</p>
 
         <h2 id="round-complete-title" class="round-complete__title reveal reveal--title" style="--reveal-delay: 200ms">
-          <span class="text-gold">Round <span id="completed-round-number">1</span></span>
+          <span class="title-lettering">Round <span id="completed-round-number">1</span></span>
           <span class="round-complete__title-accent">Complete</span>
         </h2>
 
@@ -159,6 +159,91 @@
     </section>
 
     <!-- ===================================================
+         RULES SLIDE (start of each segment) — filled in by rules.js
+         =================================================== -->
+    <section id="rules-screen" class="screen screen--centered" aria-labelledby="rules-title">
+      <div class="showcase-card rules-card">
+        <p id="rules-eyebrow" class="eyebrow reveal" style="--reveal-delay: 100ms"></p>
+        <h2 id="rules-title" class="rules__title title-lettering reveal reveal--title" style="--reveal-delay: 200ms"></h2>
+
+        <div class="star-divider reveal" style="--reveal-delay: 350ms" aria-hidden="true">
+          <span class="star-divider__star">&#9733;</span>
+        </div>
+
+        <ol id="rules-list" class="rules__list"></ol>
+
+        <div class="cta reveal" style="--reveal-delay: 1100ms">
+          <button id="rules-button" class="btn btn--primary" type="button">Continue</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================
+         FINAL WAGER (after the last round, before Fast Money)
+         Filled in by final-wager.js
+         =================================================== -->
+    <section id="final-wager-screen" class="screen screen--final-wager" aria-labelledby="final-wager-title">
+      <header class="fw-header">
+        <h2 id="final-wager-title" class="fw-title title-lettering">Final Wager</h2>
+        <p id="fw-status" class="fw-status" aria-live="polite"></p>
+      </header>
+
+      <!-- Step 1: the teams agree on a category, the host clicks it -->
+      <div id="fw-categories" class="fw-categories"></div>
+
+      <!-- Steps 2–4: category, question, timer, answer -->
+      <div id="fw-main" class="fw-main" hidden>
+        <p id="fw-category" class="fw-category"></p>
+        <p id="fw-question" class="fw-question" hidden></p>
+        <p id="fw-timer" class="fw-timer" hidden>01:30</p>
+        <p id="fw-answer" class="fw-answer" hidden></p>
+      </div>
+
+      <!-- Who has wagered (step 2), and wagers + right/wrong (step 4) -->
+      <div id="fw-teams" class="fw-teams"></div>
+
+      <footer class="fw-footer">
+        <button id="fw-back-button" class="btn btn--ghost" type="button">&larr; Change category</button>
+        <button id="fw-timer-button" class="btn btn--secondary" type="button">Start timer</button>
+        <button id="fw-answer-button" class="btn btn--secondary" type="button">Show answer</button>
+        <button id="fw-next-button" class="btn btn--primary" type="button">Next</button>
+      </footer>
+    </section>
+
+    <!-- ===================================================
+         FAST MONEY (after the last round, top two teams)
+         Columns are built by fast-money.js
+         =================================================== -->
+    <section id="fast-money-screen" class="screen screen--fast-money" aria-labelledby="fast-money-title">
+      <header class="fm-header">
+        <h2 id="fast-money-title" class="fm-title title-lettering">Fast Money</h2>
+        <p id="fm-status" class="fm-status" aria-live="polite"></p>
+      </header>
+
+      <!-- While a team answers on their phone, only this shows: who's up and the timer -->
+      <div id="fm-stage" class="fm-stage" hidden>
+        <p id="fm-stage-team" class="fm-stage__team"></p>
+        <p id="fm-stage-timer" class="fm-stage__timer">00:45</p>
+        <p id="fm-stage-text" class="fm-stage__text"></p>
+      </div>
+
+      <div id="fm-board" class="fm-board">
+        <div id="fm-column-0" class="fm-column"></div>
+        <div id="fm-column-1" class="fm-column"></div>
+      </div>
+
+      <footer class="fm-footer">
+        <p id="fm-timer" class="fm-timer" aria-live="off">00:45</p>
+        <div class="fm-controls">
+          <button id="fm-swap-button" class="btn btn--ghost" type="button">Swap order</button>
+          <button id="fm-reset-button" class="btn btn--ghost" type="button">Reset timer</button>
+          <button id="fm-timer-button" class="btn btn--secondary" type="button">Start timer</button>
+          <button id="fm-next-button" class="btn btn--primary" type="button">Next</button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ===================================================
          GAME OVER SCREEN (after the last round)
          Numbers are filled in by main.js
          =================================================== -->
@@ -171,7 +256,7 @@
         <p class="eyebrow reveal" style="--reveal-delay: 100ms">That's a wrap</p>
 
         <h2 id="game-over-title" class="game-over__title reveal reveal--title" style="--reveal-delay: 200ms">
-          <span class="text-gold">Game</span>
+          <span class="title-lettering">Game</span>
           <span class="game-over__title-accent">Over</span>
         </h2>
 
@@ -254,7 +339,7 @@
 
       <!-- Step 2: pick the team and their wager, THEN reveal the question -->
       <form id="golden-wager" class="golden-wager" hidden>
-        <p class="golden-wager__prompt">Who found it?</p>
+        <p id="golden-wager-prompt" class="golden-wager__prompt">Who found it?</p>
         <div id="golden-wager-teams" class="golden-wager__teams" role="radiogroup" aria-label="Team playing the Golden Boost"></div>
 
         <label class="golden-wager__label" for="golden-wager-amount">Their wager</label>
@@ -269,6 +354,16 @@
     </div>
   </div>
 
+  <!-- Fast Money: pick which survey answer a team's answer matches -->
+  <div id="fm-picker" class="fm-picker" hidden role="dialog" aria-modal="true" aria-labelledby="fm-picker-question">
+    <div class="fm-picker__card">
+      <p id="fm-picker-question" class="fm-picker__question"></p>
+      <p id="fm-picker-given" class="fm-picker__given"></p>
+      <div id="fm-picker-options" class="fm-picker__options"></div>
+      <button id="fm-picker-cancel" class="btn btn--ghost" type="button">Cancel</button>
+    </div>
+  </div>
+
   <!-- ===================================================
        BUZZER (host side) — see buzzer-host.js
        =================================================== -->
@@ -276,6 +371,8 @@
   <div id="buzz-alert" class="buzz-alert" hidden role="alert">
     <span class="buzz-alert__bell" aria-hidden="true">&#128276;</span>
     <span><strong id="buzz-alert-team"></strong> buzzed in!</span>
+    <!-- Seconds left to answer (buzzer-host.js) -->
+    <span id="buzz-alert-timer" class="buzz-alert__timer" hidden aria-label="Seconds left to answer"></span>
     <button id="buzz-alert-unlock" class="buzz-alert__unlock" type="button">Unlock buzzers</button>
   </div>
 
@@ -287,6 +384,11 @@
       <div id="buzzer-qr" class="join-panel__qr" aria-hidden="true"></div>
       <p id="buzzer-join-url" class="join-panel__url"></p>
       <p id="buzzer-player-count" class="join-panel__count"></p>
+      <!-- Host screen (question + answer on the host's phone) — keep the code to yourself -->
+      <p id="host-screen-info" class="join-panel__host" hidden>
+        Host screen: <strong id="host-screen-url"></strong><br>
+        Host code: <strong id="host-screen-code"></strong>
+      </p>
       <div class="join-panel__actions">
         <button id="join-panel-unlock" class="btn btn--secondary" type="button">Unlock buzzers</button>
         <button id="join-panel-close" class="btn btn--primary" type="button">Done</button>
@@ -306,7 +408,7 @@
   <!-- Full-screen panel that sweeps across between screens -->
   <div id="transition-wipe" class="wipe" hidden aria-hidden="true">
     <div class="wipe__content">
-      <p id="wipe-title" class="wipe__title text-gold"></p>
+      <p id="wipe-title" class="wipe__title title-lettering"></p>
       <p id="wipe-subtitle" class="wipe__subtitle"></p>
     </div>
   </div>
@@ -319,10 +421,15 @@
   <script src="js/game.js"></script>
   <script src="js/teams.js"></script>
   <script src="js/music.js"></script>
+  <script src="js/sound-effects.js"></script>
   <script src="js/board.js"></script>
   <script src="js/scoreboard.js"></script>
   <script src="js/question-screen.js"></script>
   <script src="js/golden-boost.js"></script>
+  <script src="js/rules.js"></script>
+  <script src="js/final-wager.js"></script>
+  <script src="js/answer-match.js"></script>
+  <script src="js/fast-money.js"></script>
   <script src="js/buzzer-host.js"></script>
   <script src="js/main.js"></script>
 </body>

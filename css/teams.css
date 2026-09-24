@@ -23,10 +23,64 @@
   gap: 4px;
   padding: 4px 6px 4px 12px;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(58, 22, 121, 0.95), rgba(30, 10, 62, 0.95));
+  background: linear-gradient(180deg, rgba(36, 90, 67, 0.95), rgba(22, 55, 42, 0.95));
   border: 1px solid var(--color-border-gold);
   /* coloured stripe on the left edge */
   box-shadow: inset 5px 0 0 var(--team-color), 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+/* ♛ "has the board" — faint until that team has it; click to hand it over */
+.team-chip__board {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 1.05rem;
+  line-height: 1;
+  color: rgba(181, 220, 198, 0.35);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.2s var(--ease-out);
+}
+
+.team-chip__board:hover {
+  color: var(--color-gold-light);
+  background: rgba(244, 199, 106, 0.15);
+}
+
+.team-chip.has-board {
+  border-color: var(--color-gold);
+  box-shadow: inset 5px 0 0 var(--team-color), 0 0 18px rgba(244, 199, 106, 0.55), 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.team-chip.has-board .team-chip__board {
+  color: var(--color-green-deep);
+  background: var(--color-gold);
+  box-shadow: 0 0 10px rgba(244, 199, 106, 0.8);
+  animation: board-crown-in 0.45s cubic-bezier(0.2, 1.5, 0.4, 1);
+}
+
+@keyframes board-crown-in {
+  from { transform: scale(0.4) rotate(-20deg); }
+}
+
+/* Nobody has the board yet: the crowns pulse to ask "who picks first?" */
+.scoreboard.needs-board .team-chip__board {
+  color: var(--color-gold-light);
+  animation: board-crown-ask 1s ease-in-out infinite alternate;
+}
+
+@keyframes board-crown-ask {
+  to { transform: scale(1.25); text-shadow: 0 0 10px rgba(244, 199, 106, 0.9); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team-chip__board {
+    animation: none !important;
+  }
 }
 
 /* Team name: looks like plain text, becomes an input when clicked */
@@ -46,12 +100,12 @@
 }
 
 .team-chip__name:hover {
-  border-color: var(--color-border-lilac);
+  border-color: var(--color-border-sage);
 }
 
 .team-chip__name:focus {
   outline: none;
-  background: rgba(12, 5, 26, 0.6);
+  background: rgba(8, 26, 19, 0.6);
   border-color: var(--color-gold);
 }
 
@@ -63,14 +117,14 @@
   line-height: 1;
   color: var(--team-color);
   text-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
-  background: rgba(12, 5, 26, 0.55);
+  background: rgba(8, 26, 19, 0.55);
   border: 1px solid transparent;
   border-radius: 999px;
   cursor: pointer;
 }
 
 .team-chip__score:hover {
-  border-color: var(--color-border-lilac);
+  border-color: var(--color-border-sage);
 }
 
 .team-chip__score.is-bumping {
@@ -89,7 +143,7 @@
   font-family: var(--font-display);
   font-size: 1.3rem;
   color: var(--color-gold-light);
-  background: rgba(12, 5, 26, 0.8);
+  background: rgba(8, 26, 19, 0.8);
   border: 1px solid var(--color-gold);
   border-radius: 999px;
 }
@@ -102,7 +156,7 @@
   padding: 0 6px;
   font-size: 1rem;
   line-height: 1;
-  color: rgba(199, 166, 255, 0.6);
+  color: rgba(181, 220, 198, 0.6);
   cursor: pointer;
   background: transparent;
   border: 0;
@@ -136,10 +190,11 @@
 }
 
 .scoreboard__add:hover {
-  background: rgba(118, 54, 234, 0.3);
+  background: rgba(47, 117, 86, 0.3);
   border-style: solid;
 }
 
+.team-chip__board:focus-visible,
 .team-chip__name:focus-visible,
 .team-chip__score:focus-visible,
 .team-chip__remove:focus-visible,
@@ -170,8 +225,8 @@
   gap: 6px;
   padding: 5px 6px 5px 14px;
   border-radius: 999px;
-  background: rgba(12, 5, 26, 0.55);
-  border: 1px solid var(--color-border-lilac);
+  background: rgba(8, 26, 19, 0.55);
+  border: 1px solid var(--color-border-sage);
   box-shadow: inset 5px 0 0 var(--team-color);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -229,7 +284,7 @@
 
 /* On the gold Golden Boost card */
 .question-card.is-golden .award {
-  background: rgba(34, 9, 74, 0.85);
+  background: rgba(23, 61, 46, 0.85);
 }
 
 /* =========================================================
@@ -251,8 +306,8 @@
   gap: 14px;
   padding: 8px 18px 6px 12px;
   border-radius: var(--radius-md);
-  background: rgba(34, 9, 74, 0.7);
-  border: 1px solid var(--color-border-lilac);
+  background: rgba(23, 61, 46, 0.7);
+  border: 1px solid var(--color-border-sage);
   box-shadow: inset 5px 0 0 var(--team-color);
 }
 
@@ -264,7 +319,7 @@
   width: 1.6em;
   font-family: var(--font-display);
   font-size: 1.4rem;
-  color: var(--color-lilac);
+  color: var(--color-sage);
   text-align: center;
 }
 
@@ -289,7 +344,7 @@
 /* Leader(s) get a gold frame */
 .standing.is-leader {
   border-color: var(--color-gold);
-  background: linear-gradient(90deg, rgba(244, 199, 106, 0.18), rgba(34, 9, 74, 0.7));
+  background: linear-gradient(90deg, rgba(244, 199, 106, 0.18), rgba(23, 61, 46, 0.7));
 }
 
 .standing.is-leader .standing__place {

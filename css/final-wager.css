@@ -1,0 +1,320 @@
+/* =========================================================
+   final-wager.css — The FINAL WAGER screen: category cards,
+   question + timer, and each team's wager and ✓ / ✗
+   ========================================================= */
+
+.screen--final-wager {
+  flex-direction: column;
+  gap: clamp(12px, 2.4vh, 26px);
+  width: 100%;
+  max-width: 1280px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: clamp(14px, 2.5vh, 30px) clamp(14px, 3vw, 40px);
+}
+
+/* ---------- Title ---------- */
+.fw-header {
+  text-align: center;
+}
+
+.fw-title {
+  font-size: clamp(2.6rem, min(7vw, 9vh), 5.2rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.fw-status {
+  margin-top: 0.5em;
+  font-size: clamp(0.8rem, 1.2vw, 1rem);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-sage);
+}
+
+/* ---------- Step 1: category cards ---------- */
+.fw-categories {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 2.4vw, 32px);
+  align-content: center;
+}
+
+.fw-category-card {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: clamp(160px, 38vh, 360px);
+  padding: 1em;
+  font-family: var(--font-title);
+  font-size: clamp(1.4rem, min(2.6vw, 5vh), 2.8rem); /* "MISCELLANEOUS" has to fit */
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  text-shadow: 3px 3px 0 #173d2e, 5px 5px 0 #0e271d;
+  cursor: pointer;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(160deg, #3f8a68 0%, #2f7556 45%, #1f5a42 100%);
+  border: 1px solid rgba(15, 42, 32, 0.6);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s ease;
+  animation: rise-in 0.6s var(--ease-out) var(--card-delay, 0ms) backwards;
+}
+
+/* Thin gold inner frame */
+.fw-category-card::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border-radius: calc(var(--radius-lg) - 8px);
+  border: 1px solid rgba(244, 199, 106, 0.75);
+  pointer-events: none;
+}
+
+.fw-category-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(244, 199, 106, 0.35);
+}
+
+.fw-category-card:focus-visible {
+  outline: 3px solid var(--color-gold-light);
+  outline-offset: 4px;
+}
+
+/* ---------- Category, question, timer, answer ---------- */
+.fw-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 1.8vh, 18px);
+  text-align: center;
+}
+
+.fw-category {
+  padding: 0.3em 1.3em 0.15em;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, min(3vw, 5vh), 2.6rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-green-deep);
+  border-radius: 999px;
+  background: linear-gradient(90deg, #fff4dc, #f4c76a);
+}
+
+.fw-question {
+  max-width: 32ch;
+  font-size: clamp(1.4rem, min(3.4vw, 5.2vh), 3.2rem);
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+  text-wrap: balance;
+  color: var(--color-cream);
+  animation: rise-in 0.5s var(--ease-out);
+}
+
+.fw-timer {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, min(12vw, 16vh), 9rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-cream);
+  text-shadow: 0 6px 0 rgba(8, 26, 19, 0.6);
+}
+
+.fw-timer.is-running {
+  color: var(--color-gold-light);
+}
+
+.fw-timer.is-urgent,
+.fw-timer.is-done {
+  color: #ff7a7a;
+}
+
+.fw-answer {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, min(6vw, 9vh), 5rem);
+  line-height: 1;
+  letter-spacing: 0.03em;
+  color: var(--color-gold-light);
+  text-shadow: 0 0 28px rgba(244, 199, 106, 0.5);
+  animation: rise-in 0.5s var(--ease-out);
+}
+
+/* ---------- Teams ---------- */
+.fw-teams {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 14px;
+  margin-top: auto;
+}
+
+.fw-team {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px 6px 16px;
+  border-radius: 999px;
+  background: rgba(8, 26, 19, 0.55);
+  border: 1px solid var(--color-border-sage);
+  box-shadow: inset 5px 0 0 var(--team-color);
+}
+
+.fw-team__name {
+  max-width: 11ch;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.7vw, 1.5rem);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.fw-team__score {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.7vw, 1.5rem);
+  color: var(--team-color);
+}
+
+.fw-team__status {
+  padding: 0.3em 0.8em 0.2em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-sage);
+  border-radius: 999px;
+  background: rgba(181, 220, 198, 0.1);
+}
+
+.fw-team.is-locked {
+  border-color: var(--color-gold);
+}
+
+.fw-team.is-locked .fw-team__status {
+  color: var(--color-green-deep);
+  background: var(--color-gold);
+}
+
+/* Reveal step: one row per team, bigger */
+.fw-teams.is-reveal {
+  flex-direction: column;
+  align-items: center;
+}
+
+.fw-teams.is-reveal .fw-team {
+  width: min(640px, 100%);
+  padding: 8px 10px 8px 20px;
+}
+
+.fw-teams.is-reveal .fw-team__name {
+  flex: 1;
+  max-width: none;
+  font-size: clamp(1.3rem, 2.2vw, 1.9rem);
+}
+
+.fw-teams.is-reveal .fw-team__score {
+  min-width: 4.5em;
+  font-size: clamp(1.3rem, 2.2vw, 1.9rem);
+  text-align: right;
+}
+
+.fw-team.is-right { border-color: #7ef29a; }
+.fw-team.is-wrong { border-color: #ff7a7a; }
+
+/* The wager: hidden until the host clicks it */
+.fw-team__wager {
+  min-width: 7.5em;
+  padding: 0.4em 0.9em 0.3em;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.6vw, 1.4rem);
+  letter-spacing: 0.06em;
+  color: var(--color-gold-light);
+  cursor: pointer;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px dashed rgba(244, 199, 106, 0.7);
+}
+
+.fw-team__wager:hover {
+  background: rgba(244, 199, 106, 0.12);
+}
+
+.fw-team__wager.is-shown {
+  cursor: default;
+  color: var(--color-green-deep);
+  background: linear-gradient(90deg, #fff4dc, #f4c76a);
+  border: 1px solid transparent;
+  animation: fm-points-pop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1); /* keyframes in fast-money.css */
+}
+
+.fw-team__wager-input {
+  width: 7.5em;
+  padding: 0.35em 0.7em 0.25em;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.6vw, 1.4rem);
+  color: var(--color-gold-light);
+  text-align: center;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--color-gold);
+  border-radius: 999px;
+}
+
+.fw-team .award__btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+  transform: none;
+}
+
+/* ---------- Footer buttons ---------- */
+.fw-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px 12px;
+  padding-right: 64px; /* room for the music button in the corner */
+}
+
+.fw-footer .btn--primary {
+  padding: 0.5em 1.6em 0.4em;
+  font-size: clamp(1.3rem, 2.2vw, 1.8rem);
+}
+
+.fw-footer .btn--secondary {
+  padding: 0.5em 1.3em 0.4em;
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+}
+
+.fw-footer .btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
+}
+
+.fw-footer #fw-back-button {
+  margin-right: auto;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 760px) {
+  .fw-categories {
+    grid-template-columns: 1fr;
+  }
+
+  .fw-category-card {
+    min-height: 110px;
+  }
+
+  .fw-footer {
+    justify-content: center;
+    padding-right: 0;
+    padding-bottom: 60px;
+  }
+}

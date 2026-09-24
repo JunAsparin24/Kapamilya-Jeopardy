@@ -4,25 +4,13 @@
    with other screens, so they live in style.css.)
    ========================================================= */
 
-/* ---------- Title ---------- */
+/* ---------- Title: PANALO! (lettering style in style.css) ---------- */
 .game-title {
-  margin-top: 0.25em;
-  font-family: var(--font-display);
+  margin-top: 0.2em;
+  font-family: var(--font-title);
   font-weight: 400;
-  font-size: clamp(3.6rem, min(14vw, 15vh), 9.5rem); /* shrinks on short laptop screens too */
-  line-height: 0.86;
+  font-size: clamp(3.4rem, min(13vw, 16vh), 8.5rem); /* shrinks on short laptop screens too */
+  line-height: 1;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
-
-.game-title__line {
-  display: block;
-}
-
-.game-title__line--accent {
-  color: var(--color-cream);
-  text-shadow:
-    0 4px 0 var(--color-purple-dark),
-    0 0 30px rgba(154, 88, 255, 0.7);
-}
-

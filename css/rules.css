@@ -1,0 +1,63 @@
+/* =========================================================
+   rules.css — The rules slide at the start of each segment
+   (uses the home screen's card, divider and button from style.css)
+   ========================================================= */
+
+.rules-card {
+  width: min(900px, 100%);
+  padding-block: clamp(26px, 4.5vh, 52px);
+}
+
+.rules__title {
+  margin-top: 0.15em;
+  font-size: clamp(2.8rem, min(8vw, 10vh), 5.6rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.rules__list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.4vh, 14px);
+  margin: 0 auto clamp(22px, 4vh, 38px);
+  padding: 0;
+  max-width: 44em;
+  list-style: none;
+  counter-reset: rule;
+  text-align: left;
+}
+
+.rules__item {
+  counter-increment: rule;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  font-size: clamp(0.95rem, min(1.7vw, 2.5vh), 1.3rem);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-cream);
+}
+
+/* Gold numbered bubble */
+.rules__item::before {
+  content: counter(rule);
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.9em;
+  height: 1.9em;
+  margin-top: -0.2em;
+  padding-top: 0.12em;
+  font-family: var(--font-display);
+  font-size: 1.05em;
+  color: var(--color-green-deep);
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--color-gold-light), var(--color-gold));
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.rules__item strong {
+  color: var(--color-gold-light);
+  font-weight: 700;
+}

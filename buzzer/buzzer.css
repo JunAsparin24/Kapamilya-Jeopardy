@@ -5,13 +5,13 @@
 
 :root {
   --team-color: #f4c76a;
-  --color-bg: #150a28;
-  --color-violet: #3a1679;
-  --color-violet-deep: #22094a;
+  --color-bg: #2e6a51;
+  --color-green: #245a43;
+  --color-green-deep: #173d2e;
   --color-gold: #f4c76a;
   --color-gold-light: #ffe3a3;
   --color-cream: #fff4dc;
-  --color-lilac: #c7a6ff;
+  --color-sage: #b5dcc6;
   --font-display: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
   --font-body: "Montserrat", "Segoe UI", system-ui, sans-serif;
   color-scheme: dark;
@@ -41,8 +41,8 @@ body {
   font-family: var(--font-body);
   color: var(--color-cream);
   background:
-    radial-gradient(ellipse at 50% 0%, #3b1478 0%, transparent 60%),
-    linear-gradient(180deg, var(--color-bg), #0b0515);
+    radial-gradient(ellipse at 20% 0%, #3b7d61 0%, transparent 60%),
+    linear-gradient(180deg, var(--color-bg), #1b4535);
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
   user-select: none;
@@ -62,11 +62,13 @@ button {
   padding: 14px 0;
 }
 
+/* PANALO! in the game's lettering (small, so just gold + green shadow) */
 .top-bar__title {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  letter-spacing: 0.06em;
+  font-family: "Sancreek", Georgia, serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
   color: var(--color-gold);
+  text-shadow: 2px 2px 0 var(--color-green-deep), 3px 3px 0 #0e271d;
 }
 
 .top-bar__team {
@@ -79,7 +81,7 @@ button {
   white-space: nowrap;
   text-overflow: ellipsis;
   cursor: pointer;
-  background: rgba(34, 9, 74, 0.8);
+  background: rgba(23, 61, 46, 0.8);
   border: 1px solid var(--team-color);
   border-radius: 999px;
 }
@@ -116,7 +118,7 @@ button {
 }
 
 .screen__note {
-  color: var(--color-lilac);
+  color: var(--color-sage);
   text-align: center;
 }
 
@@ -135,7 +137,7 @@ button {
   letter-spacing: 0.06em;
   cursor: pointer;
   border-radius: 18px;
-  background: linear-gradient(180deg, var(--color-violet), var(--color-violet-deep));
+  background: linear-gradient(180deg, var(--color-green), var(--color-green-deep));
   border: 2px solid var(--team-color);
   box-shadow: inset 8px 0 0 var(--team-color), 0 10px 24px rgba(0, 0, 0, 0.4);
 }
@@ -177,7 +179,7 @@ button {
 
 /* Ready: glowing, in the team's colour */
 .buzz-button[data-mode="ready"] {
-  color: #1a0833;
+  color: #0f2a20;
   /* plain versions first, for older phones that don't understand color-mix() */
   background: var(--team-color);
   box-shadow: 0 0 60px var(--team-color), 0 20px 40px rgba(0, 0, 0, 0.5);
@@ -196,7 +198,7 @@ button {
 }
 
 .buzz-button[data-mode="sending"] {
-  color: #1a0833;
+  color: #0f2a20;
   background: var(--team-color);
   border: 6px solid #fff;
   transform: scale(0.95);
@@ -223,8 +225,8 @@ button {
 .buzz-button[data-mode="locked"] {
   color: rgba(255, 244, 220, 0.7);
   cursor: not-allowed;
-  background: radial-gradient(circle at 50% 35%, #4a3a66 0%, #251a38 100%);
-  border: 6px solid rgba(199, 166, 255, 0.25);
+  background: radial-gradient(circle at 50% 35%, #3d5a4c 0%, #1c2e26 100%);
+  border: 6px solid rgba(181, 220, 198, 0.25);
   box-shadow: none;
 }
 
@@ -232,8 +234,226 @@ button {
   min-height: 1.4em;
   margin: 0;
   font-weight: 700;
-  color: var(--color-lilac);
+  color: var(--color-sage);
   text-align: center;
+}
+
+/* ---------- Final Wager (final-wager-phone.js) ---------- */
+.fw-phone {
+  justify-content: flex-start;
+  padding-top: 8vh;
+  text-align: center;
+}
+
+.fw-phone__category {
+  margin: 0;
+  padding: 0.35em 1.1em 0.25em;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: 0.08em;
+  color: var(--color-green-deep);
+  background: var(--color-gold);
+  border-radius: 999px;
+}
+
+.fw-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.fw-form[hidden] {
+  display: none;
+}
+
+.fw-form__label {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  letter-spacing: 0.06em;
+  color: var(--color-gold-light);
+}
+
+.fw-form__limit {
+  margin: 0;
+  font-weight: 700;
+  color: var(--color-sage);
+}
+
+.fw-form__input {
+  width: 100%;
+  padding: 0.2em 0.4em 0.1em;
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  text-align: center;
+  color: var(--color-green-deep);
+  background: linear-gradient(90deg, #fff4dc, #f9dfae);
+  border: 2px solid var(--color-gold);
+  border-radius: 16px;
+  outline: none;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.fw-form .fm-quiz__next {
+  width: 100%;
+}
+
+.fw-phone__status {
+  max-width: 22em;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--color-sage);
+}
+
+.fw-phone__status.is-locked {
+  color: var(--color-gold-light);
+}
+
+/* ---------- Fast Money (fast-money-phone.js) ---------- */
+.fm-phone {
+  justify-content: flex-start;
+}
+
+.fm-wait {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16vh;
+  text-align: center;
+}
+
+.fm-wait__title {
+  margin: 0;
+  font-family: "Sancreek", Georgia, serif;
+  font-size: 2.6rem;
+  color: var(--color-gold);
+  text-shadow: 2px 2px 0 var(--color-green-deep), 3px 3px 0 #0e271d;
+}
+
+.fm-wait__text {
+  max-width: 22em;
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--color-sage);
+}
+
+.fm-quiz {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.fm-quiz__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fm-quiz__clock {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-gold-light);
+}
+
+.fm-quiz__clock.is-urgent {
+  color: #ff8a8a;
+}
+
+.fm-quiz__progress {
+  padding: 0.35em 0.9em 0.25em;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  color: var(--color-green-deep);
+  background: var(--color-gold);
+  border-radius: 999px;
+}
+
+.fm-quiz__question {
+  margin: 8px 0 0;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.fm-quiz__input {
+  width: 100%;
+  padding: 0.55em 0.8em 0.45em;
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-green-deep);
+  background: linear-gradient(90deg, #fff4dc, #f9dfae);
+  border: 2px solid var(--color-gold);
+  border-radius: 14px;
+  outline: none;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.fm-quiz__input:focus {
+  box-shadow: 0 0 0 4px rgba(244, 199, 106, 0.35);
+}
+
+.fm-quiz__buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.fm-quiz__skip,
+.fm-quiz__next {
+  flex: 1;
+  padding: 0.6em 1em 0.45em;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+.fm-quiz__skip {
+  color: var(--color-gold-light);
+  background: transparent;
+  border: 2px solid rgba(244, 199, 106, 0.6);
+}
+
+.fm-quiz__skip:disabled {
+  opacity: 0.35;
+}
+
+.fm-quiz__next {
+  flex: 1.6;
+  color: var(--color-cream);
+  background: linear-gradient(180deg, #4f9c78, #2f7556 55%, #1f5a42);
+  border: 2px solid var(--color-gold);
+}
+
+.fm-quiz__note {
+  min-height: 1.2em;
+  margin: 0;
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-gold-light);
+}
+
+/* "The other team already said that!" */
+.fm-quiz__note.is-warning {
+  padding: 10px 12px;
+  color: #3a0a0e;
+  background: #ffb0b0;
+  border-radius: 12px;
 }
 
 @media (prefers-reduced-motion: reduce) {

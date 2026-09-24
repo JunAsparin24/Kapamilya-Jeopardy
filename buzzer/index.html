@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#150a28">
-  <title>Trivia Night Buzzer</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%235320bf'/%3E%3Cpath d='M32 11l6.2 12.6 13.8 2-10 9.8 2.4 13.8L32 42.7l-12.4 6.5 2.4-13.8-10-9.8 13.8-2z' fill='%23f4c76a'/%3E%3C/svg%3E">
+  <meta name="theme-color" content="#2e6a51">
+  <title>PANALO! Buzzer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232e6a51'/%3E%3Cpath d='M32 11l6.2 12.6 13.8 2-10 9.8 2.4 13.8L32 42.7l-12.4 6.5 2.4-13.8-10-9.8 13.8-2z' fill='%23f4c76a'/%3E%3C/svg%3E">
 
   <!-- Fonts (falls back to Impact / system fonts if the phone is offline) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@600;700&family=Sancreek&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/buzzer/buzzer.css">
 </head>
@@ -20,7 +20,7 @@
        Talks to server/buzzer-server.ps1 on the host's laptop.
        ========================================================= -->
   <header class="top-bar">
-    <span class="top-bar__title">Trivia Night</span>
+    <span class="top-bar__title">PANALO!</span>
     <button id="change-team-button" class="top-bar__team" type="button" hidden></button>
   </header>
 
@@ -43,6 +43,46 @@
     <p id="buzz-status" class="buzz-status" aria-live="assertive"></p>
   </main>
 
+  <!-- Final Wager: each team types its secret wager (final-wager-phone.js) -->
+  <main id="fw-screen" class="screen fw-phone" hidden>
+    <p class="fm-wait__title">Final Wager</p>
+    <p id="fw-phone-category" class="fw-phone__category"></p>
+
+    <form id="fw-form" class="fw-form">
+      <label class="fw-form__label" for="fw-amount">Your wager</label>
+      <p id="fw-limit" class="fw-form__limit"></p>
+      <input id="fw-amount" class="fw-form__input" type="number" inputmode="numeric" min="0" step="100" placeholder="0">
+      <button id="fw-submit" class="fm-quiz__next" type="submit">Lock in wager</button>
+    </form>
+
+    <p id="fw-phone-status" class="fw-phone__status"></p>
+  </main>
+
+  <!-- Fast Money: the answering team's questionnaire (fast-money-phone.js) -->
+  <main id="fm-screen" class="screen fm-phone" hidden>
+    <div id="fm-wait" class="fm-wait">
+      <p class="fm-wait__title">Fast Money</p>
+      <p id="fm-wait-text" class="fm-wait__text"></p>
+    </div>
+
+    <form id="fm-quiz" class="fm-quiz" hidden>
+      <div class="fm-quiz__top">
+        <span id="fm-clock" class="fm-quiz__clock">00:45</span>
+        <span id="fm-progress" class="fm-quiz__progress"></span>
+      </div>
+      <p id="fm-question" class="fm-quiz__question"></p>
+      <input id="fm-answer" class="fm-quiz__input" type="text" maxlength="60" autocomplete="off" autocapitalize="sentences" enterkeyhint="next" placeholder="Type your answer" aria-label="Your answer">
+      <div class="fm-quiz__buttons">
+        <button id="fm-skip" class="fm-quiz__skip" type="button">Skip</button>
+        <button class="fm-quiz__next" type="submit">Next &rarr;</button>
+      </div>
+      <p id="fm-note" class="fm-quiz__note"></p>
+    </form>
+  </main>
+
   <script src="/buzzer/buzzer.js"></script>
+  <script src="/buzzer/final-wager-phone.js"></script>
+  <script src="/js/answer-match.js"></script>
+  <script src="/buzzer/fast-money-phone.js"></script>
 </body>
 </html>

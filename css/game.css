@@ -31,10 +31,12 @@
 }
 
 .game-header__title {
-  font-family: var(--font-display);
-  font-size: clamp(1.4rem, 2.4vw, 2.2rem);
-  letter-spacing: 0.06em;
+  font-family: var(--font-title);
+  font-size: clamp(1.3rem, 2.1vw, 1.9rem);
+  letter-spacing: 0.04em;
   white-space: nowrap;
+  /* at this small size the cream outline gets muddy, so just gold + shadow */
+  text-shadow: 2px 2px 0 #173d2e, 3px 3px 0 #0e271d;
 }
 
 .round-badge {
@@ -47,7 +49,7 @@
   letter-spacing: 0.14em;
   color: var(--color-cream);
   border-radius: 999px;
-  background: linear-gradient(180deg, var(--color-violet), var(--color-violet-deep));
+  background: linear-gradient(180deg, var(--color-green), var(--color-green-deep));
   border: 1px solid var(--color-border-gold);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
@@ -64,7 +66,7 @@
   gap: 0.8em;
   padding: 0.4em 1.1em;
   border-radius: var(--radius-md);
-  background: linear-gradient(180deg, rgba(58, 22, 121, 0.95), rgba(30, 10, 62, 0.95));
+  background: linear-gradient(180deg, rgba(36, 90, 67, 0.95), rgba(22, 55, 42, 0.95));
   border: 1px solid var(--color-border-gold);
   box-shadow:
     0 8px 22px rgba(0, 0, 0, 0.4),
@@ -75,7 +77,7 @@
   font-family: var(--font-display);
   font-size: clamp(0.9rem, 1.3vw, 1.15rem);
   letter-spacing: 0.2em;
-  color: var(--color-lilac);
+  color: var(--color-sage);
 }
 
 .header-counter__value {
@@ -98,11 +100,11 @@
   min-height: 0;
   padding: clamp(8px, 1.1vw, 16px);
   border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, rgba(34, 9, 74, 0.6), rgba(12, 5, 26, 0.75));
+  background: linear-gradient(180deg, rgba(23, 61, 46, 0.6), rgba(8, 26, 19, 0.75));
   border: 1px solid var(--color-border-gold);
   box-shadow:
     0 30px 70px rgba(0, 0, 0, 0.5),
-    inset 0 0 40px rgba(118, 54, 234, 0.15);
+    inset 0 0 40px rgba(47, 117, 86, 0.15);
 }
 
 /* --category-count and --row-count are set by board.js from questions.js */
@@ -124,7 +126,7 @@
   padding: 0.5em 0.6em;
   text-align: center;
   border-radius: var(--radius-md);
-  background: linear-gradient(180deg, #2f1164, #1c0940);
+  background: linear-gradient(180deg, #245a43, #173d2e);
   border: 1px solid var(--color-border-gold);
   box-shadow:
     0 6px 16px rgba(0, 0, 0, 0.35),
@@ -155,11 +157,11 @@
   border: 1px solid rgba(255, 227, 163, 0.35);
   background:
     radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.18), transparent 60%),
-    linear-gradient(180deg, #8f4cff 0%, var(--color-purple) 45%, var(--color-purple-dark) 100%);
+    linear-gradient(180deg, #3f8a68 0%, var(--color-green-mid) 45%, var(--color-green-dark) 100%);
   box-shadow:
     0 6px 14px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    inset 0 -6px 14px rgba(30, 0, 80, 0.35);
+    inset 0 -6px 14px rgba(10, 40, 28, 0.35);
   transition:
     transform 0.22s var(--ease-out),
     box-shadow 0.22s ease,
@@ -185,7 +187,7 @@
   letter-spacing: 0.04em;
   color: var(--color-gold-light);
   text-shadow:
-    0 2px 0 rgba(50, 10, 110, 0.8),
+    0 2px 0 rgba(12, 45, 32, 0.8),
     0 0 16px rgba(244, 199, 106, 0.45);
 }
 
@@ -203,9 +205,9 @@
     filter: brightness(1.08);
     box-shadow:
       0 12px 24px rgba(0, 0, 0, 0.4),
-      0 0 26px rgba(154, 88, 255, 0.6),
+      0 0 26px rgba(79, 156, 120, 0.6),
       inset 0 1px 0 rgba(255, 255, 255, 0.35),
-      inset 0 -6px 14px rgba(30, 0, 80, 0.35);
+      inset 0 -6px 14px rgba(10, 40, 28, 0.35);
   }
 }
 
@@ -236,25 +238,25 @@
 }
 
 .tile[data-state="active"] .tile__value {
-  color: var(--color-violet-deep);
+  color: var(--color-green-deep);
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 /* ANSWERED — already played, can't be picked again */
 .tile[data-state="answered"] {
   cursor: default;
-  border-color: rgba(199, 166, 255, 0.12);
-  background: linear-gradient(180deg, #24103e, #190a2d);
+  border-color: rgba(181, 220, 198, 0.12);
+  background: linear-gradient(180deg, #16352a, #10281f);
   box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.5);
   animation: tile-retire 0.5s var(--ease-out);
 }
 
 .tile[data-state="answered"]::before {
-  border-color: rgba(199, 166, 255, 0.07);
+  border-color: rgba(181, 220, 198, 0.07);
 }
 
 .tile[data-state="answered"] .tile__value {
-  color: rgba(199, 166, 255, 0.2);
+  color: rgba(181, 220, 198, 0.2);
   text-shadow: none;
 }
 
@@ -265,7 +267,7 @@
   font-weight: 700;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: rgba(199, 166, 255, 0.4);
+  color: rgba(181, 220, 198, 0.4);
 }
 
 @keyframes tile-select {
@@ -338,7 +340,7 @@
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--color-lilac);
+  color: var(--color-sage);
 }
 
 .board-footer__status {
@@ -357,14 +359,14 @@
   height: 4px;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(199, 166, 255, 0.15);
+  background: rgba(181, 220, 198, 0.15);
 }
 
 .progress__bar {
   width: 0;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--color-purple-bright), var(--color-gold));
+  background: linear-gradient(90deg, var(--color-green-bright), var(--color-gold));
   box-shadow: 0 0 10px rgba(244, 199, 106, 0.6);
   transition: width 0.6s var(--ease-out);
 }

@@ -14,7 +14,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: radial-gradient(circle at center, rgba(120, 72, 8, 0.97) 0%, rgba(40, 20, 4, 0.98) 45%, rgba(10, 4, 16, 0.99) 100%);
+  background: radial-gradient(circle at center, rgba(120, 72, 8, 0.97) 0%, rgba(40, 20, 4, 0.98) 45%, rgba(4, 14, 10, 0.99) 100%);
   opacity: 0;
 }
 
@@ -174,9 +174,17 @@
    STAGE 2 — WHO FOUND IT, AND HOW MUCH ARE THEY WAGERING?
    golden-boost.js adds .is-wagering when this step appears
    ========================================================= */
+/* Scrolls on very short screens, but never shows a scrollbar (the zooming
+   title would otherwise flash one up during the reveal) */
 .golden-boost__content {
   max-height: 100%;
+  overflow-x: hidden;
   overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.golden-boost__content::-webkit-scrollbar {
+  display: none;
 }
 
 /* The title shrinks to make room for the wager step */
@@ -240,7 +248,7 @@
   color: var(--color-cream);
   cursor: pointer;
   border-radius: 999px;
-  background: rgba(34, 9, 74, 0.85);
+  background: rgba(23, 61, 46, 0.85);
   border: 2px solid transparent;
   box-shadow: inset 5px 0 0 var(--team-color);
   transition: transform 0.15s var(--ease-out), border-color 0.2s ease, background 0.2s ease;
@@ -251,7 +259,7 @@
 }
 
 .golden-wager__team[aria-checked="true"] {
-  color: var(--color-violet-deep);
+  color: var(--color-green-deep);
   background: var(--color-gold);
   border-color: #fffbe8;
   box-shadow: 0 0 20px rgba(255, 214, 120, 0.7);
@@ -362,23 +370,23 @@
   text-transform: uppercase;
   color: var(--color-gold-light);
   border-radius: 999px;
-  background: var(--color-violet-deep);
+  background: var(--color-green-deep);
   box-shadow: 0 4px 14px rgba(90, 50, 0, 0.4);
 }
 
-/* Dark purple text on gold, so everything stays easy to read */
+/* Dark green text on gold, so everything stays easy to read */
 .question-card.is-golden .question-card__meta,
 .question-card.is-golden #question-round {
   color: #4a2a00;
 }
 
 .question-card.is-golden .question-card__dot {
-  color: var(--color-violet);
+  color: var(--color-green);
 }
 
 .question-card.is-golden .question-card__value {
   background: none;
-  color: var(--color-violet);
+  color: var(--color-green);
   filter: none;
   text-shadow: 0 2px 0 rgba(255, 255, 255, 0.45);
 }
@@ -388,12 +396,12 @@
 }
 
 .question-card.is-golden .question-card__label--gold {
-  color: var(--color-violet);
+  color: var(--color-green);
 }
 
 .question-card.is-golden .question-card__question,
 .question-card.is-golden.is-answer-shown .question-card__question {
-  color: var(--color-violet-deep);
+  color: var(--color-green-deep);
 }
 
 .question-card.is-golden .question-card__answer::before {
@@ -401,7 +409,7 @@
 }
 
 .question-card.is-golden .question-card__answer-text {
-  color: var(--color-violet);
+  color: var(--color-green);
   text-shadow: 0 0 24px rgba(255, 255, 255, 0.7);
 }
 

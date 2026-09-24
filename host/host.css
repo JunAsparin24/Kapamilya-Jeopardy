@@ -1,0 +1,303 @@
+/* =========================================================
+   host.css — The host's phone screen (PANALO! green & gold)
+   ========================================================= */
+
+:root {
+  --color-bg: #2e6a51;
+  --color-green: #245a43;
+  --color-green-deep: #173d2e;
+  --color-gold: #f4c76a;
+  --color-gold-light: #ffe3a3;
+  --color-cream: #fff4dc;
+  --color-sage: #b5dcc6;
+  --font-title: "Sancreek", Georgia, serif;
+  --font-display: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
+  --font-body: "Montserrat", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  min-height: 100dvh;
+  padding: env(safe-area-inset-top, 0px) 16px calc(24px + env(safe-area-inset-bottom, 0px));
+  font-family: var(--font-body);
+  color: var(--color-cream);
+  background:
+    radial-gradient(ellipse at 20% 0%, #3b7d61 0%, transparent 60%),
+    linear-gradient(180deg, var(--color-bg), #1b4535);
+  background-attachment: fixed;
+}
+
+p,
+h1 {
+  margin: 0;
+}
+
+/* ---------- Top bar ---------- */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+}
+
+.top-bar__title {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+  color: var(--color-gold);
+  text-shadow: 2px 2px 0 var(--color-green-deep), 3px 3px 0 #0e271d;
+}
+
+.top-bar__tag {
+  padding: 0.35em 0.9em 0.25em;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  color: var(--color-green-deep);
+  background: var(--color-gold);
+  border-radius: 999px;
+}
+
+.connection-banner {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-green-deep);
+  background: var(--color-gold);
+  border-radius: 10px;
+}
+
+/* ---------- Code screen ---------- */
+.code-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  max-width: 360px;
+  margin: 12vh auto 0;
+  text-align: center;
+}
+
+.code-screen__heading {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--color-gold-light);
+}
+
+.code-screen__note {
+  color: var(--color-sage);
+  line-height: 1.5;
+}
+
+.code-screen__input {
+  width: 6ch;
+  padding: 0.15em 0.2em 0.05em;
+  font-family: var(--font-display);
+  font-size: 3rem;
+  letter-spacing: 0.25em;
+  text-align: center;
+  color: var(--color-gold-light);
+  background: rgba(0, 0, 0, 0.25);
+  border: 2px solid var(--color-gold);
+  border-radius: 14px;
+  outline: none;
+}
+
+.code-screen__error {
+  font-weight: 700;
+  color: #ffb0b0;
+}
+
+.code-screen__button {
+  padding: 0.6em 1.6em 0.5em;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.08em;
+  color: var(--color-cream);
+  cursor: pointer;
+  background: linear-gradient(180deg, #4f9c78, #2f7556 55%, #1f5a42);
+  border: 2px solid var(--color-gold);
+  border-radius: 999px;
+}
+
+/* ---------- Waiting ---------- */
+.waiting {
+  margin-top: 25vh;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  letter-spacing: 0.06em;
+  text-align: center;
+  color: var(--color-sage);
+}
+
+/* ---------- Question card ---------- */
+.card {
+  position: relative;
+  padding: 22px 18px 24px;
+  text-align: center;
+  border-radius: 20px;
+  background: linear-gradient(160deg, rgba(52, 118, 90, 0.95), rgba(29, 74, 56, 0.95));
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Thin gold inner frame, like the PANALO! card */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 14px;
+  border: 1px solid rgba(244, 199, 106, 0.7);
+  pointer-events: none;
+}
+
+.card__golden {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 0.3em 1em 0.2em;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  color: var(--color-green-deep);
+  background: var(--color-gold);
+  border-radius: 999px;
+}
+
+.card.is-golden {
+  box-shadow: 0 0 0 2px var(--color-gold), 0 0 40px rgba(244, 199, 106, 0.5);
+}
+
+.card__meta {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-sage);
+}
+
+.card__value {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  line-height: 1.1;
+  color: var(--color-gold);
+}
+
+.card__label {
+  margin: 18px 0 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-sage);
+}
+
+.card__label--gold {
+  padding-top: 16px;
+  color: var(--color-gold);
+  border-top: 1px solid rgba(244, 199, 106, 0.45);
+}
+
+.card__question {
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.card__image {
+  display: block;
+  max-width: 80%;
+  max-height: 30vh;
+  margin: 14px auto 0;
+  border: 2px solid rgba(255, 244, 220, 0.6);
+  border-radius: 6px;
+}
+
+.card__answer {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+  color: var(--color-gold-light);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Fast Money list ---------- */
+.fm-list {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: fm;
+  text-align: left;
+}
+
+.fm-list__item {
+  counter-increment: fm;
+  padding: 14px 4px;
+  border-top: 1px solid rgba(244, 199, 106, 0.35);
+}
+
+.fm-list__question {
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.fm-list__question::before {
+  content: counter(fm) ". ";
+  color: var(--color-gold);
+}
+
+.fm-list__answers {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fm-list__answers li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0.3em 0.9em 0.2em;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  color: var(--color-green-deep);
+  border-radius: 999px;
+  background: linear-gradient(90deg, #fff4dc, #f4c76a);
+}
+
+/* ---------- Who buzzed in ---------- */
+.buzz {
+  margin-top: 16px;
+  padding: 12px 16px 10px;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.06em;
+  text-align: center;
+  border-radius: 999px;
+  background: rgba(12, 32, 24, 0.9);
+  border: 2px solid var(--team-color, var(--color-gold));
+  box-shadow: 0 0 24px var(--team-color, var(--color-gold));
+}

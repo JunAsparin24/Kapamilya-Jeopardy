@@ -14,6 +14,7 @@ const TEAMS_STORAGE_KEY = "trivia-night-teams";
 const TEAM_COLORS = ["#f4c76a", "#4dd4ff", "#ff6fb1", "#7ef29a", "#ff9f43", "#b388ff", "#ff5d5d", "#5dffd6"];
 
 let teams = loadTeams(); // [{ id, name, score, color }]
+let boardTeamId = null;  // the team that "has the board" (picks the next question)
 const teamChangeListeners = [];
 
 /* ---------- Reading ---------- */
@@ -24,6 +25,11 @@ function getTeams() {
 
 function getTeam(teamId) {
   return teams.find((team) => team.id === teamId) || null;
+}
+
+// The team that picks the next question, or null if nobody has it yet
+function getBoardTeamId() {
+  return getTeam(boardTeamId) ? boardTeamId : null;
 }
 
 // Highest score first
@@ -80,9 +86,17 @@ function setScore(teamId, newScore) {
   teamsChanged();
 }
 
-// New game: everyone back to $0 (team names are kept)
+// Gives a team the board (null = nobody has it)
+function setBoardTeam(teamId) {
+  if (teamId === boardTeamId) return;
+  boardTeamId = teamId;
+  teamsChanged();
+}
+
+// New game: everyone back to $0 and nobody has the board yet (team names are kept)
 function resetScores() {
   teams.forEach((team) => { team.score = 0; });
+  boardTeamId = null;
   teamsChanged();
 }
 
