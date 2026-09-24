@@ -11,9 +11,10 @@
        image: "assets/images/flags/italy.svg"
      Put picture files in assets/images/. "imageAlt" (optional) describes
      the picture for screen readers — never include the answer in it.
-   - "special: true" makes a question the hidden GOLDEN BOOST. It looks
-     like a normal tile until someone picks it. To move the Golden Boost,
-     set it back to false here and true on another question.
+   - The hidden GOLDEN BOOST lands on a RANDOM question each round, so
+     it's somewhere new every game. To pick the spot yourself instead,
+     set RANDOM_GOLDEN_BOOST to false in game.js and put "special: true"
+     on the question you want (one per round).
    ========================================================= */
 
 const gameData = {
@@ -28,7 +29,7 @@ const gameData = {
           { value: 100, question: "This is the closest star to Earth", answer: "The Sun", special: false },
           { value: 200, question: "This is the largest planet in our solar system", answer: "Jupiter", special: false },
           { value: 300, question: "This is the name for an animal that eats both plants and meat", answer: "Omnivore", special: false },
-          { value: 400, question: "This is the hardest natural substance on Earth", answer: "Diamond", special: true }, // ★ GOLDEN BOOST
+          { value: 400, question: "This is the hardest natural substance on Earth", answer: "Diamond", special: false },
           { value: 500, question: "This is the only planet in our solar system that spins on its side", answer: "Uranus", special: false },
         ],
       },
@@ -127,7 +128,7 @@ const gameData = {
         questions: [
           { value: 200,  question: "Spell the word for: the sweet brown treat made from cocoa beans", answer: "Chocolate", special: false },
           { value: 400,  question: "Spell the word for: the day that comes after Tuesday", answer: "Wednesday", special: false },
-          { value: 600,  question: "Spell the word for: \"for sure, without a doubt,\" as in \"I'm ___ coming to the party\"", answer: "Definitely", special: true }, // ★ GOLDEN BOOST
+          { value: 600,  question: "Spell the word for: \"for sure, without a doubt,\" as in \"I'm ___ coming to the party\"", answer: "Definitely", special: false },
           { value: 800,  question: "Spell the word for: the chart that shows all the days, weeks, and months of the year", answer: "Calendar", special: false },
           { value: 1000, question: "Spell the word for: the steady beat in music that makes you want to tap your feet", answer: "Rhythm", special: false },
         ],

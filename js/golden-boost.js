@@ -1,14 +1,15 @@
 /* =========================================================
    golden-boost.js — The GOLDEN BOOST reveal.
 
-   A question with "special: true" in questions.js is the hidden
-   Golden Boost. When it's picked, board.js calls
-   playGoldenBoostIntro() before opening the question:
+   One question per round is the hidden Golden Boost (game.js picks
+   a random one — see RANDOM_GOLDEN_BOOST). When it's picked, board.js
+   calls playGoldenBoostIntro() before opening the question:
 
      Stage 1: gold flash, spinning rays, sparkles and a big
               "GOLDEN BOOST" title (plus a sound from music.js)
      Stage 2: the host picks which team found it and types in
-              their wager, then clicks REVEAL QUESTION
+              their wager (up to the points they have), then
+              clicks REVEAL QUESTION
 
    Nothing about the question is shown until that click, so teams
    wager without knowing what's coming. The question card then
@@ -28,6 +29,7 @@ const GOLDEN_BOOST_FADE_MS = 400; // must match the fade-out in golden-boost.css
 const GOLDEN_BOOST_SPARKLE_COUNT = 40;
 
 let selectedWagerTeamId = null;
+let currentGoldenQuestion = null;
 
 // Plays the reveal and waits for the host. Resolves with the wager
 // ({ teamId, amount }, or null if no team was picked) the moment the
@@ -51,9 +53,15 @@ function playGoldenBoostIntro(question) {
       event.preventDefault();
       goldenWagerForm.onsubmit = null;
 
-      const typedAmount = Math.round(Number(goldenWagerAmount.value));
-      const amount = Number.isFinite(typedAmount) && typedAmount > 0 ? typedAmount : question.value;
-      const wager = selectedWagerTeamId ? { teamId: selectedWagerTeamId, amount } : null;
+      const team = selectedWagerTeamId && getTeam(selectedWagerTeamId);
+      let wager = null;
+      if (team) {
+        // Blank box = the question's value; never more than the team is allowed
+        const maxWager = getMaxWager(team);
+        const typedAmount = Math.round(Number(goldenWagerAmount.value));
+        const amount = Number.isFinite(typedAmount) && typedAmount > 0 ? typedAmount : question.value;
+        wager = { teamId: team.id, amount: Math.min(amount, maxWager) };
+      }
 
       goldenBoostOverlay.classList.add("is-leaving");
       resolve(wager);
@@ -69,9 +77,11 @@ function playGoldenBoostIntro(question) {
 /* ---------- Stage 2: who's playing, and how much? ---------- */
 
 function showWagerStep(question) {
+  currentGoldenQuestion = question;
   selectedWagerTeamId = null;
   goldenWagerAmount.value = "";
   goldenWagerAmount.placeholder = String(question.value);
+  goldenWagerAmount.removeAttribute("max");
   goldenWagerTeams.innerHTML = "";
 
   getTeams().forEach((team) => {
@@ -109,19 +119,47 @@ function selectWagerTeam(teamId) {
   goldenWagerAmount.focus({ preventScroll: true });
 }
 
-// Classic rule of thumb: a team may wager up to their score, or up to
-// the biggest value on this round's board if their score is lower.
+// A team can wager up to the points it already has. A team on $0 (or
+// below) can wager up to the question's own value, so it still has
+// something to play for.
+function getMaxWager(team) {
+  return team.score > 0 ? team.score : currentGoldenQuestion.value;
+}
+
 function updateWagerHint() {
   const team = selectedWagerTeamId && getTeam(selectedWagerTeamId);
-  const biggestValue = Math.max(...getRoundValues());
+  goldenWagerHint.classList.remove("is-capped");
 
   if (!team) {
     goldenWagerHint.textContent = "Pick the team that found it";
     return;
   }
-  const maxWager = Math.max(team.score, biggestValue);
-  goldenWagerHint.textContent = `${team.name} has ${formatMoney(team.score)} · usual max wager ${formatMoney(maxWager)}`;
+
+  const maxWager = getMaxWager(team);
+  goldenWagerAmount.max = String(maxWager);
+  goldenWagerAmount.placeholder = String(Math.min(currentGoldenQuestion.value, maxWager));
+
+  // If a bigger wager was typed before picking this team, bring it down
+  if (Number(goldenWagerAmount.value) > maxWager) goldenWagerAmount.value = String(maxWager);
+
+  goldenWagerHint.textContent = team.score > 0
+    ? `${team.name} has ${formatMoney(team.score)} · can wager up to ${formatMoney(maxWager)}`
+    : `${team.name} has ${formatMoney(team.score)} · can wager up to ${formatMoney(maxWager)} (the question's value)`;
 }
+
+// Typing more than the limit snaps back to the limit, with a little flash
+goldenWagerAmount.addEventListener("input", () => {
+  const team = selectedWagerTeamId && getTeam(selectedWagerTeamId);
+  if (!team) return;
+
+  const maxWager = getMaxWager(team);
+  if (Number(goldenWagerAmount.value) > maxWager) {
+    goldenWagerAmount.value = String(maxWager);
+    goldenWagerHint.classList.remove("is-capped");
+    void goldenWagerHint.offsetWidth; // restart the flash
+    goldenWagerHint.classList.add("is-capped");
+  }
+});
 
 /* ---------- Stage 1: sparkles bursting outward ---------- */
 

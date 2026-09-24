@@ -14,9 +14,17 @@ const QUESTION_STATE = Object.freeze({
   ANSWERED: "answered", // Already played — tile is locked
 });
 
+// GOLDEN BOOST placement:
+//   true  = hides on a random question each round (a new spot every game)
+//   false = goes on whichever question has "special: true" in questions.js
+const RANDOM_GOLDEN_BOOST = true;
+
 // The single source of truth for the current game.
 const gameState = {
   currentRound: 1,
+
+  // Where this round's Golden Boost is hiding: { categoryIndex, questionIndex } (or null)
+  goldenBoost: null,
 
   // questionStates[categoryIndex][questionIndex] → one of QUESTION_STATE
   questionStates: [],
@@ -73,6 +81,38 @@ function resetQuestionStates() {
   gameState.questionStates = round.categories.map((category) =>
     category.questions.map(() => QUESTION_STATE.UNUSED)
   );
+
+  placeGoldenBoost();
+}
+
+/* ---------- Golden Boost ---------- */
+
+// Picks where this round's Golden Boost hides (see RANDOM_GOLDEN_BOOST above)
+function placeGoldenBoost() {
+  const categories = getRoundData().categories;
+  gameState.goldenBoost = null;
+
+  if (RANDOM_GOLDEN_BOOST) {
+    // Every question on the board has the same chance
+    const allSpots = categories.flatMap((category, categoryIndex) =>
+      category.questions.map((_, questionIndex) => ({ categoryIndex, questionIndex }))
+    );
+    gameState.goldenBoost = allSpots[Math.floor(Math.random() * allSpots.length)];
+    return;
+  }
+
+  categories.forEach((category, categoryIndex) => {
+    category.questions.forEach((question, questionIndex) => {
+      if (question.special && !gameState.goldenBoost) {
+        gameState.goldenBoost = { categoryIndex, questionIndex };
+      }
+    });
+  });
+}
+
+function isGoldenBoost(categoryIndex, questionIndex) {
+  const spot = gameState.goldenBoost;
+  return spot !== null && spot.categoryIndex === categoryIndex && spot.questionIndex === questionIndex;
 }
 
 /* ---------- Rounds ---------- */

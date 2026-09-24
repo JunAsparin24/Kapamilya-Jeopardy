@@ -296,6 +296,15 @@
   color: rgba(255, 244, 220, 0.75);
 }
 
+/* Flashes when a wager over the limit is typed */
+.golden-wager__hint.is-capped {
+  animation: wager-capped 0.8s ease;
+}
+
+@keyframes wager-capped {
+  0%, 60% { color: #ff9f9f; transform: scale(1.06); }
+}
+
 .golden-wager .btn--primary {
   margin-top: 6px;
   font-size: clamp(1.4rem, 2.6vw, 2rem);

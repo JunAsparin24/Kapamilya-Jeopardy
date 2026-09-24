@@ -64,8 +64,9 @@ function openQuestionScreen(categoryIndex, questionIndex, goldenWager = null) {
   questionCard.classList.toggle("has-image", Boolean(question.image));
 
   // The Golden Boost question gets a gold card and a badge (golden-boost.css)
-  questionCard.classList.toggle("is-golden", Boolean(question.special));
-  goldenBadge.hidden = !question.special;
+  const isGolden = isGoldenBoost(categoryIndex, questionIndex); // game.js
+  questionCard.classList.toggle("is-golden", isGolden);
+  goldenBadge.hidden = !isGolden;
 
   // Points at stake for the ✓ / ✗ buttons (scoreboard.js)
   const wagerTeam = goldenWager && getTeam(goldenWager.teamId);

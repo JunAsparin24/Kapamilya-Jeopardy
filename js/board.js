@@ -131,7 +131,7 @@ function updateTile(tile, categoryIndex, questionIndex) {
 
   // Once the Golden Boost has been played, its tile stays gold so everyone
   // remembers where it was. (Before that it looks like any other tile.)
-  const isGoldenPlayed = question.special && state === QUESTION_STATE.ANSWERED;
+  const isGoldenPlayed = isGoldenBoost(categoryIndex, questionIndex) && state === QUESTION_STATE.ANSWERED;
   tile.classList.toggle("tile--golden-played", isGoldenPlayed);
   tile.querySelector(".tile__played").textContent = isGoldenPlayed ? "Golden Boost" : "Played";
 
@@ -191,7 +191,7 @@ function handleTileClick(categoryIndex, questionIndex) {
   // The hidden Golden Boost question gets its big reveal first (golden-boost.js).
   tilePickTimer = setTimeout(async () => {
     let goldenWager = null;
-    if (question.special) {
+    if (isGoldenBoost(categoryIndex, questionIndex)) {
       goldenWager = await playGoldenBoostIntro(question); // waits for the host to enter the wager
     }
     openQuestionScreen(categoryIndex, questionIndex, goldenWager);
