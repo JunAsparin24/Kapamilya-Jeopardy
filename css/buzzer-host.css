@@ -1,0 +1,207 @@
+/* =========================================================
+   buzzer-host.css — Buzzer controls on the host's screen:
+   header button, "TEAM X BUZZED IN!" banner, join panel
+   (Only visible when the game runs through the buzzer server.)
+   ========================================================= */
+
+/* ---------- Header button ---------- */
+.buzzer-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  white-space: nowrap;
+}
+
+.buzzer-button[hidden] {
+  display: none;
+}
+
+.buzzer-button__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #7ef29a;
+  box-shadow: 0 0 8px #7ef29a;
+}
+
+.buzzer-button.is-locked .buzzer-button__dot {
+  background: #ff5d5d;
+  box-shadow: 0 0 8px #ff5d5d;
+  animation: buzzer-dot-pulse 0.8s ease-in-out infinite alternate;
+}
+
+.buzzer-button.is-offline .buzzer-button__dot {
+  background: #888;
+  box-shadow: none;
+}
+
+@keyframes buzzer-dot-pulse {
+  to { transform: scale(1.5); }
+}
+
+/* Make room in the header for the button on smaller laptops */
+@media (max-width: 1280px) {
+  body:has(.buzzer-button:not([hidden])) .game-header__title {
+    display: none;
+  }
+}
+
+/* ---------- Home screen join line ---------- */
+.home-join {
+  display: block;
+  margin: clamp(14px, 2.5vh, 22px) auto 0;
+  padding: 0.5em 1.2em;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-lilac);
+  cursor: pointer;
+  background: rgba(34, 9, 74, 0.6);
+  border: 1px solid var(--color-border-lilac);
+  border-radius: 999px;
+}
+
+.home-join strong {
+  color: var(--color-gold-light);
+}
+
+.home-join:hover {
+  border-color: var(--color-gold);
+}
+
+/* ---------- "TEAM X BUZZED IN!" banner ---------- */
+.buzz-alert {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  z-index: 58; /* above the question card and Golden Boost, below the music button */
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: calc(100% - 32px);
+  padding: 10px 12px 10px 20px;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.6vw, 2.2rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-cream);
+  border-radius: 999px;
+  background: rgba(20, 8, 40, 0.96);
+  border: 2px solid var(--team-color);
+  box-shadow: 0 0 40px var(--team-color), 0 16px 40px rgba(0, 0, 0, 0.6);
+  transform: translateX(-50%);
+}
+
+/* Push the question card / Golden Boost down so the banner doesn't cover them */
+body.has-buzz-alert .question-screen,
+body.has-buzz-alert .golden-boost {
+  padding-top: 84px;
+}
+
+.buzz-alert strong {
+  color: var(--team-color);
+  font-weight: 400;
+}
+
+.buzz-alert.is-new {
+  animation: buzz-alert-in 0.45s cubic-bezier(0.2, 1.5, 0.4, 1);
+}
+
+@keyframes buzz-alert-in {
+  from { transform: translateX(-50%) scale(0.6); opacity: 0; }
+  to   { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+.buzz-alert__unlock {
+  padding: 0.45em 1em 0.35em;
+  font-family: var(--font-display);
+  font-size: 0.6em;
+  letter-spacing: 0.08em;
+  color: var(--color-violet-deep);
+  cursor: pointer;
+  background: var(--color-gold);
+  border: 0;
+  border-radius: 999px;
+}
+
+.buzz-alert__unlock:hover {
+  background: var(--color-gold-light);
+}
+
+/* ---------- Join panel ---------- */
+.join-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 57;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(5, 2, 12, 0.8);
+}
+
+.join-panel[hidden] {
+  display: none;
+}
+
+.join-panel__card {
+  width: min(460px, 100%);
+  padding: 28px 24px;
+  text-align: center;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #3a1679, #1c0940);
+  border: 1px solid var(--color-gold);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.join-panel__title {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+
+.join-panel__text {
+  margin: 8px 0 16px;
+  color: var(--color-lilac);
+}
+
+.join-panel__qr {
+  display: inline-block;
+  padding: 12px;
+  line-height: 0;
+  background: #fff;
+  border-radius: 12px;
+}
+
+.join-panel__qr[hidden] {
+  display: none;
+}
+
+.join-panel__url {
+  margin-top: 14px;
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  letter-spacing: 0.04em;
+  color: var(--color-gold-light);
+  overflow-wrap: anywhere;
+}
+
+.join-panel__count {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--color-lilac);
+}
+
+.join-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.join-panel__actions .btn--primary,
+.join-panel__actions .btn--secondary {
+  font-size: 1.3rem;
+  padding: 0.5em 1.4em 0.4em;
+}

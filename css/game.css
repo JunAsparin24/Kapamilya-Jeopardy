@@ -325,14 +325,15 @@
 }
 
 /* =========================================================
-   FOOTER — status message + round progress
+   FOOTER — round progress line, status message, team scores
+   (the scoreboard itself is styled in teams.css)
    ========================================================= */
 .board-footer {
   display: grid;
-  grid-template-columns: 1fr minmax(120px, 280px);
+  grid-template-columns: auto 1fr;
   align-items: center;
   padding-right: 64px; /* room for the music button in the corner */
-  gap: 16px;
+  gap: 8px 20px;
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.16em;
@@ -342,6 +343,7 @@
 
 .board-footer__status {
   min-height: 1.3em;
+  max-width: 34ch;
   transition: color 0.3s ease;
 }
 
@@ -349,8 +351,10 @@
   color: var(--color-gold-light);
 }
 
+/* Thin line across the top of the footer showing how much of the board is played */
 .progress {
-  height: 6px;
+  grid-column: 1 / -1;
+  height: 4px;
   overflow: hidden;
   border-radius: 999px;
   background: rgba(199, 166, 255, 0.15);
@@ -479,6 +483,8 @@
     grid-template-columns: 1fr;
     justify-items: center;
     gap: 8px;
+    padding-right: 0;
+    padding-bottom: 60px; /* room for the music button below the scores */
     text-align: center;
   }
 

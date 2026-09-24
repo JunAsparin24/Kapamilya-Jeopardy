@@ -79,6 +79,18 @@ button {
   display: none !important;
 }
 
+/* Hide the little up/down arrows browsers add to number boxes */
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 /* Gold gradient text (used for titles) */
 .text-gold {
   background: linear-gradient(180deg, #fff3cf 0%, var(--color-gold) 55%, var(--color-gold-dark) 100%);

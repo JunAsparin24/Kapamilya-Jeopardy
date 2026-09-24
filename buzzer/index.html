@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#150a28">
+  <title>Trivia Night Buzzer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%235320bf'/%3E%3Cpath d='M32 11l6.2 12.6 13.8 2-10 9.8 2.4 13.8L32 42.7l-12.4 6.5 2.4-13.8-10-9.8 13.8-2z' fill='%23f4c76a'/%3E%3C/svg%3E">
+
+  <!-- Fonts (falls back to Impact / system fonts if the phone is offline) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/buzzer/buzzer.css">
+</head>
+<body>
+  <!-- =========================================================
+       PHONE BUZZER — opened by players at http://<laptop>:8080/buzz
+       Talks to server/buzzer-server.ps1 on the host's laptop.
+       ========================================================= -->
+  <header class="top-bar">
+    <span class="top-bar__title">Trivia Night</span>
+    <button id="change-team-button" class="top-bar__team" type="button" hidden></button>
+  </header>
+
+  <!-- Shown when the connection to the laptop drops -->
+  <p id="connection-banner" class="connection-banner" hidden>Reconnecting to the game&hellip;</p>
+
+  <!-- Step 1: pick your team -->
+  <main id="team-screen" class="screen" hidden>
+    <h1 class="screen__heading">Pick your team</h1>
+    <div id="team-list" class="team-list"></div>
+    <p id="no-teams-message" class="screen__note" hidden>Waiting for the host to set up teams&hellip;</p>
+  </main>
+
+  <!-- Step 2: the buzzer -->
+  <main id="buzz-screen" class="screen" hidden>
+    <button id="buzz-button" class="buzz-button" type="button">
+      <span id="buzz-button-main" class="buzz-button__main">Tap to answer</span>
+      <span id="buzz-button-sub" class="buzz-button__sub"></span>
+    </button>
+    <p id="buzz-status" class="buzz-status" aria-live="assertive"></p>
+  </main>
+
+  <script src="/buzzer/buzzer.js"></script>
+</body>
+</html>

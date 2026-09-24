@@ -3,49 +3,128 @@
 
    A question with "special: true" in questions.js is the hidden
    Golden Boost. When it's picked, board.js calls
-   playGoldenBoostIntro() before opening the question: a gold
-   flash, spinning rays, a burst of sparkles and a big
-   "GOLDEN BOOST" title (plus a sound effect from music.js).
-   The question card then opens in gold (see question-screen.js
-   and golden-boost.css).
+   playGoldenBoostIntro() before opening the question:
+
+     Stage 1: gold flash, spinning rays, sparkles and a big
+              "GOLDEN BOOST" title (plus a sound from music.js)
+     Stage 2: the host picks which team found it and types in
+              their wager, then clicks REVEAL QUESTION
+
+   Nothing about the question is shown until that click, so teams
+   wager without knowing what's coming. The question card then
+   opens in gold, and only that team can win (or lose) the wager.
    ========================================================= */
 
 const goldenBoostOverlay = document.getElementById("golden-boost");
 const goldenBoostSparkles = document.getElementById("golden-boost-sparkles");
+const goldenWagerForm = document.getElementById("golden-wager");
+const goldenWagerTeams = document.getElementById("golden-wager-teams");
+const goldenWagerAmount = document.getElementById("golden-wager-amount");
+const goldenWagerHint = document.getElementById("golden-wager-hint");
 
-// How long the reveal stays on screen before the golden card opens
-const GOLDEN_BOOST_INTRO_MS = 2800;
+// How long stage 1 plays before the wager step appears
+const GOLDEN_BOOST_INTRO_MS = 2200;
 const GOLDEN_BOOST_FADE_MS = 400; // must match the fade-out in golden-boost.css
 const GOLDEN_BOOST_SPARKLE_COUNT = 40;
 
-// Plays the reveal. Returns a Promise that finishes as the reveal starts
-// fading out — the moment the golden question card should open.
-function playGoldenBoostIntro() {
+let selectedWagerTeamId = null;
+
+// Plays the reveal and waits for the host. Resolves with the wager
+// ({ teamId, amount }, or null if no team was picked) the moment the
+// host clicks REVEAL QUESTION — that's when the golden card should open.
+function playGoldenBoostIntro(question) {
   return new Promise((resolve) => {
     createGoldenBoostSparkles();
 
-    goldenBoostOverlay.classList.remove("is-playing", "is-leaving");
+    goldenBoostOverlay.classList.remove("is-playing", "is-leaving", "is-wagering");
+    goldenWagerForm.hidden = true;
     goldenBoostOverlay.hidden = false;
     void goldenBoostOverlay.offsetHeight; // restart the CSS animations
     goldenBoostOverlay.classList.add("is-playing");
 
     playGoldenBoostSting(); // music.js
 
-    const introLength = prefersReducedMotion ? 1500 : GOLDEN_BOOST_INTRO_MS;
+    // Stage 2 appears once the title has landed
+    setTimeout(() => showWagerStep(question), prefersReducedMotion ? 600 : GOLDEN_BOOST_INTRO_MS);
 
-    setTimeout(() => {
+    goldenWagerForm.onsubmit = (event) => {
+      event.preventDefault();
+      goldenWagerForm.onsubmit = null;
+
+      const typedAmount = Math.round(Number(goldenWagerAmount.value));
+      const amount = Number.isFinite(typedAmount) && typedAmount > 0 ? typedAmount : question.value;
+      const wager = selectedWagerTeamId ? { teamId: selectedWagerTeamId, amount } : null;
+
       goldenBoostOverlay.classList.add("is-leaving");
-      resolve();
+      resolve(wager);
 
       setTimeout(() => {
         goldenBoostOverlay.hidden = true;
-        goldenBoostOverlay.classList.remove("is-playing", "is-leaving");
+        goldenBoostOverlay.classList.remove("is-playing", "is-leaving", "is-wagering");
       }, GOLDEN_BOOST_FADE_MS);
-    }, introLength);
+    };
   });
 }
 
-// Sparkles that burst outward from the middle of the screen
+/* ---------- Stage 2: who's playing, and how much? ---------- */
+
+function showWagerStep(question) {
+  selectedWagerTeamId = null;
+  goldenWagerAmount.value = "";
+  goldenWagerAmount.placeholder = String(question.value);
+  goldenWagerTeams.innerHTML = "";
+
+  getTeams().forEach((team) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "golden-wager__team";
+    button.textContent = team.name;
+    button.style.setProperty("--team-color", team.color);
+    button.setAttribute("role", "radio");
+    button.setAttribute("aria-checked", "false");
+    button.addEventListener("click", () => selectWagerTeam(team.id));
+    goldenWagerTeams.appendChild(button);
+    button.dataset.teamId = team.id;
+  });
+
+  // With only one team, it must be them
+  if (getTeams().length === 1) selectWagerTeam(getTeams()[0].id);
+  updateWagerHint();
+
+  goldenWagerForm.hidden = false;
+  goldenBoostOverlay.classList.add("is-wagering");
+  if (getTeams().length > 1) {
+    goldenWagerTeams.querySelector("button").focus({ preventScroll: true });
+  } else {
+    goldenWagerAmount.focus({ preventScroll: true });
+  }
+}
+
+function selectWagerTeam(teamId) {
+  selectedWagerTeamId = teamId;
+  goldenWagerTeams.querySelectorAll(".golden-wager__team").forEach((button) => {
+    button.setAttribute("aria-checked", String(button.dataset.teamId === teamId));
+  });
+  updateWagerHint();
+  goldenWagerAmount.focus({ preventScroll: true });
+}
+
+// Classic rule of thumb: a team may wager up to their score, or up to
+// the biggest value on this round's board if their score is lower.
+function updateWagerHint() {
+  const team = selectedWagerTeamId && getTeam(selectedWagerTeamId);
+  const biggestValue = Math.max(...getRoundValues());
+
+  if (!team) {
+    goldenWagerHint.textContent = "Pick the team that found it";
+    return;
+  }
+  const maxWager = Math.max(team.score, biggestValue);
+  goldenWagerHint.textContent = `${team.name} has ${formatMoney(team.score)} · usual max wager ${formatMoney(maxWager)}`;
+}
+
+/* ---------- Stage 1: sparkles bursting outward ---------- */
+
 function createGoldenBoostSparkles() {
   goldenBoostSparkles.innerHTML = "";
   if (prefersReducedMotion) return;

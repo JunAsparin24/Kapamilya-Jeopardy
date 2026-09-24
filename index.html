@@ -18,6 +18,8 @@
   <link rel="stylesheet" href="css/question.css">
   <link rel="stylesheet" href="css/rounds.css">
   <link rel="stylesheet" href="css/golden-boost.css">
+  <link rel="stylesheet" href="css/teams.css">
+  <link rel="stylesheet" href="css/buzzer-host.css">
 </head>
 <body data-screen="home">
 
@@ -71,6 +73,11 @@
         <div class="cta reveal" style="--reveal-delay: 900ms">
           <button id="start-button" class="btn btn--primary" type="button">Start Game</button>
         </div>
+
+        <!-- Only appears when the buzzer server is running — see buzzer-host.js -->
+        <button id="home-buzzer-join" class="home-join reveal" style="--reveal-delay: 1000ms" type="button" hidden>
+          Buzzers on! Players join at <strong id="home-buzzer-url"></strong>
+        </button>
       </div>
     </section>
 
@@ -82,6 +89,11 @@
         <div class="game-header__left">
           <button id="menu-button" class="btn btn--ghost" type="button">&larr; Menu</button>
           <span class="game-header__title text-gold">Trivia Night</span>
+          <!-- Only appears when the buzzer server is running — see buzzer-host.js -->
+          <button id="buzzer-button" class="btn btn--ghost buzzer-button" type="button" hidden>
+            <span class="buzzer-button__dot" aria-hidden="true"></span>
+            <span id="buzzer-button-text">Buzzers</span>
+          </button>
         </div>
 
         <div class="round-badge">
@@ -101,10 +113,12 @@
       </div>
 
       <footer class="board-footer">
-        <p id="board-status" class="board-footer__status" aria-live="polite"></p>
         <div class="progress" aria-hidden="true">
           <div id="round-progress-bar" class="progress__bar"></div>
         </div>
+        <p id="board-status" class="board-footer__status" aria-live="polite"></p>
+        <!-- Team names and scores — built by scoreboard.js -->
+        <div id="scoreboard" class="scoreboard" aria-label="Team scores"></div>
       </footer>
     </section>
 
@@ -126,6 +140,9 @@
         <div class="star-divider reveal" style="--reveal-delay: 450ms" aria-hidden="true">
           <span class="star-divider__star">&#9733;</span>
         </div>
+
+        <!-- Scores so far — filled in by scoreboard.js -->
+        <ol id="round-standings" class="standings standings--compact reveal" style="--reveal-delay: 500ms" aria-label="Scores so far"></ol>
 
         <div class="next-round reveal" style="--reveal-delay: 550ms">
           <p class="next-round__label">Up next &mdash; Round <span id="next-round-number">2</span></p>
@@ -162,22 +179,9 @@
           <span class="star-divider__star">&#9733;</span>
         </div>
 
-        <ul class="stat-row">
-          <li class="stat reveal" style="--reveal-delay: 550ms">
-            <span id="final-rounds" class="stat__number">2</span>
-            <span class="stat__label">Rounds played</span>
-          </li>
-          <li class="stat reveal" style="--reveal-delay: 650ms">
-            <span id="final-questions" class="stat__number">50</span>
-            <span class="stat__label">Questions answered</span>
-          </li>
-          <li class="stat reveal" style="--reveal-delay: 750ms">
-            <span id="final-total-value" class="stat__number">$22,500</span>
-            <span class="stat__label">Total on the board</span>
-          </li>
-        </ul>
-
-        <p class="game-over__message reveal" style="--reveal-delay: 850ms">Time to tally up the scores!</p>
+        <!-- "TEAM 1 WINS!" and the final scores — filled in by main.js / scoreboard.js -->
+        <p id="winner-text" class="game-over__message reveal" style="--reveal-delay: 500ms"></p>
+        <ol id="final-standings" class="standings reveal" style="--reveal-delay: 600ms" aria-label="Final scores"></ol>
 
         <div class="game-over__actions reveal" style="--reveal-delay: 1000ms">
           <div class="cta">
@@ -225,6 +229,8 @@
       </div>
 
       <footer class="question-card__actions">
+        <!-- ✓ / ✗ for each team, shown after the answer — built by scoreboard.js -->
+        <div id="award-row" class="award-row" hidden aria-label="Who got it right?"></div>
         <button id="show-answer-button" class="btn btn--primary" type="button">Show Answer</button>
         <button id="back-to-board-button" class="btn btn--primary" type="button" hidden>Back to Board</button>
       </footer>
@@ -245,6 +251,46 @@
         <span class="golden-boost__word">Golden</span>
         <span class="golden-boost__word">Boost</span>
       </p>
+
+      <!-- Step 2: pick the team and their wager, THEN reveal the question -->
+      <form id="golden-wager" class="golden-wager" hidden>
+        <p class="golden-wager__prompt">Who found it?</p>
+        <div id="golden-wager-teams" class="golden-wager__teams" role="radiogroup" aria-label="Team playing the Golden Boost"></div>
+
+        <label class="golden-wager__label" for="golden-wager-amount">Their wager</label>
+        <div class="golden-wager__amount">
+          <span aria-hidden="true">$</span>
+          <input id="golden-wager-amount" type="number" inputmode="numeric" min="0" step="100">
+        </div>
+        <p id="golden-wager-hint" class="golden-wager__hint"></p>
+
+        <button id="golden-reveal-button" class="btn btn--primary" type="submit">Reveal Question</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================
+       BUZZER (host side) — see buzzer-host.js
+       =================================================== -->
+  <!-- Shown across the top while a team has buzzed in -->
+  <div id="buzz-alert" class="buzz-alert" hidden role="alert">
+    <span class="buzz-alert__bell" aria-hidden="true">&#128276;</span>
+    <span><strong id="buzz-alert-team"></strong> buzzed in!</span>
+    <button id="buzz-alert-unlock" class="buzz-alert__unlock" type="button">Unlock buzzers</button>
+  </div>
+
+  <!-- How players join (opened from the Buzzers button) -->
+  <div id="buzzer-join-panel" class="join-panel" hidden role="dialog" aria-modal="true" aria-labelledby="join-panel-title">
+    <div class="join-panel__card">
+      <h2 id="join-panel-title" class="join-panel__title text-gold">Buzzers</h2>
+      <p class="join-panel__text">On the <strong>same Wi-Fi</strong>, scan the code or open:</p>
+      <div id="buzzer-qr" class="join-panel__qr" aria-hidden="true"></div>
+      <p id="buzzer-join-url" class="join-panel__url"></p>
+      <p id="buzzer-player-count" class="join-panel__count"></p>
+      <div class="join-panel__actions">
+        <button id="join-panel-unlock" class="btn btn--secondary" type="button">Unlock buzzers</button>
+        <button id="join-panel-close" class="btn btn--primary" type="button">Done</button>
+      </div>
     </div>
   </div>
 
@@ -266,12 +312,18 @@
   </div>
 
   <!-- Load order matters: data → game logic → UI → app startup -->
+  <!-- QR code maker for the buzzer join panel (optional — the link still shows without it) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
   <script src="js/questions.js"></script>
   <script src="js/game.js"></script>
+  <script src="js/teams.js"></script>
   <script src="js/music.js"></script>
   <script src="js/board.js"></script>
+  <script src="js/scoreboard.js"></script>
   <script src="js/question-screen.js"></script>
   <script src="js/golden-boost.js"></script>
+  <script src="js/buzzer-host.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

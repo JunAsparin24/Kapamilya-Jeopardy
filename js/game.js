@@ -4,7 +4,7 @@
    This file knows NOTHING about HTML. It only tracks what's
    happening in the game (round, which questions are played)
    and exposes functions the UI files can call.
-   Scores are kept by the players, not by the game.
+   Team scores live in teams.js.
    ========================================================= */
 
 // Every question on the board is always in exactly one of these states.
@@ -73,20 +73,6 @@ function resetQuestionStates() {
   gameState.questionStates = round.categories.map((category) =>
     category.questions.map(() => QUESTION_STATE.UNUSED)
   );
-}
-
-// Totals across every round, for the Game Over screen:
-// { rounds: 2, questions: 50, totalValue: 22500 }
-function getGameTotals() {
-  const allQuestions = Object.values(gameData).flatMap((round) =>
-    round.categories.flatMap((category) => category.questions)
-  );
-
-  return {
-    rounds: getTotalRounds(),
-    questions: allQuestions.length,
-    totalValue: allQuestions.reduce((sum, question) => sum + question.value, 0),
-  };
 }
 
 /* ---------- Rounds ---------- */

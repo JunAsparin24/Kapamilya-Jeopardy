@@ -1,0 +1,244 @@
+/* =========================================================
+   buzzer.css — The phone buzzer page
+   --team-color is set by buzzer.js to the player's team colour
+   ========================================================= */
+
+:root {
+  --team-color: #f4c76a;
+  --color-bg: #150a28;
+  --color-violet: #3a1679;
+  --color-violet-deep: #22094a;
+  --color-gold: #f4c76a;
+  --color-gold-light: #ffe3a3;
+  --color-cream: #fff4dc;
+  --color-lilac: #c7a6ff;
+  --font-display: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
+  --font-body: "Montserrat", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding: env(safe-area-inset-top, 0px) 16px env(safe-area-inset-bottom, 0px);
+  font-family: var(--font-body);
+  color: var(--color-cream);
+  background:
+    radial-gradient(ellipse at 50% 0%, #3b1478 0%, transparent 60%),
+    linear-gradient(180deg, var(--color-bg), #0b0515);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* ---------- Top bar ---------- */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+}
+
+.top-bar__title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.06em;
+  color: var(--color-gold);
+}
+
+.top-bar__team {
+  max-width: 60%;
+  overflow: hidden;
+  padding: 0.45em 1em 0.35em;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  background: rgba(34, 9, 74, 0.8);
+  border: 1px solid var(--team-color);
+  border-radius: 999px;
+}
+
+.connection-banner {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  color: #2b0f00;
+  background: var(--color-gold);
+  border-radius: 10px;
+}
+
+/* ---------- Screens ---------- */
+.screen {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding-bottom: 24px;
+}
+
+.screen__heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--color-gold-light);
+}
+
+.screen__note {
+  color: var(--color-lilac);
+  text-align: center;
+}
+
+/* ---------- Team picker ---------- */
+.team-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(420px, 100%);
+}
+
+.team-option {
+  padding: 18px 20px 14px;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--color-violet), var(--color-violet-deep));
+  border: 2px solid var(--team-color);
+  box-shadow: inset 8px 0 0 var(--team-color), 0 10px 24px rgba(0, 0, 0, 0.4);
+}
+
+.team-option:active {
+  transform: scale(0.98);
+}
+
+/* ---------- The big button ---------- */
+.buzz-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: min(78vw, 60vh, 360px);
+  aspect-ratio: 1;
+  padding: 20px;
+  cursor: pointer;
+  border-radius: 50%;
+  touch-action: manipulation; /* no double-tap zoom delay */
+  transition: transform 0.1s ease, filter 0.2s ease, background 0.2s ease;
+}
+
+.buzz-button__main {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 11vw, 3.6rem);
+  line-height: 0.95;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.buzz-button__sub {
+  max-width: 90%;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Ready: glowing, in the team's colour */
+.buzz-button[data-mode="ready"] {
+  color: #1a0833;
+  /* plain versions first, for older phones that don't understand color-mix() */
+  background: var(--team-color);
+  box-shadow: 0 0 60px var(--team-color), 0 20px 40px rgba(0, 0, 0, 0.5);
+  background: radial-gradient(circle at 50% 35%, #ffffff 0%, var(--team-color) 45%, color-mix(in srgb, var(--team-color) 60%, #000) 100%);
+  border: 6px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 0 10px color-mix(in srgb, var(--team-color) 35%, transparent), 0 0 60px var(--team-color), 0 20px 40px rgba(0, 0, 0, 0.5);
+  animation: ready-pulse 1.6s ease-in-out infinite;
+}
+
+.buzz-button[data-mode="ready"]:active {
+  transform: scale(0.95);
+}
+
+@keyframes ready-pulse {
+  50% { filter: brightness(1.12); }
+}
+
+.buzz-button[data-mode="sending"] {
+  color: #1a0833;
+  background: var(--team-color);
+  border: 6px solid #fff;
+  transform: scale(0.95);
+}
+
+/* You got in first! */
+.buzz-button[data-mode="won"] {
+  color: #2b0f00;
+  background: radial-gradient(circle at 50% 35%, #fffbe8 0%, var(--color-gold) 50%, #b87a1e 100%);
+  border: 6px solid #fffbe8;
+  box-shadow: 0 0 0 12px rgba(244, 199, 106, 0.35), 0 0 90px rgba(255, 214, 120, 0.9);
+  animation: won-pop 0.5s cubic-bezier(0.2, 1.5, 0.4, 1), won-glow 0.9s ease-in-out 0.5s infinite alternate;
+}
+
+@keyframes won-pop {
+  from { transform: scale(0.7); }
+}
+
+@keyframes won-glow {
+  to { box-shadow: 0 0 0 18px rgba(244, 199, 106, 0.25), 0 0 120px rgba(255, 214, 120, 1); }
+}
+
+/* Someone else got in first */
+.buzz-button[data-mode="locked"] {
+  color: rgba(255, 244, 220, 0.7);
+  cursor: not-allowed;
+  background: radial-gradient(circle at 50% 35%, #4a3a66 0%, #251a38 100%);
+  border: 6px solid rgba(199, 166, 255, 0.25);
+  box-shadow: none;
+}
+
+.buzz-status {
+  min-height: 1.4em;
+  margin: 0;
+  font-weight: 700;
+  color: var(--color-lilac);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .buzz-button {
+    animation: none !important;
+    transition: none;
+  }
+}

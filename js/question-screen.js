@@ -38,7 +38,9 @@ let isAnswerShown = false;
 
 /* ---------- Opening ---------- */
 
-function openQuestionScreen(categoryIndex, questionIndex) {
+// goldenWager (Golden Boost only): { teamId, amount } from the wager step,
+// so only that team can score, and they win or lose their wager.
+function openQuestionScreen(categoryIndex, questionIndex, goldenWager = null) {
   const question = getQuestion(categoryIndex, questionIndex);
 
   // Fill in the card
@@ -64,6 +66,18 @@ function openQuestionScreen(categoryIndex, questionIndex) {
   // The Golden Boost question gets a gold card and a badge (golden-boost.css)
   questionCard.classList.toggle("is-golden", Boolean(question.special));
   goldenBadge.hidden = !question.special;
+
+  // Points at stake for the ✓ / ✗ buttons (scoreboard.js)
+  const wagerTeam = goldenWager && getTeam(goldenWager.teamId);
+  if (wagerTeam) {
+    goldenBadge.textContent = `★ Golden Boost ★  ${wagerTeam.name} wagered ${formatMoney(goldenWager.amount)}`;
+    prepareAwards(goldenWager.amount, [wagerTeam.id]);
+  } else {
+    goldenBadge.textContent = "★ Golden Boost ★";
+    prepareAwards(question.value);
+  }
+
+  unlockBuzzers(); // buzzer-host.js — a fresh question means everyone can buzz again
 
   // Start in the "question only" state
   isAnswerShown = false;
@@ -100,6 +114,8 @@ function showAnswer() {
   // Once the answer is seen, the question counts as played — no more ×
   questionCloseButton.hidden = true;
 
+  showAwardRow(); // scoreboard.js — ✓ / ✗ for each team
+
   // On short screens the answer may be below the fold — bring it into view
   answerBlock.scrollIntoView({ block: "nearest", behavior: prefersReducedMotion ? "auto" : "smooth" });
 
@@ -122,6 +138,8 @@ async function closeQuestionScreen(markAsPlayed) {
   } else {
     cancelActiveQuestion();
   }
+  awardRowElement.hidden = true;
+  unlockBuzzers(); // buzzer-host.js — clear any buzz before going back to the board
 
   // Play the closing animation, then hide
   questionScreen.classList.remove("is-open");

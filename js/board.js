@@ -190,10 +190,11 @@ function handleTileClick(categoryIndex, questionIndex) {
   // Let the tile glow for a moment, then open the question (question-screen.js).
   // The hidden Golden Boost question gets its big reveal first (golden-boost.js).
   tilePickTimer = setTimeout(async () => {
+    let goldenWager = null;
     if (question.special) {
-      await playGoldenBoostIntro();
+      goldenWager = await playGoldenBoostIntro(question); // waits for the host to enter the wager
     }
-    openQuestionScreen(categoryIndex, questionIndex);
+    openQuestionScreen(categoryIndex, questionIndex, goldenWager);
   }, TILE_PICK_DELAY_MS);
 }
 

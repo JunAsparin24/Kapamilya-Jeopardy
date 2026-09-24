@@ -171,6 +171,142 @@
 }
 
 /* =========================================================
+   STAGE 2 — WHO FOUND IT, AND HOW MUCH ARE THEY WAGERING?
+   golden-boost.js adds .is-wagering when this step appears
+   ========================================================= */
+.golden-boost__content {
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+/* The title shrinks to make room for the wager step */
+.golden-boost__title,
+.golden-boost__eyebrow {
+  transition: font-size 0.5s var(--ease-out);
+}
+
+.golden-boost.is-wagering .golden-boost__title {
+  font-size: clamp(3rem, min(10vw, 13vh), 7rem);
+}
+
+.golden-boost.is-wagering .golden-boost__eyebrow {
+  font-size: clamp(1rem, 2vw, 1.4rem);
+}
+
+.golden-wager {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(640px, 100%);
+  margin: clamp(14px, 2.5vh, 28px) auto 0;
+  padding: clamp(16px, 2.5vh, 24px) clamp(16px, 3vw, 32px);
+  border-radius: var(--radius-lg);
+  background: rgba(20, 10, 2, 0.75);
+  border: 1px solid rgba(255, 214, 120, 0.5);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  animation: rise-in 0.5s var(--ease-out);
+}
+
+.golden-wager[hidden] {
+  display: none;
+}
+
+.golden-wager__prompt,
+.golden-wager__label {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-gold-light);
+}
+
+.golden-wager__label {
+  margin-top: 6px;
+}
+
+.golden-wager__teams {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.golden-wager__team {
+  padding: 0.5em 1.1em 0.4em;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+  letter-spacing: 0.06em;
+  color: var(--color-cream);
+  cursor: pointer;
+  border-radius: 999px;
+  background: rgba(34, 9, 74, 0.85);
+  border: 2px solid transparent;
+  box-shadow: inset 5px 0 0 var(--team-color);
+  transition: transform 0.15s var(--ease-out), border-color 0.2s ease, background 0.2s ease;
+}
+
+.golden-wager__team:hover {
+  transform: translateY(-2px);
+}
+
+.golden-wager__team[aria-checked="true"] {
+  color: var(--color-violet-deep);
+  background: var(--color-gold);
+  border-color: #fffbe8;
+  box-shadow: 0 0 20px rgba(255, 214, 120, 0.7);
+}
+
+.golden-wager__amount {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 16px;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--color-gold);
+  border-radius: var(--radius-md);
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(255, 214, 120, 0.5);
+}
+
+.golden-wager__amount:focus-within {
+  border-color: var(--color-gold-light);
+}
+
+.golden-wager__amount input {
+  width: 5.5ch;
+  padding: 0.1em 0;
+  font: inherit;
+  color: var(--color-gold-light);
+  text-align: center;
+  background: transparent;
+  border: 0;
+  outline: none;
+}
+
+.golden-wager__amount input::placeholder {
+  color: rgba(255, 227, 163, 0.35);
+}
+
+.golden-wager__hint {
+  min-height: 1.3em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 244, 220, 0.75);
+}
+
+.golden-wager .btn--primary {
+  margin-top: 6px;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+}
+
+.golden-wager__team:focus-visible {
+  outline: 3px solid var(--color-gold-light);
+  outline-offset: 3px;
+}
+
+/* =========================================================
    GOLDEN QUESTION CARD
    question-screen.js adds .is-golden to the card
    ========================================================= */

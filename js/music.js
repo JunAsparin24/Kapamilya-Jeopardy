@@ -12,6 +12,7 @@
    Sound effects:
      playRoundSting()       — a horn fanfare when Round 2 begins
      playGoldenBoostSting() — chimes + horns when the Golden Boost is found
+     playBuzzSound()        — "ding-ding!" when a team buzzes in
 
    Browsers only allow sound after the player clicks something,
    so the menu music starts on the first click anywhere.
@@ -225,6 +226,16 @@ function playGoldenBoostSting() {
   [96, 100, 103, 108].forEach((note, index) => {
     playNote({ note, time: hit + 0.15 + index * 0.12, duration: 0.04, wave: "sine", volume: 0.18, release: 0.6, output: effectsBus });
   });
+}
+
+// BUZZ: a bright two-note "ding-ding!" when a team buzzes in
+function playBuzzSound() {
+  if (!isMusicOn || !setUpAudio()) return;
+  audioContext.resume();
+
+  const start = audioContext.currentTime + 0.02;
+  playNote({ note: 88, time: start, duration: 0.08, wave: "triangle", volume: 0.5, release: 0.25, output: effectsBus });
+  playNote({ note: 93, time: start + 0.12, duration: 0.12, wave: "triangle", volume: 0.5, release: 0.4, output: effectsBus });
 }
 
 /* ---------- Menu music starts on the first click anywhere ---------- */

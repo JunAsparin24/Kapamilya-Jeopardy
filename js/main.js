@@ -109,6 +109,7 @@ async function handleStartGame() {
   playSong("game"); // music.js — crossfades from the menu music
 
   startNewGame(); // game.js — round 1, all questions unused
+  resetScores();  // teams.js — every team back to $0 (names are kept)
   await playRoundIntro();
 
   isTransitioning = false;
@@ -193,6 +194,7 @@ function fillRoundCompleteScreen() {
   document.getElementById("completed-round-number").textContent = gameState.currentRound;
   document.getElementById("next-round-number").textContent = nextRound;
   document.getElementById("continue-round-number").textContent = nextRound;
+  renderStandings(document.getElementById("round-standings")); // scoreboard.js
 
   const valuesList = document.getElementById("next-round-values");
   valuesList.innerHTML = "";
@@ -232,12 +234,10 @@ async function showGameOverScreen() {
   isTransitioning = false;
 }
 
+// "TEAM 1 WINS!" and the final scores, highest first (scoreboard.js)
 function fillGameOverScreen() {
-  const totals = getGameTotals(); // game.js
-
-  document.getElementById("final-rounds").textContent = totals.rounds;
-  document.getElementById("final-questions").textContent = totals.questions;
-  document.getElementById("final-total-value").textContent = formatMoney(totals.totalValue);
+  document.getElementById("winner-text").textContent = getWinnerText();
+  renderStandings(document.getElementById("final-standings"));
 }
 
 // One burst of falling gold/purple confetti on the Game Over screen
