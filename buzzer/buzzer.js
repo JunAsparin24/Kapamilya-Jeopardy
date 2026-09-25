@@ -101,7 +101,10 @@ function render() {
   const winner = latestState.locked ? latestState.winner : null;
   const alreadyGuessed = (latestState.blocked || []).includes(myTeamId);
 
-  if (latestState.open === false) {
+  if (latestState.open === false && latestState.timeUp) {
+    showButton("locked", "Time's up", "Nobody buzzed in 30 seconds");
+    buzzStatus.textContent = "Wait for the next question";
+  } else if (latestState.open === false) {
     showButton("locked", "Get ready", "Waiting for a question");
     buzzStatus.textContent = "";
   } else if (alreadyGuessed && (!winner || winner.id !== myTeamId)) {

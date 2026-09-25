@@ -17,6 +17,8 @@
      the next question
    - phones can only buzz while a question card is open; opening
      or closing a question clears any buzz automatically
+   - teams get 30 seconds to buzz (question-screen.js); when that
+     runs out the buzzers close for the rest of the question
    ========================================================= */
 
 const BUZZER_POLL_MS = 400;
@@ -50,6 +52,7 @@ let lastSeenBuzzId = null;   // to spot a *new* buzz
 let qrCodeMadeFor = "";
 let onlineQrMadeFor = "";
 let blockedTeamIds = [];     // teams that ran out of time on this question
+let isBuzzWindowOver = false; // the 30 seconds to buzz ran out — nobody can buzz on this question
 let answerTimer = null;      // { teamId, deadline, intervalId } while a team is answering
 
 /* ---------- Used by other files ---------- */
@@ -65,7 +68,11 @@ async function unlockBuzzers() {
   stopAnswerTimer();
   if (!isBuzzerConnected) return;
   try {
-    const body = JSON.stringify({ blocked: blockedTeamIds, open: isQuestionScreenOpen }); // question-screen.js
+    const body = JSON.stringify({
+      blocked: blockedTeamIds,
+      open: isQuestionScreenOpen && !isBuzzWindowOver, // question-screen.js
+      timeUp: isQuestionScreenOpen && isBuzzWindowOver, // phones show "Time's up"
+    });
     handleBuzzerState(await buzzerRequest("/api/unlock", { method: "POST", body }));
   } catch (error) {
     // The next check will show the server as offline
@@ -83,6 +90,14 @@ function sendQuestionToHostScreen(details) {
 // except any teams listed (on the Golden Boost, only one team plays)
 function resetBuzzersForQuestion(lockedOutTeamIds = []) {
   blockedTeamIds = [...lockedOutTeamIds];
+  isBuzzWindowOver = false;
+  unlockBuzzers();
+}
+
+// The 30 seconds to buzz ran out (question-screen.js): close the buzzers
+// for the rest of this question
+function closeBuzzersTimeUp() {
+  isBuzzWindowOver = true;
   unlockBuzzers();
 }
 

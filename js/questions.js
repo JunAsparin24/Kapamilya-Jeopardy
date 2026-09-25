@@ -11,6 +11,8 @@
        image: "assets/images/flags/italy.svg"
      Put picture files in assets/images/. "imageAlt" (optional) describes
      the picture for screen readers — never include the answer in it.
+     A picture question can have no text at all (question: ""), like the
+     Flags — then the card shows just the picture, bigger.
    - The hidden GOLDEN BOOST lands on a RANDOM question each round, so
      it's somewhere new every game. To pick the spot yourself instead,
      set RANDOM_GOLDEN_BOOST to false in game.js and put "special: true"
@@ -104,11 +106,11 @@ const gameData = {
       {
         name: "Flags",
         questions: [
-          { value: 200,  question: "Which country does this flag belong to?", answer: "Italy", image: "assets/images/flags/italy.svg", imageAlt: "A country's flag", special: false },
-          { value: 400,  question: "Which country does this flag belong to?", answer: "Switzerland", image: "assets/images/flags/switzerland.svg", imageAlt: "A country's flag", special: false },
-          { value: 600,  question: "Which country does this flag belong to?", answer: "Germany", image: "assets/images/flags/germany.svg", imageAlt: "A country's flag", special: false },
-          { value: 800,  question: "Which country does this flag belong to?", answer: "Nigeria", image: "assets/images/flags/nigeria.svg", imageAlt: "A country's flag", special: false },
-          { value: 1000, question: "Which country does this flag belong to?", answer: "Norway", image: "assets/images/flags/norway.svg", imageAlt: "A country's flag", special: false },
+          { value: 200,  question: "", answer: "Italy", image: "assets/images/flags/italy.svg", imageAlt: "A country's flag", special: false },
+          { value: 400,  question: "", answer: "Switzerland", image: "assets/images/flags/switzerland.svg", imageAlt: "A country's flag", special: false },
+          { value: 600,  question: "", answer: "Germany", image: "assets/images/flags/germany.svg", imageAlt: "A country's flag", special: false },
+          { value: 800,  question: "", answer: "Nigeria", image: "assets/images/flags/nigeria.svg", imageAlt: "A country's flag", special: false },
+          { value: 1000, question: "", answer: "Norway", image: "assets/images/flags/norway.svg", imageAlt: "A country's flag", special: false },
         ],
       },
       {
@@ -153,27 +155,27 @@ const finalWagerQuestions = [
     name: "Pop Culture",
     questions: [
       { question: "The very first Star Wars movie came out in 1977. Its full title is \"Star Wars: Episode IV – ______.\" Fill in the blank", answer: "A New Hope" },
-      { question: "In Harry Potter, what is the name of the house-elf who is set free when Harry tricks Lucius Malfoy into giving him a sock?", answer: "Dobby" },
-      { question: "What is the name of the hidden African country ruled by Black Panther in the Marvel movies?", answer: "Wakanda" },
-      { question: "In the TV show Friends, what is the name of the coffee shop where the group always hangs out?", answer: "Central Perk" },
-      { question: "Which Filipino band released the hit song \"Tadhana\" in 2012?", answer: "Up Dharma Down" },
+      { question: "In the 1997 movie Titanic, what is the full name of Leonardo DiCaprio's character?", answer: "Jack Dawson" },
+      { question: "RM, Jin, Suga, J-Hope, Jimin, V, and Jungkook are the seven members of which K-pop group?", answer: "BTS" },
+      { question: "In Harry Potter, what is the name of the sport played on flying broomsticks?", answer: "Quidditch" },
+      { question: "In Disney's Frozen, what is the name of the kingdom where Elsa and Anna live?", answer: "Arendelle" },
     ],
   },
   {
     name: "History",
     questions: [
       { question: "On what date did the Philippines proclaim its independence from Spain?", answer: "June 12, 1898" },
-      { question: "In what year did World War II end?", answer: "1945" },
-      { question: "Which Filipino national hero wrote the novels \"Noli Me Tángere\" and \"El Filibusterismo\"?", answer: "José Rizal" },
-      { question: "In what year did the Berlin Wall fall?", answer: "1989" },
-      { question: "Who was the first woman to become President of the Philippines?", answer: "Corazon Aquino" },
+      { question: "In what year did World War I begin?", answer: "1914" },
+      { question: "Who was the first Prime Minister of Canada?", answer: "Sir John A. Macdonald" },
+      { question: "In 1932, who became the first woman to fly solo across the Atlantic Ocean?", answer: "Amelia Earhart" },
+      { question: "Which French military leader crowned himself Emperor of France in 1804?", answer: "Napoleon Bonaparte" },
     ],
   },
   {
     name: "Miscellaneous",
     questions: [
       { question: "What is the name of the small dot above a lowercase \"i\" or \"j\"?", answer: "A tittle" },
-      { question: "How many hearts does an octopus have?", answer: "3" },
+      { question: "How many bones are in the adult human body?", answer: "206" },
       { question: "What is the only letter of the alphabet that doesn't appear in the name of any U.S. state?", answer: "Q" },
       { question: "What is the little plastic tip at the end of a shoelace called?", answer: "An aglet" },
       { question: "How many keys does a standard piano have?", answer: "88" },

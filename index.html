@@ -287,6 +287,12 @@
     <div class="question-screen__backdrop"></div>
 
     <article id="question-card" class="question-card">
+      <!-- 30 seconds to buzz (question-screen.js). Click it to pause or resume. -->
+      <button id="buzz-window" class="buzz-window" type="button" hidden title="Click to pause or resume the clock">
+        <span id="buzz-window-label" class="buzz-window__label">Time to buzz</span>
+        <span id="buzz-window-seconds" class="buzz-window__seconds">30</span>
+        <span class="buzz-window__bar" aria-hidden="true"><span id="buzz-window-fill" class="buzz-window__fill"></span></span>
+      </button>
       <button id="question-close-button" class="question-card__close" type="button"
               aria-label="Back to board — question stays available">&times;</button>
 

@@ -45,6 +45,7 @@ $state = @{
   buzzId = 0       # goes up every time someone buzzes or the host unlocks
   teams  = @()     # sent by the game: @( @{ id; name; color }, ... )
   blocked = @()    # ids of teams that already had their go at this question
+  timeUp = $false  # the 30 seconds to buzz ran out on this question
 }
 $lastSeenPlayers = @{}   # phone id -> when it last checked in
 $PlayerTimeoutSeconds = 6
@@ -268,6 +269,7 @@ function Get-FinalWagerState {
 function Get-PublicState {
   return @{
     open      = $state.open
+    timeUp    = [bool]$state.timeUp
     locked    = $state.locked
     winner    = $state.winner
     buzzId    = $state.buzzId
@@ -390,6 +392,7 @@ function Handle-Request($context) {
     # locked out (they already guessed this question)
     $body = Read-JsonBody $context
     $state.open = [bool]($body -and $body.open)
+    $state.timeUp = [bool]($body -and $body.timeUp)
     $state.blocked = @(if ($body -and $body.blocked) { $body.blocked | ForEach-Object { [string]$_ } })
     if ($state.locked) {
       $state.locked = $false

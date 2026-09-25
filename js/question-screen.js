@@ -6,6 +6,8 @@
             word by word, at about the pace it's read aloud
             (it pauses while a team is buzzed in; click the
             question to show it all at once)
+          → once it's all up, teams have 30 seconds to buzz
+            (see "30 seconds to buzz" below)
           → SHOW ANSWER → answer appears
           → BACK TO BOARD → question is marked as played
 
@@ -48,6 +50,28 @@ let revealWords = [];   // one <span> per word of the question
 let revealIndex = 0;    // how many words are showing
 let revealTimer = null; // null while paused (team buzzed in) or finished
 
+// 30 SECONDS TO BUZZ: the clock starts once the question has fully
+// appeared, pauses while a team is buzzed in (their own answer clock
+// takes over) and carries on if they get it wrong. At 0 the buzzers
+// close and nobody gets to answer. Click the clock to pause it.
+//
+// GOLDEN BOOST: no buzzing — the same clock becomes "Time to answer"
+// for the wagering team (ANSWER_TIME_MS, 15 seconds) and starts as
+// soon as the question is up. At 0 they get it wrong (lose the wager).
+const BUZZ_WINDOW_MS = 30000;
+const BUZZ_WINDOW_URGENT_MS = 10000; // turns red from here
+
+const buzzWindowElement = document.getElementById("buzz-window");
+const buzzWindowLabel = document.getElementById("buzz-window-label");
+const buzzWindowSeconds = document.getElementById("buzz-window-seconds");
+const buzzWindowFill = document.getElementById("buzz-window-fill");
+
+// What to start when the question finishes appearing (or null):
+// { mode: "buzz" } or, on a Golden Boost, { mode: "answer", teamId }
+let buzzWindowPending = null;
+// While it's running: { mode, teamId, totalMs, timeLeftMs, runningSince, hostPaused, intervalId, lastTick }
+let buzzWindow = null;
+
 /* ---------- Opening ---------- */
 
 // goldenWager (Golden Boost only): { teamId, amount } from the wager step,
@@ -74,6 +98,8 @@ function openQuestionScreen(categoryIndex, questionIndex, goldenWager = null) {
     questionImageElement.hidden = true;
   }
   questionCard.classList.toggle("has-image", Boolean(question.image));
+  // No question text (e.g. Flags): just the picture, shown bigger (question.css)
+  questionCard.classList.toggle("has-no-text", !question.question.trim());
 
   // The Golden Boost question gets a gold card and a badge (golden-boost.css)
   const isGolden = isGoldenBoost(categoryIndex, questionIndex); // game.js
@@ -89,6 +115,11 @@ function openQuestionScreen(categoryIndex, questionIndex, goldenWager = null) {
     goldenBadge.textContent = "★ Golden Boost ★";
     prepareAwards(question.value);
   }
+
+  // 30 seconds to buzz — or, on a Golden Boost, the wagering team's
+  // answer clock, which starts without anyone buzzing
+  stopBuzzWindow();
+  buzzWindowPending = wagerTeam ? { mode: "answer", teamId: wagerTeam.id } : { mode: "buzz" };
 
   // Start in the "question only" state
   isAnswerShown = false;
@@ -109,8 +140,9 @@ function openQuestionScreen(categoryIndex, questionIndex, goldenWager = null) {
   if (!isGolden) playQuestionOpenSound(); // sound-effects.js (the Golden Boost has its own sting)
 
   isQuestionScreenOpen = true;
-  // buzzer-host.js — opens the buzzers (Golden Boost: only for the wagering team)
-  const lockedOutTeamIds = wagerTeam ? getTeams().filter((team) => team.id !== wagerTeam.id).map((team) => team.id) : [];
+  // buzzer-host.js — opens the buzzers. Golden Boost: nobody buzzes (the
+  // wagering team's clock starts on its own), so every phone stays locked.
+  const lockedOutTeamIds = wagerTeam ? getTeams().map((team) => team.id) : [];
   resetBuzzersForQuestion(lockedOutTeamIds);
 
   // buzzer-host.js — the full question and answer, straight away, on the host's phone
@@ -177,7 +209,102 @@ function finishQuestionReveal() {
   revealWords.forEach((word) => word.classList.add("is-shown"));
   revealIndex = revealWords.length;
   questionCard.classList.remove("is-revealing");
+
+  // The whole question is up: the clock begins
+  if (buzzWindowPending && isQuestionScreenOpen && !isAnswerShown) startBuzzWindow(buzzWindowPending);
 }
+
+/* ---------- 30 seconds to buzz (Golden Boost: 15 seconds to answer) ---------- */
+
+function startBuzzWindow({ mode, teamId = null }) {
+  buzzWindowPending = null;
+  const totalMs = mode === "answer" ? ANSWER_TIME_MS : BUZZ_WINDOW_MS; // ANSWER_TIME_MS: buzzer-host.js
+  buzzWindow = { mode, teamId, totalMs, timeLeftMs: totalMs, runningSince: Date.now(), hostPaused: false, intervalId: setInterval(tickBuzzWindow, 100), lastTick: null };
+  buzzWindowElement.className = "buzz-window";
+  buzzWindowElement.hidden = false;
+  tickBuzzWindow();
+}
+
+function stopBuzzWindow() {
+  buzzWindowPending = null;
+  if (buzzWindow) clearInterval(buzzWindow.intervalId);
+  buzzWindow = null;
+  buzzWindowElement.hidden = true;
+}
+
+// How much of the 30 seconds is left right now
+function getBuzzWindowTimeLeft() {
+  if (!buzzWindow) return 0;
+  const runningFor = buzzWindow.runningSince ? Date.now() - buzzWindow.runningSince : 0;
+  return buzzWindow.timeLeftMs - runningFor;
+}
+
+function tickBuzzWindow() {
+  if (!buzzWindow) return;
+
+  // Paused while a team is answering (buzzer-host.js) or the host paused it.
+  // (On a Golden Boost nobody buzzes, so only the host can pause it.)
+  const isAnswerClock = buzzWindow.mode === "answer";
+  const teamIsAnswering = !isAnswerClock && Boolean(getBuzzedTeamId());
+  const shouldRun = !teamIsAnswering && !buzzWindow.hostPaused;
+  if (!shouldRun && buzzWindow.runningSince) {
+    buzzWindow.timeLeftMs = getBuzzWindowTimeLeft(); // bank the time used so far
+    buzzWindow.runningSince = null;
+  } else if (shouldRun && !buzzWindow.runningSince) {
+    buzzWindow.runningSince = Date.now();
+  }
+
+  const timeLeft = getBuzzWindowTimeLeft();
+  if (timeLeft <= 0) {
+    endBuzzWindow();
+    return;
+  }
+
+  const seconds = Math.ceil(timeLeft / 1000);
+  buzzWindowSeconds.textContent = seconds;
+  buzzWindowFill.style.width = `${(timeLeft / buzzWindow.totalMs) * 100}%`;
+  buzzWindowLabel.textContent =
+    teamIsAnswering ? "Answering…" :
+    buzzWindow.hostPaused ? "Paused" :
+    isAnswerClock ? "Time to answer" : "Time to buzz";
+  const urgentMs = isAnswerClock ? ANSWER_TIME_URGENT_MS : BUZZ_WINDOW_URGENT_MS; // buzzer-host.js
+  buzzWindowElement.classList.toggle("is-paused", !shouldRun);
+  buzzWindowElement.classList.toggle("is-urgent", shouldRun && timeLeft <= urgentMs);
+
+  // A soft tick for each of the last 5 seconds (sound-effects.js)
+  if (shouldRun && seconds <= 5 && seconds !== buzzWindow.lastTick) {
+    buzzWindow.lastTick = seconds;
+    playCountdownTick();
+  }
+}
+
+// Time ran out.
+//   Buzz clock: nobody buzzed — close the buzzers, no one gets to answer.
+//   Golden Boost answer clock: the wagering team didn't answer — they get it wrong.
+function endBuzzWindow() {
+  const { mode, teamId } = buzzWindow;
+  clearInterval(buzzWindow.intervalId);
+  buzzWindow = null;
+  buzzWindowElement.className = "buzz-window is-over";
+  buzzWindowSeconds.textContent = "0";
+  buzzWindowFill.style.width = "0%";
+  playTimesUpSound(); // music.js
+
+  if (mode === "answer") {
+    buzzWindowLabel.textContent = "Time's up";
+    markTeamWrong(teamId); // scoreboard.js — they lose their wager
+  } else {
+    buzzWindowLabel.textContent = "Time's up — no one buzzed";
+    closeBuzzersTimeUp(); // buzzer-host.js
+  }
+}
+
+// Click the clock to pause or resume it (e.g. to explain something)
+buzzWindowElement.addEventListener("click", () => {
+  if (!buzzWindow) return;
+  buzzWindow.hostPaused = !buzzWindow.hostPaused;
+  tickBuzzWindow();
+});
 
 function stopQuestionReveal() {
   clearTimeout(revealTimer);
@@ -209,6 +336,7 @@ function showAnswer() {
 
   finishQuestionReveal();
   stopAnswerTimer(); // buzzer-host.js — no more countdown once the answer is out
+  stopBuzzWindow();
   playAnswerRevealSound(); // sound-effects.js
   questionCard.classList.add("is-answer-shown"); // triggers the reveal animation
   answerBlock.hidden = false;
@@ -244,6 +372,7 @@ async function closeQuestionScreen(markAsPlayed) {
   }
   awardRowElement.hidden = true;
   stopQuestionReveal();
+  stopBuzzWindow();
   resetBuzzersForQuestion(); // buzzer-host.js — clears any buzz and closes the buzzers
   sendQuestionToHostScreen(null); // buzzer-host.js — host's phone goes back to "waiting"
 

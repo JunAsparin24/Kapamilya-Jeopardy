@@ -23,6 +23,7 @@ function getRules(segment) {
     return `${formatMoney(Math.min(...values))}–${formatMoney(Math.max(...values))}`;
   };
   const answerSeconds = Math.round(ANSWER_TIME_MS / 1000); // buzzer-host.js
+  const buzzSeconds = Math.round(BUZZ_WINDOW_MS / 1000);   // question-screen.js
   const categories = finalWagerQuestions.map((item) => item.name).join(", "); // questions.js
   const finalWagerTime = `${Math.floor(FINAL_WAGER_SECONDS / 60)}:${String(FINAL_WAGER_SECONDS % 60).padStart(2, "0")}`;
 
@@ -33,11 +34,11 @@ function getRules(segment) {
         title: "How to Play",
         rules: [
           `The team that **has the board ♛** picks a category and a value (${valueRange(1)}).`,
-          "When the question shows up, **buzz in on your phone**. The first team to buzz gets to answer.",
+          `**Buzz in on your phone** — first to buzz answers. You have **${buzzSeconds} seconds** to buzz; if nobody does, **no one answers**.`,
           `After you buzz, you have **${answerSeconds} seconds** to answer out loud.`,
           "**Right:** win the points and the board. **Wrong:** lose the points, and the other teams can buzz in.",
           "If nobody gets it, the board stays with the team that picked.",
-          "Somewhere on the board hides the **★ Golden Boost** — the team that finds it wagers up to their points, and only they can answer.",
+          `Somewhere hides the **★ Golden Boost** — the team that finds it wagers up to their points, then answers alone in **${answerSeconds} seconds**.`,
         ],
         button: "Start Round 1",
       };
@@ -48,6 +49,7 @@ function getRules(segment) {
         title: "Double Up",
         rules: [
           `Same rules as Round 1, but every question is worth **double** (${valueRange(2)}).`,
+          `You still have **${buzzSeconds} seconds to buzz** on each question.`,
           "A **new Golden Boost** is hiding somewhere on this board.",
           "Wrong answers still cost you points — **buzz carefully!**",
           "The top teams after this round have the best shot at the end.",
