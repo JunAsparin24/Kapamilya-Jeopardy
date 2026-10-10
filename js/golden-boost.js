@@ -9,7 +9,8 @@
               "GOLDEN BOOST" title (plus a sound from music.js)
      Stage 2: the team that has the board found it (if nobody has
               the board yet, the host picks the team). The host types
-              in their wager (up to the points they have), then
+              in their wager (up to the points they have, or the
+              question's value if that's more), then
               clicks REVEAL QUESTION
 
    Nothing about the question is shown until that click, so teams
@@ -125,11 +126,11 @@ function selectWagerTeam(teamId) {
   goldenWagerAmount.focus({ preventScroll: true });
 }
 
-// A team can wager up to the points it already has. A team on $0 (or
-// below) can wager up to the question's own value, so it still has
-// something to play for.
+// A team can wager up to the points it already has. A team with less
+// than the question is worth can wager up to the question's own value,
+// so it still has something to play for.
 function getMaxWager(team) {
-  return team.score > 0 ? team.score : currentGoldenQuestion.value;
+  return Math.max(team.score, currentGoldenQuestion.value);
 }
 
 function updateWagerHint() {
@@ -148,8 +149,8 @@ function updateWagerHint() {
   // If a bigger wager was typed before picking this team, bring it down
   if (Number(goldenWagerAmount.value) > maxWager) goldenWagerAmount.value = String(maxWager);
 
-  goldenWagerHint.textContent = team.score > 0
-    ? `${team.name} has ${formatMoney(team.score)} · can wager up to ${formatMoney(maxWager)}`
+  goldenWagerHint.textContent = team.score > currentGoldenQuestion.value
+    ?`${team.name} has ${formatMoney(team.score)} · can wager up to ${formatMoney(maxWager)}`
     : `${team.name} has ${formatMoney(team.score)} · can wager up to ${formatMoney(maxWager)} (the question's value)`;
 }
 

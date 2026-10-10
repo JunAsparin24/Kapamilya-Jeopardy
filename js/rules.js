@@ -36,9 +36,9 @@ function getRules(segment) {
           `The team that **has the board ♛** picks a category and a value (${valueRange(1)}).`,
           `**Buzz in on your phone** — first to buzz answers. You have **${buzzSeconds} seconds** to buzz; if nobody does, **no one answers**.`,
           `After you buzz, you have **${answerSeconds} seconds** to answer out loud.`,
-          "**Right:** win the points and the board. **Wrong:** lose the points, and the other teams can buzz in.",
+          "**Right:** win the points and the board. **Wrong:** lose the points, and the other teams can buzz in. You can buzz again once another team gets it wrong too.",
           "If nobody gets it, the board stays with the team that picked.",
-          `Somewhere hides the **★ Golden Boost** — the team that finds it wagers up to their points, then answers alone in **${answerSeconds} seconds**.`,
+          `Somewhere hides the **★ Golden Boost** — the team that finds it wagers up to their points (or the question's value, if they have less), then answers alone in **${answerSeconds} seconds**.`,
         ],
         button: "Start Round 1",
       };
@@ -62,13 +62,13 @@ function getRules(segment) {
         eyebrow: "Next up",
         title: "Final Wager",
         rules: [
-          `All teams agree on **one category**: ${categories}.`,
-          "**Secretly wager on your phone** — anything from 0 up to the points you have.",
+          `The host **picks one category at random** from: ${categories}.`,
+          "**Secretly wager on your phone** — anything from 0 up to the points you have, once you know the category.",
           `Then the question appears. You have **${finalWagerTime}** to write your answer on your **whiteboard**.`,
           "**Right:** add your wager. **Wrong:** lose it.",
           "The **top two teams** after Final Wager go to Fast Money!",
         ],
-        button: "Choose the category",
+        button: "Pick the category",
       };
 
     case "fastMoney":

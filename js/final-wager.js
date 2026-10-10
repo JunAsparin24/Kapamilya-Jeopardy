@@ -2,8 +2,8 @@
    final-wager.js — FINAL WAGER, after the last round and
    before Fast Money. The questions are in questions.js.
 
-     1. CATEGORY: the teams agree on one of the categories and
-                  the host clicks it
+     1. CATEGORY: the host presses "Pick a random category"; a
+                  highlight spins across the cards and lands on one
      2. WAGER:    each team types its wager on their phone (up to
                   the points they have). Nobody sees the amounts;
                   the screen only shows who has locked in
@@ -26,6 +26,13 @@ const finalWagerTimer = document.getElementById("fw-timer");
 const finalWagerAnswerElement = document.getElementById("fw-answer");
 const finalWagerTeams = document.getElementById("fw-teams");
 const finalWagerBackButton = document.getElementById("fw-back-button");
+const finalWagerPickButton = document.getElementById("fw-pick-button");
+
+// The random pick: the highlight hops from card to card, slowing down
+const FW_PICK_FIRST_HOP_MS = 70;
+const FW_PICK_SLOWDOWN = 1.09;   // each hop takes this much longer than the last
+const FW_PICK_LAPS = 2;          // full trips around the cards before landing
+const FW_PICK_PAUSE_MS = 1100;   // how long the winner stays lit before moving on
 const finalWagerTimerButton = document.getElementById("fw-timer-button");
 const finalWagerAnswerButton = document.getElementById("fw-answer-button");
 const finalWagerNextButton = document.getElementById("fw-next-button");
@@ -51,6 +58,7 @@ function prepareFinalWager() {
     step: "category",
     usePhones: isBuzzerConnected, // buzzer-host.js
     categoryIndex: null,
+    isPicking: false,   // the random pick is spinning
     // A random question from each category, picked fresh every game
     // (questionPicks[categoryIndex] = which question in that category)
     questionPicks: finalWagerQuestions.map((category) => Math.floor(Math.random() * category.questions.length)),
@@ -106,7 +114,7 @@ function renderFinalWager() {
   finalWagerAnswerElement.hidden = !finalWager.answerShown;
 
   finalWagerStatus.textContent = {
-    category: "Teams: agree on ONE category",
+    category: finalWager.isPicking ? "Picking the category…" : "One of these will be the category",
     wager: finalWager.usePhones
       ? "Enter your wager on your phone — up to the points you have"
       : "Decide your wager — up to the points you have. Tell the host at the reveal",
@@ -117,6 +125,8 @@ function renderFinalWager() {
   renderFinalWagerTeams();
 
   // Buttons for this step
+  finalWagerPickButton.hidden = step !== "category";
+  finalWagerPickButton.disabled = finalWager.isPicking;
   finalWagerBackButton.hidden = step !== "wager";
   finalWagerTimerButton.hidden = step !== "question";
   finalWagerAnswerButton.hidden = step !== "question" && step !== "reveal";
@@ -130,17 +140,52 @@ function renderFinalWager() {
   updateFinalWagerTimer();
 }
 
+// The cards are just for show — the random pick chooses one
 function renderFinalWagerCategories() {
+  if (finalWager.isPicking) return; // the spin is lighting up these cards
   finalWagerCategoryCards.innerHTML = "";
+  finalWagerCategoryCards.classList.toggle("fw-categories--many", finalWagerQuestions.length > 3);
   finalWagerQuestions.forEach((category, index) => {
-    const card = document.createElement("button");
-    card.type = "button";
+    const card = document.createElement("div");
     card.className = "fw-category-card";
     card.style.setProperty("--card-delay", `${index * 120}ms`);
     card.textContent = category.name;
-    card.addEventListener("click", () => chooseFinalWagerCategory(index));
     finalWagerCategoryCards.appendChild(card);
   });
+}
+
+// "Pick a random category": the highlight hops around the cards,
+// slowing down until it lands on the chosen one
+async function pickRandomFinalWagerCategory() {
+  if (!finalWager || finalWager.step !== "category" || finalWager.isPicking) return;
+
+  const pick = finalWager; // if the game moves on mid-spin, stop quietly
+  const cards = [...finalWagerCategoryCards.children];
+  const pickedIndex = Math.floor(Math.random() * cards.length);
+  pick.isPicking = true;
+  renderFinalWager();
+
+  if (!prefersReducedMotion) { // main.js
+    const hops = FW_PICK_LAPS * cards.length + pickedIndex;
+    let delay = FW_PICK_FIRST_HOP_MS;
+    for (let hop = 0; hop <= hops; hop++) {
+      cards.forEach((card, index) => card.classList.toggle("is-highlighted", index === hop % cards.length));
+      playCountdownTick(false); // sound-effects.js
+      await wait(delay); // main.js
+      if (finalWager !== pick) return;
+      delay *= FW_PICK_SLOWDOWN;
+    }
+  }
+
+  cards.forEach((card, index) => {
+    card.classList.toggle("is-highlighted", false);
+    card.classList.toggle("is-picked", index === pickedIndex);
+  });
+  await wait(FW_PICK_PAUSE_MS);
+  if (finalWager !== pick) return;
+
+  pick.isPicking = false;
+  chooseFinalWagerCategory(pickedIndex);
 }
 
 // Wager + question steps: who has locked in. Reveal step: wagers and ✓ / ✗.
@@ -400,6 +445,7 @@ function updateFinalWagerTimer() {
 
 /* ---------- Buttons ---------- */
 
+finalWagerPickButton.addEventListener("click", pickRandomFinalWagerCategory);
 finalWagerBackButton.addEventListener("click", backToFinalWagerCategories);
 finalWagerTimerButton.addEventListener("click", toggleFinalWagerTimer);
 finalWagerAnswerButton.addEventListener("click", () => {

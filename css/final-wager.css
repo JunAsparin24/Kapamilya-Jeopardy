@@ -58,7 +58,7 @@
   text-transform: uppercase;
   color: var(--color-gold);
   text-shadow: 3px 3px 0 #173d2e, 5px 5px 0 #0e271d;
-  cursor: pointer;
+  cursor: default;
   border-radius: var(--radius-lg);
   background: linear-gradient(160deg, #3f8a68 0%, #2f7556 45%, #1f5a42 100%);
   border: 1px solid rgba(15, 42, 32, 0.6);
@@ -77,14 +77,34 @@
   pointer-events: none;
 }
 
-.fw-category-card:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(244, 199, 106, 0.35);
+/* More than three categories: two rows of shorter cards */
+.fw-categories--many .fw-category-card {
+  min-height: clamp(110px, 22vh, 220px);
+  font-size: clamp(1.2rem, min(2.2vw, 4vh), 2.3rem);
 }
 
-.fw-category-card:focus-visible {
-  outline: 3px solid var(--color-gold-light);
-  outline-offset: 4px;
+/* The random pick: the highlight hops between cards... */
+.fw-category-card.is-highlighted {
+  transform: scale(1.04);
+  background: linear-gradient(160deg, #f6d27e 0%, #e7b64f 55%, #c8932f 100%);
+  color: #173d2e;
+  text-shadow: none;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5), 0 0 48px rgba(244, 199, 106, 0.7);
+  transition: none;
+}
+
+/* ...and lands on the winner */
+.fw-category-card.is-picked {
+  transform: scale(1.08);
+  background: linear-gradient(160deg, #f6d27e 0%, #e7b64f 55%, #c8932f 100%);
+  color: #173d2e;
+  text-shadow: none;
+  box-shadow: 0 28px 64px rgba(0, 0, 0, 0.55), 0 0 70px rgba(244, 199, 106, 0.9);
+  animation: fw-picked-pulse 0.5s ease-in-out 2;
+}
+
+@keyframes fw-picked-pulse {
+  50% { transform: scale(1.13); }
 }
 
 /* ---------- Category, question, timer, answer ---------- */

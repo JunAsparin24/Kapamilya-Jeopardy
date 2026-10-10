@@ -153,6 +153,7 @@ function openQuestionScreen(categoryIndex, questionIndex, goldenWager = null) {
     question: question.question,
     answer: question.answer,
     image: question.image || null,
+    wordInfo: question.wordInfo || null, // Spelling Bee: definition, origin, sentence
     golden: isGolden ? goldenBadge.textContent : null,
   });
   showAnswerButton.focus({ preventScroll: true });

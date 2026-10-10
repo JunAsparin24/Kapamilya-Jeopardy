@@ -108,8 +108,16 @@ function render() {
     showButton("locked", "Get ready", "Waiting for a question");
     buzzStatus.textContent = "";
   } else if (alreadyGuessed && (!winner || winner.id !== myTeamId)) {
-    showButton("locked", "Locked", "Your team can't buzz on this question");
-    buzzStatus.textContent = "Wait for the next question";
+    // Everyone blocked = a Golden Boost (one team plays, no buzzing).
+    // Otherwise your team got it wrong and waits for another team to try.
+    const everyoneBlocked = teams.every((team) => (latestState.blocked || []).includes(team.id));
+    if (everyoneBlocked) {
+      showButton("locked", "Locked", "Your team can't buzz on this question");
+      buzzStatus.textContent = "Wait for the next question";
+    } else {
+      showButton("locked", "Locked", "Another team has to try first");
+      buzzStatus.textContent = "You can buzz again after another team gets it wrong";
+    }
   } else if (!winner) {
     showButton("ready", "Tap to answer", "");
     buzzStatus.textContent = "";

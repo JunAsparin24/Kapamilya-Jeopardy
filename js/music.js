@@ -1,13 +1,12 @@
 /* =========================================================
    music.js — Background music and sound effects.
 
-   There are no audio files: everything is played live by the
-   browser's built-in synthesizer (the Web Audio API), so it's
-   all original.
+   The background music is one MP3 (MUSIC_FILE below) that loops
+   on every screen. To use a different song, put the file in
+   assets/audio/ and change MUSIC_FILE.
 
-   Two songs (see SONGS below):
-     menu — a brassy, horn-heavy fanfare for the home screen
-     game — a bouncy groove for the board
+   The sound effects have no audio files: they're played live by
+   the browser's built-in synthesizer (the Web Audio API).
 
    Sound effects here:
      playGoldenBoostSting() — chimes + horns when the Golden Boost is found
@@ -23,90 +22,33 @@
      MUSIC_VOLUME        — normal loudness (0 to 1)
      MUSIC_DUCKED_VOLUME — loudness while a question is open
      SOUND_EFFECT_VOLUME — loudness of the round fanfare
-     each song's "tempo" — speed in beats per minute
    ========================================================= */
 
-const MUSIC_VOLUME = 0.22;
-const MUSIC_DUCKED_VOLUME = 0.012; // barely audible — set to 0 for full silence
+const MUSIC_FILE = "assets/audio/game-show-theme.mp3";
+
+const MUSIC_VOLUME = 0.35;
+const MUSIC_DUCKED_VOLUME = 0.02; // barely audible — set to 0 for full silence
 const SOUND_EFFECT_VOLUME = 0.5;
 const SOUND_PREFERENCE_KEY = "trivia-night-music"; // remembers mute between visits
-
-// One "step" is an eighth note. 8 steps per bar, 4 bars per loop.
-const STEPS_PER_BAR = 8;
-const STEPS_PER_LOOP = 32;
-
-/* =========================================================
-   THE SONGS
-   Notes are MIDI numbers: 60 = middle C, +1 = one semitone up,
-   +12 = one octave up.
-   ========================================================= */
-const SONGS = {
-  // Home screen: big horn chords going C → F → Ab → Bb (a classic
-  // "fanfare" move), with a horn melody every other time around.
-  menu: {
-    tempo: 124,
-    chords: [
-      { bass: 36, notes: [60, 64, 67, 72] }, // C
-      { bass: 41, notes: [60, 65, 69, 72] }, // F
-      { bass: 44, notes: [60, 63, 68, 72] }, // Ab
-      { bass: 46, notes: [62, 65, 70, 74] }, // Bb
-    ],
-    bassPattern: [0, 12, 0, 12, 0, 12, 7, 12], // semitones above each bar's bass note
-    stabSteps: [0, 3, 6],                     // when the chord hits play in each bar
-    stabInstrument: "brass",
-    melody: [                                  // [step in loop, note, length in steps]
-      [0, 67, 1], [1, 72, 1], [2, 76, 1], [3, 79, 3], [6, 76, 1], [7, 79, 1],
-      [8, 81, 3], [11, 79, 1], [12, 77, 2], [14, 72, 2],
-      [16, 75, 2], [18, 80, 2], [20, 79, 1], [21, 75, 1], [22, 72, 2],
-      [24, 74, 1], [25, 77, 1], [26, 82, 2], [28, 84, 4],
-    ],
-    melodyInstrument: "brass",
-    kickSteps: [0, 3, 4],
-    snareSteps: [2, 6],
-    crashEveryLoop: true,
-  },
-
-  // Game board: a lighter, bouncy groove (Fmaj7 → Dm7 → Gm7 → C7)
-  game: {
-    tempo: 118,
-    chords: [
-      { bass: 41, notes: [57, 60, 64, 65] }, // Fmaj7
-      { bass: 38, notes: [57, 60, 62, 65] }, // Dm7
-      { bass: 43, notes: [58, 62, 65, 67] }, // Gm7
-      { bass: 36, notes: [58, 60, 64, 67] }, // C7
-    ],
-    bassPattern: [0, 0, 7, 12, 0, 7, 12, 7],
-    stabSteps: [1, 3, 6],
-    stabInstrument: "synth",
-    melody: [
-      [0, 72, 1], [1, 69, 1], [2, 72, 1], [3, 77, 2], [5, 76, 1], [6, 72, 2],
-      [8, 74, 1], [9, 77, 1], [10, 81, 2], [12, 79, 1], [13, 77, 1], [14, 74, 2],
-      [16, 70, 1], [17, 74, 1], [18, 79, 2], [20, 77, 1], [21, 74, 1], [22, 70, 2],
-      [24, 72, 1], [25, 76, 1], [26, 79, 1], [27, 82, 2], [29, 81, 1], [30, 79, 2],
-    ],
-    melodyInstrument: "synth",
-    kickSteps: [0, 4],
-    snareSteps: [2, 6],
-    crashEveryLoop: false,
-  },
-};
 
 /* ---------- Player state ---------- */
 
 let audioContext = null;
-let masterGain = null;     // music volume (fades, ducking)
-let instrumentBus = null;  // every music instrument plugs in here
+let masterGain = null;     // the synthesizer's own volume (not used by the MP3)
+let instrumentBus = null;  // default output for synthesizer instruments
 let effectsBus = null;     // sound effects plug in here (not affected by ducking)
 let noiseBuffer = null;
 
-let currentSongName = "menu"; // the song that *should* be playing for this screen
-let activeSong = null;        // the song actually being played right now
-let schedulerTimer = null;
-let songSwitchTimer = null;
+const musicElement = new Audio(MUSIC_FILE);
+musicElement.loop = true;
+musicElement.preload = "auto";
+musicElement.volume = 0;
+
+let currentSongName = "menu"; // kept for main.js — every screen plays the same MP3
+let isMusicPlaying = false;
+let musicFadeTimer = null;
+let musicPauseTimer = null;
 let duckRestoreTimer = null;
-let nextStepTime = 0;
-let currentStep = 0;
-let loopCount = 0;
 let isMusicDucked = false;
 let isMusicOn = loadSoundPreference();
 
@@ -114,38 +56,35 @@ let isMusicOn = loadSoundPreference();
    PUBLIC FUNCTIONS (used by main.js and question-screen.js)
    ========================================================= */
 
-// Plays a song ("menu" or "game"), crossfading if another one is playing.
+// Starts the background music (main.js passes "menu" or "game"; both
+// play the same song, so moving between screens doesn't restart it)
 function playSong(songName) {
   currentSongName = songName;
-  if (!isMusicOn || !setUpAudio()) return;
+  if (!isMusicOn) return;
+  if (setUpAudio()) audioContext.resume(); // for the sound effects
 
-  audioContext.resume();
-  clearTimeout(songSwitchTimer);
-
-  if (schedulerTimer !== null && activeSong === SONGS[songName]) return; // already playing
-
-  if (schedulerTimer !== null) {
-    // Fade the old song out, then start the new one
-    fadeMusicTo(0, 0.35);
-    songSwitchTimer = setTimeout(() => beginSong(songName), 400);
-  } else {
-    beginSong(songName);
+  clearTimeout(musicPauseTimer);
+  if (!isMusicPlaying) {
+    isMusicPlaying = true;
+    musicElement.play().catch(() => {
+      isMusicPlaying = false; // blocked until the player clicks something
+    });
   }
+  fadeMusicTo(currentTargetVolume(), 0.8);
 }
 
 function stopMusic() {
-  clearTimeout(songSwitchTimer);
-  if (schedulerTimer === null) return;
-
-  clearInterval(schedulerTimer);
-  schedulerTimer = null;
+  if (!isMusicPlaying) return;
+  isMusicPlaying = false;
   fadeMusicTo(0, 0.3);
+  clearTimeout(musicPauseTimer);
+  musicPauseTimer = setTimeout(() => musicElement.pause(), 350);
 }
 
 // Called by the ♪ button
 function toggleMusic() {
   // Sound is "on" but hasn't been able to start yet → start it
-  if (isMusicOn && schedulerTimer === null) {
+  if (isMusicOn && !isMusicPlaying) {
     playSong(currentSongName);
     return;
   }
@@ -165,9 +104,27 @@ function toggleMusic() {
 // Fades the music almost to silence while a question is on screen
 function setMusicDucked(shouldDuck) {
   isMusicDucked = shouldDuck;
-  if (schedulerTimer !== null) {
+  if (isMusicPlaying) {
     fadeMusicTo(currentTargetVolume(), shouldDuck ? 0.5 : 0.8);
   }
+}
+
+function currentTargetVolume() {
+  return isMusicDucked ? MUSIC_DUCKED_VOLUME : MUSIC_VOLUME;
+}
+
+// Smoothly changes the music's volume over a number of seconds
+function fadeMusicTo(volume, seconds) {
+  clearInterval(musicFadeTimer);
+  const startVolume = musicElement.volume;
+  const startTime = performance.now();
+  const durationMs = Math.max(seconds * 1000, 1);
+
+  musicFadeTimer = setInterval(() => {
+    const progress = Math.min((performance.now() - startTime) / durationMs, 1);
+    musicElement.volume = startVolume + (volume - startVolume) * progress;
+    if (progress === 1) clearInterval(musicFadeTimer);
+  }, 30);
 }
 
 // GOLDEN BOOST sound: a whoosh, a fast glittering run of chimes up the
@@ -230,7 +187,7 @@ function handleFirstInteraction(event) {
 
   document.removeEventListener("pointerdown", handleFirstInteraction);
   document.removeEventListener("keydown", handleFirstInteraction);
-  if (schedulerTimer === null) {
+  if (!isMusicPlaying) {
     playSong(currentSongName);
   }
 }
@@ -307,102 +264,6 @@ function setUpAudio() {
   }
 
   return true;
-}
-
-function beginSong(songName) {
-  activeSong = SONGS[songName];
-  currentStep = 0;
-  loopCount = 0;
-  nextStepTime = audioContext.currentTime + 0.05;
-
-  clearInterval(schedulerTimer);
-  // Every 25ms, queue up any notes due in the next ~0.15s.
-  // (Scheduling slightly ahead keeps the rhythm steady.)
-  schedulerTimer = setInterval(scheduleUpcomingSteps, 25);
-  fadeMusicTo(currentTargetVolume(), 0.8);
-}
-
-function currentTargetVolume() {
-  return isMusicDucked ? MUSIC_DUCKED_VOLUME : MUSIC_VOLUME;
-}
-
-function fadeMusicTo(volume, seconds) {
-  if (!audioContext) return;
-  const now = audioContext.currentTime;
-  masterGain.gain.cancelScheduledValues(now);
-  masterGain.gain.setValueAtTime(masterGain.gain.value, now);
-  masterGain.gain.linearRampToValueAtTime(volume, now + seconds);
-}
-
-function scheduleUpcomingSteps() {
-  const now = audioContext.currentTime;
-  const stepSeconds = 60 / activeSong.tempo / 2;
-
-  // If the tab was in the background and we fell behind, skip ahead
-  // instead of playing a burst of missed notes.
-  if (nextStepTime < now - 0.2) {
-    nextStepTime = now + 0.05;
-  }
-
-  while (nextStepTime < now + 0.15) {
-    playStep(activeSong, currentStep, nextStepTime, stepSeconds);
-    nextStepTime += stepSeconds;
-    currentStep += 1;
-
-    if (currentStep === STEPS_PER_LOOP) {
-      currentStep = 0;
-      loopCount += 1;
-    }
-  }
-}
-
-// Plays everything that happens on one eighth-note step of a song
-function playStep(song, step, time, stepSeconds) {
-  const bar = Math.floor(step / STEPS_PER_BAR);
-  const stepInBar = step % STEPS_PER_BAR;
-  const chord = song.chords[bar];
-
-  // Drums
-  if (song.kickSteps.includes(stepInBar)) playKick(time);
-  if (song.snareSteps.includes(stepInBar)) playSnare(time);
-  playHiHat(time, stepInBar % 2 === 1 ? 0.09 : 0.05);
-  if (song.crashEveryLoop && step === 0) playCrash(time, 0.12);
-
-  // Bass
-  playNote({
-    note: chord.bass + song.bassPattern[stepInBar],
-    time,
-    duration: stepSeconds * 0.85,
-    wave: "sawtooth",
-    volume: 0.32,
-    filterFrequency: 520,
-  });
-
-  // Chord stabs
-  if (song.stabSteps.includes(stepInBar)) {
-    if (song.stabInstrument === "brass") {
-      playBrass({ notes: chord.notes, time, duration: 0.2, volume: 0.3 });
-    } else {
-      chord.notes.forEach((note) => {
-        playNote({ note, time, duration: 0.11, wave: "sawtooth", volume: 0.07, filterFrequency: 2400 });
-      });
-    }
-  }
-
-  // Melody every other loop; a soft bell arpeggio on the loops in between
-  if (loopCount % 2 === 0) {
-    song.melody.filter(([melodyStep]) => melodyStep === step).forEach(([, note, length]) => {
-      const duration = stepSeconds * length * 0.9;
-      if (song.melodyInstrument === "brass") {
-        playBrass({ notes: [note + 12], time, duration, volume: 0.22 });
-      } else {
-        playNote({ note, time, duration, wave: "square", volume: 0.09, filterFrequency: 3200 });
-      }
-    });
-  } else if (stepInBar % 2 === 0) {
-    const arpeggioNote = chord.notes[(stepInBar / 2) % chord.notes.length] + 12;
-    playNote({ note: arpeggioNote, time, duration: 0.35, wave: "sine", volume: 0.12, release: 0.3 });
-  }
 }
 
 /* ---------- Instruments ---------- */

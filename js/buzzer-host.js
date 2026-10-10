@@ -13,8 +13,10 @@
    - "Unlock buzzers" (or the U key) lets everyone buzz again
    - on an open question, the team that buzzed has 15 seconds to
      answer. If time runs out they get it wrong (✗), and the buzzers
-     unlock for everyone else — that team stays locked out until
-     the next question
+     unlock for everyone else
+   - a team that got it wrong (time ran out, or the host unlocked)
+     can buzz again on the same question, but only after another
+     team has had a go and got it wrong too
    - phones can only buzz while a question card is open; opening
      or closing a question clears any buzz automatically
    - teams get 30 seconds to buzz (question-screen.js); when that
@@ -51,7 +53,8 @@ let buzzerState = null;      // the latest state from the server
 let lastSeenBuzzId = null;   // to spot a *new* buzz
 let qrCodeMadeFor = "";
 let onlineQrMadeFor = "";
-let blockedTeamIds = [];     // teams that ran out of time on this question
+let lockedOutTeamIds = [];   // teams that can't buzz at all on this question (Golden Boost)
+let lastWrongTeamId = null;  // the last team to get it wrong — waits until another team tries
 let isBuzzWindowOver = false; // the 30 seconds to buzz ran out — nobody can buzz on this question
 let answerTimer = null;      // { teamId, deadline, intervalId } while a team is answering
 
@@ -62,14 +65,23 @@ function getBuzzedTeamId() {
   return buzzerState && buzzerState.locked && buzzerState.winner ? buzzerState.winner.id : null;
 }
 
-// Unlocks for every team except the ones that already ran out of time.
-// Phones can only buzz while a question card is open.
+// The host's "Unlock buzzers" (button or U key): the team that buzzed got
+// it wrong, so they sit out until another team has a go
+function unlockAfterWrongAnswer() {
+  const teamId = getBuzzedTeamId();
+  if (teamId) lastWrongTeamId = teamId;
+  unlockBuzzers();
+}
+
+// Unlocks for every team except the locked-out ones and the last team
+// to get it wrong. Phones can only buzz while a question card is open.
 async function unlockBuzzers() {
   stopAnswerTimer();
   if (!isBuzzerConnected) return;
+  const blocked = lastWrongTeamId ? [...lockedOutTeamIds, lastWrongTeamId] : lockedOutTeamIds;
   try {
     const body = JSON.stringify({
-      blocked: blockedTeamIds,
+      blocked,
       open: isQuestionScreenOpen && !isBuzzWindowOver, // question-screen.js
       timeUp: isQuestionScreenOpen && isBuzzWindowOver, // phones show "Time's up"
     });
@@ -88,8 +100,9 @@ function sendQuestionToHostScreen(details) {
 
 // A new question (or back to the board): everyone can buzz again,
 // except any teams listed (on the Golden Boost, only one team plays)
-function resetBuzzersForQuestion(lockedOutTeamIds = []) {
-  blockedTeamIds = [...lockedOutTeamIds];
+function resetBuzzersForQuestion(teamIdsToLockOut = []) {
+  lockedOutTeamIds = [...teamIdsToLockOut];
+  lastWrongTeamId = null;
   isBuzzWindowOver = false;
   unlockBuzzers();
 }
@@ -137,7 +150,7 @@ function handleAnswerTimeUp(teamId) {
   stopAnswerTimer();
   playTimesUpSound();      // music.js
   markTeamWrong(teamId);   // scoreboard.js
-  if (!blockedTeamIds.includes(teamId)) blockedTeamIds.push(teamId);
+  lastWrongTeamId = teamId;
   unlockBuzzers();
 }
 
@@ -301,8 +314,8 @@ buzzerButton.addEventListener("click", openJoinPanel);
 homeBuzzerJoin.addEventListener("click", openJoinPanel);
 joinPanelClose.addEventListener("click", closeJoinPanel);
 joinPanel.addEventListener("click", (event) => { if (event.target === joinPanel) closeJoinPanel(); });
-buzzAlertUnlock.addEventListener("click", unlockBuzzers);
-joinPanelUnlock.addEventListener("click", unlockBuzzers);
+buzzAlertUnlock.addEventListener("click", unlockAfterWrongAnswer);
+joinPanelUnlock.addEventListener("click", unlockAfterWrongAnswer);
 
 // Listens before the question card does ("true" = capture), so Esc on the
 // join panel only closes the panel, not the question behind it
@@ -314,7 +327,7 @@ document.addEventListener("keydown", (event) => {
     event.stopImmediatePropagation();
     closeJoinPanel();
   }
-  if ((event.key === "u" || event.key === "U") && !isTyping) unlockBuzzers();
+  if ((event.key === "u" || event.key === "U") && !isTyping) unlockAfterWrongAnswer();
 }, true);
 
 connectToBuzzerServer();

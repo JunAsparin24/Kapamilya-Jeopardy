@@ -239,6 +239,32 @@ h1 {
   overflow-wrap: anywhere;
 }
 
+/* ---------- Spelling Bee: definition, origin, sentence ---------- */
+.word-info {
+  margin: 16px 0 0;
+  padding-top: 4px;
+  text-align: left;
+}
+
+.word-info[hidden] {
+  display: none;
+}
+
+.word-info dt {
+  margin: 12px 0 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-sage);
+}
+
+.word-info dd {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
 /* ---------- Fast Money list ---------- */
 .fm-list {
   margin: 10px 0 0;
