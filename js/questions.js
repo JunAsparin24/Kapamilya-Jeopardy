@@ -46,17 +46,17 @@ const gameData = {
         ],
       },
       {
-        name: "Gobble Gobble",
+        name: "Turkey Talk",
         questions: [
-          { value: 100, question: "This big bird is the star of most Thanksgiving dinners", answer: "Turkey", special: false },
-          { value: 200, question: "This thick brown sauce, made from the turkey drippings, gets poured over the meat and mashed potatoes", answer: "Gravy", special: false },
+          { value: 100, question: "Wild turkeys can fly in short bursts. How fast can they go, in kph?", answer: "90 kph (accept 85 to 95)", special: false },
+          { value: 200, question: "This is the name for a male turkey", answer: "Tom (or gobbler)", special: false },
           { value: 300, question: "Thanksgiving is always on this day of the week in October", answer: "Monday", special: false },
           { value: 400, question: "Two people pull on this turkey bone, and whoever ends up with the bigger piece gets to make a wish", answer: "Wishbone", special: false },
           { value: 500, question: "From 1921 to 1930, Canadian Thanksgiving was officially combined with this holiday", answer: "Remembrance Day (Armistice Day)", special: false },
         ],
       },
       {
-        name: "Sports Update",
+        name: "Ball Knowledge",
         questions: [
           { value: 100, question: "In 2026, LeBron James left the Los Angeles Lakers and signed with this team", answer: "Philadelphia 76ers", special: false },
           { value: 200, question: "This country won the 2026 FIFA World Cup", answer: "Spain", special: false },
@@ -66,13 +66,13 @@ const gameData = {
         ],
       },
       {
-        name: "Movie Night",
+        name: "Peak Cinema",
         questions: [
           { value: 100, question: "A paralyzed former Marine is sent to a distant moon, where he controls a lab-grown body to live among the native people and ends up taking their side. Name the movie", answer: "Avatar", special: false },
           { value: 200, question: "A teenage girl volunteers to take her little sister's place in a televised contest where 24 kids enter an arena and only one can come out alive. Name the movie", answer: "The Hunger Games", special: false },
           { value: 300, question: "In the movie Black Panther, this is the name of the rare metal that powers the nation of Wakanda", answer: "Vibranium", special: false },
           { value: 400, question: "In the movie Home Alone, this is the last name of the family that accidentally leaves Kevin behind", answer: "McCallister", special: false },
-          { value: 500, question: "A brilliant physicist leads a secret wartime project in the New Mexico desert, then years later is put on trial over his loyalty to his country. Name the movie", answer: "Oppenheimer", special: false },
+          { value: 500, question: "After the whole world finds out who he really is, a teenage hero asks a sorcerer to make everyone forget, but the spell goes wrong and pulls in villains from other universes. Name the movie", answer: "Spider-Man: No Way Home", special: false },
         ],
       },
     ],
@@ -118,7 +118,7 @@ const gameData = {
         // answers are category winners from Google's "25 Years in Search"
         // (December 2023). The $800 is from worldwide Google Trends,
         // 2004 – present; check it at trends.google.com.
-        name: "Higher or Lower",
+        name: "What's Trending?",
         questions: [
           { value: 200,  question: "Which has been searched more on Google of all time: Queen or The Beatles?", answer: "The Beatles", special: false },
           { value: 400,  question: "Which has been searched more on Google of all time: Chinese food or Italian food?", answer: "Chinese food", special: false },
@@ -283,18 +283,20 @@ const fastMoneyQuestions = [
     ],
   },
   {
-    question: "Name something people are afraid of",
+    question: "Name a superhero that cannot fly",
     answers: [
-      { answer: "Spiders", points: 22, also: ["Spider", "Bugs", "Insects"] },
-      { answer: "The dark", points: 19, also: ["Dark", "Darkness", "Night", "Being alone in the dark"] },
-      { answer: "Heights", points: 14, also: ["High places", "Falling"] },
-      { answer: "Snakes", points: 12, also: ["Snake"] },
-      { answer: "Ghosts", points: 9, also: ["Ghost", "Multo", "Spirits", "Aswang", "Monsters"] },
-      { answer: "Clowns", points: 7, also: ["Clown"] },
-      { answer: "Death", points: 6, also: ["Dying"] },
-      { answer: "Public speaking", points: 5, also: ["Speaking", "Speeches", "Presentations"] },
-      { answer: "Needles", points: 3, also: ["Shots", "Injections", "Dentist"] },
-      { answer: "Cockroaches", points: 3, also: ["Cockroach", "Ipis", "Roaches", "Flying cockroach"] },
+      { answer: "Batman", points: 20, also: ["Bruce Wayne", "The Batman", "Dark Knight", "The Dark Knight"] },
+      { answer: "Spider-Man", points: 18, also: ["Spiderman", "Spidey", "Peter Parker", "Miles Morales"] },
+      { answer: "Captain America", points: 10, also: ["Cap", "Steve Rogers", "Captain"] },
+      { answer: "Hulk", points: 9, also: ["The Hulk", "Incredible Hulk", "Bruce Banner"] },
+      { answer: "Wolverine", points: 8, also: ["Logan"] },
+      { answer: "The Flash", points: 7, also: ["Flash", "Barry Allen"] },
+      { answer: "Black Panther", points: 6, also: ["T'Challa", "Panther"] },
+      { answer: "Black Widow", points: 6, also: ["Natasha", "Natasha Romanoff", "Widow"] },
+      { answer: "Hawkeye", points: 5, also: ["Hawk eye", "Clint Barton"] },
+      { answer: "Aquaman", points: 4, also: ["Aqua man", "Arthur Curry"] },
+      { answer: "Ant-Man", points: 4, also: ["Antman", "Ant man", "Scott Lang"] },
+      { answer: "Daredevil", points: 3, also: ["Dare devil", "Matt Murdock"] },
     ],
   },
   {
