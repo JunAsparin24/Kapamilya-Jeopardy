@@ -194,7 +194,7 @@ function renderFastMoney() {
   } else if (usePhones) {
     fastMoneyStatus.textContent = `${teamName(0)} vs ${teamName(1)}`;
   } else {
-    fastMoneyStatus.textContent = `${teamName(turnIndex)} — ${FAST_MONEY_SECONDS} seconds for five questions`;
+    fastMoneyStatus.textContent = `${teamName(turnIndex)}: ${FAST_MONEY_SECONDS} seconds for five questions`;
   }
 
   // Buttons for this step
@@ -231,7 +231,7 @@ function renderFastMoneyStage() {
   fastMoneyStage.style.setProperty("--team-color", team.color);
   fastMoneyStageTeam.textContent = team.name;
   fastMoneyStageText.textContent =
-    player.status === "ready" ? "Get ready — the questions will appear on your phone" :
+    player.status === "ready" ? "Get ready, the questions will appear on your phone" :
     player.status === "playing" ? `Answering on their phone… ${player.answered} of ${total} answered` :
     "Done! Answers are locked in";
 

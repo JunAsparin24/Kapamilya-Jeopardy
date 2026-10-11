@@ -174,17 +174,11 @@
    STAGE 2 — WHO FOUND IT, AND HOW MUCH ARE THEY WAGERING?
    golden-boost.js adds .is-wagering when this step appears
    ========================================================= */
-/* Scrolls on very short screens, but never shows a scrollbar (the zooming
-   title would otherwise flash one up during the reveal) */
+/* Never scrolls: fit.js shrinks the wager step to fit short screens.
+   (Hidden overflow also stops the zooming title flashing a scrollbar.) */
 .golden-boost__content {
   max-height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  scrollbar-width: none;
-}
-
-.golden-boost__content::-webkit-scrollbar {
-  display: none;
+  overflow: hidden;
 }
 
 /* The title shrinks to make room for the wager step */

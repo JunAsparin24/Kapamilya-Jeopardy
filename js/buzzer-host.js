@@ -252,7 +252,7 @@ function renderBuzzerUi(isNewBuzz) {
   const joinUrl = (buzzerState.joinUrls && buzzerState.joinUrls[0]) || "";
   const onlineUrl = buzzerState.onlineUrl || "";
   homeBuzzerUrl.textContent = (joinUrl || "(no Wi-Fi address found)") + (onlineUrl ? "  ·  online link ready" : "");
-  buzzerJoinUrl.textContent = (buzzerState.joinUrls || []).join("  or  ") || "No Wi-Fi address found — is this laptop on Wi-Fi?";
+  buzzerJoinUrl.textContent = (buzzerState.joinUrls || []).join("  or  ") || "No Wi-Fi address found. Is this laptop on Wi-Fi?";
   buzzerPlayerCount.textContent = playerText;
 
   const onlineStatus = buzzerState.onlineStatus || "off";
@@ -260,7 +260,7 @@ function renderBuzzerUi(isNewBuzz) {
   onlineJoinUrl.textContent =
     onlineStatus === "on" ? onlineUrl :
     onlineStatus === "starting" ? "Starting the online link…" :
-    "Online link unavailable — see the buzzer window";
+    "Online link unavailable. See the buzzer window";
   if (!joinPanel.hidden) makeJoinQrCodes(); // the online link can arrive while the panel is open
 }
 

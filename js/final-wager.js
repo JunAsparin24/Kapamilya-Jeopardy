@@ -116,8 +116,8 @@ function renderFinalWager() {
   finalWagerStatus.textContent = {
     category: finalWager.isPicking ? "Picking the category…" : "One of these will be the category",
     wager: finalWager.usePhones
-      ? "Enter your wager on your phone — up to the points you have"
-      : "Decide your wager — up to the points you have. Tell the host at the reveal",
+      ? "Enter your wager on your phone, up to the points you have"
+      : "Decide your wager, up to the points you have. Tell the host at the reveal",
     question: "Write your answer on your whiteboard",
     reveal: "Reveal each wager, then mark it right or wrong",
   }[step];

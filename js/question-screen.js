@@ -295,7 +295,7 @@ function endBuzzWindow() {
     buzzWindowLabel.textContent = "Time's up";
     markTeamWrong(teamId); // scoreboard.js — they lose their wager
   } else {
-    buzzWindowLabel.textContent = "Time's up — no one buzzed";
+    buzzWindowLabel.textContent = "Time's up, no one buzzed";
     closeBuzzersTimeUp(); // buzzer-host.js
   }
 }

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600">
+  <!-- white, blue and red stripes -->
+  <rect width="1200" height="200" fill="#ffffff"/>
+  <rect y="200" width="1200" height="200" fill="#005da4"/>
+  <rect y="400" width="1200" height="200" fill="#ed1c24"/>
+  <!-- coat of arms (simplified): red-edged blue shield over the white/blue line -->
+  <path d="M236,96 H364 V214 Q364,276 300,304 Q236,276 236,214 Z" fill="#ed1c24"/>
+  <path d="M244,104 H356 V214 Q356,270 300,295 Q244,270 244,214 Z" fill="#005da4"/>
+  <!-- Mount Triglav: three white peaks, the middle one tallest -->
+  <path d="M248,252 L272,206 L284,222 L300,172 L316,222 L328,206 L352,252 Z" fill="#ffffff"/>
+  <!-- two wavy blue lines (the sea and rivers) across the foot of the mountain -->
+  <path d="M250,234 Q262,226 275,234 T300,234 T325,234 T350,234" fill="none" stroke="#005da4" stroke-width="5"/>
+  <path d="M250,247 Q262,239 275,247 T300,247 T325,247 T350,247" fill="none" stroke="#005da4" stroke-width="5"/>
+  <!-- three gold stars -->
+  <polygon points="280.0,119.0 282.2,124.1 287.8,123.5 284.5,128.0 287.8,132.5 282.2,131.9 280.0,137.0 277.8,131.9 272.2,132.5 275.5,128.0 272.2,123.5 277.8,124.1 " fill="#ffd700"/>
+  <polygon points="320.0,119.0 322.2,124.1 327.8,123.5 324.5,128.0 327.8,132.5 322.2,131.9 320.0,137.0 317.8,131.9 312.2,132.5 315.5,128.0 312.2,123.5 317.8,124.1 " fill="#ffd700"/>
+  <polygon points="300.0,141.0 302.2,146.1 307.8,145.5 304.5,150.0 307.8,154.5 302.2,153.9 300.0,159.0 297.8,153.9 292.2,154.5 295.5,150.0 292.2,145.5 297.8,146.1 " fill="#ffd700"/>
+</svg>

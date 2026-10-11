@@ -8,7 +8,7 @@
    - Questions are listed top-to-bottom as they appear on the board.
    - Each round has its own category names (the "name" lines).
    - "image" (optional) shows a picture on the question card, e.g.
-       image: "assets/images/flags/france.svg"
+       image: "assets/images/flags/greece.svg"
      Put picture files in assets/images/. "imageAlt" (optional) describes
      the picture for screen readers — never include the answer in it.
      A picture question can have no text at all (question: ""), like the
@@ -29,8 +29,8 @@ const gameData = {
         name: "5th Grade Trivia",
         questions: [
           { value: 100, question: "This is the number of continents on Earth", answer: "Seven", special: false },
-          { value: 200, question: "This is the largest ocean on Earth", answer: "Pacific Ocean", special: false },
-          { value: 300, question: "This is the process plants use to make their own food from sunlight", answer: "Photosynthesis", special: false },
+          { value: 200, question: "This is the process plants use to make their own food from sunlight", answer: "Photosynthesis", special: false },
+          { value: 300, question: "This is the largest ocean on Earth", answer: "Pacific Ocean", special: false },
           { value: 400, question: "This is the largest organ of the human body", answer: "Skin", special: false },
           { value: 500, question: "This is the most abundant gas in Earth's atmosphere", answer: "Nitrogen", special: false },
         ],
@@ -48,11 +48,11 @@ const gameData = {
       {
         name: "Turkey Talk",
         questions: [
-          { value: 100, question: "Wild turkeys can fly in short bursts. How fast can they go, in kph?", answer: "90 kph (accept 85 to 95)", special: false },
+          { value: 100, question: "Thanksgiving is always on this day of the week in October", answer: "Monday", special: false },
           { value: 200, question: "This is the name for a male turkey", answer: "Tom (or gobbler)", special: false },
-          { value: 300, question: "Thanksgiving is always on this day of the week in October", answer: "Monday", special: false },
-          { value: 400, question: "Two people pull on this turkey bone, and whoever ends up with the bigger piece gets to make a wish", answer: "Wishbone", special: false },
-          { value: 500, question: "From 1921 to 1930, Canadian Thanksgiving was officially combined with this holiday", answer: "Remembrance Day (Armistice Day)", special: false },
+          { value: 300, question: "This is the name for a baby turkey", answer: "A poult", special: false },
+          { value: 400, question: "In 1578, this English explorer held what is often called the first Canadian Thanksgiving, in what is now Nunavut", answer: "Martin Frobisher", special: false },
+          { value: 500, question: "Wild turkeys can fly in short bursts. How fast can they go, in kph?", answer: "90 kph (accept 85 to 95)", special: false },
         ],
       },
       {
@@ -71,8 +71,8 @@ const gameData = {
           { value: 100, question: "A paralyzed former Marine is sent to a distant moon, where he controls a lab-grown body to live among the native people and ends up taking their side. Name the movie", answer: "Avatar", special: false },
           { value: 200, question: "A teenage girl volunteers to take her little sister's place in a televised contest where 24 kids enter an arena and only one can come out alive. Name the movie", answer: "The Hunger Games", special: false },
           { value: 300, question: "In the movie Black Panther, this is the name of the rare metal that powers the nation of Wakanda", answer: "Vibranium", special: false },
-          { value: 400, question: "In the movie Home Alone, this is the last name of the family that accidentally leaves Kevin behind", answer: "McCallister", special: false },
-          { value: 500, question: "After the whole world finds out who he really is, a teenage hero asks a sorcerer to make everyone forget, but the spell goes wrong and pulls in villains from other universes. Name the movie", answer: "Spider-Man: No Way Home", special: false },
+          { value: 400, question: "After the whole world finds out who he really is, a teenage hero asks a sorcerer to make everyone forget, but the spell goes wrong and pulls in villains from other universes. Name the movie", answer: "Spider-Man: No Way Home", special: false },
+          { value: 500, question: "In the movie Home Alone, this is the last name of the family that accidentally leaves Kevin behind", answer: "McCallister", special: false },
         ],
       },
     ],
@@ -106,11 +106,11 @@ const gameData = {
       {
         name: "Flags",
         questions: [
-          { value: 200,  question: "", answer: "France", image: "assets/images/flags/france.svg", imageAlt: "A country's flag", special: false },
-          { value: 400,  question: "", answer: "Greece", image: "assets/images/flags/greece.svg", imageAlt: "A country's flag", special: false },
+          { value: 200,  question: "", answer: "Greece", image: "assets/images/flags/greece.svg", imageAlt: "A country's flag", special: false },
+          { value: 400,  question: "", answer: "Romania", image: "assets/images/flags/romania.svg", imageAlt: "A country's flag", special: false },
           { value: 600,  question: "", answer: "Norway", image: "assets/images/flags/norway.svg", imageAlt: "A country's flag", special: false },
-          { value: 800,  question: "", answer: "Colombia", image: "assets/images/flags/colombia.svg", imageAlt: "A country's flag", special: false },
-          { value: 1000, question: "", answer: "Iceland", image: "assets/images/flags/iceland.svg", imageAlt: "A country's flag", special: false },
+          { value: 800,  question: "", answer: "Iceland", image: "assets/images/flags/iceland.svg", imageAlt: "A country's flag", special: false },
+          { value: 1000, question: "", answer: "Slovenia", image: "assets/images/flags/slovenia.svg", imageAlt: "A country's flag", special: false },
         ],
       },
       {
@@ -210,9 +210,9 @@ const finalWagerQuestions = [
     name: "Common Knowledge",
     questions: [
       { question: "How many minutes are there in one full day?", answer: "1,440" },
-      { question: "How many sides does a stop sign have?", answer: "8" },
+      { question: "In cooking, how many teaspoons make up one tablespoon?", answer: "3" },
       { question: "Airplanes carry a \"black box\" flight recorder. What color is it actually painted?", answer: "Orange" },
-      { question: "If you add up all the dots on a regular six-sided die, what is the total?", answer: "21" },
+      { question: "How many time zones does Canada have?", answer: "6" },
       { question: "What is the name for a group of crows?", answer: "A murder" },
     ],
   },

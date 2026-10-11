@@ -166,7 +166,7 @@ function setBoardStatus(message, isHighlighted = false) {
 function showWhoPicksNext() {
   const boardTeam = getTeam(getBoardTeamId()); // teams.js
   if (boardTeam) {
-    setBoardStatus(`${boardTeam.name} has the board — pick a question`);
+    setBoardStatus(`${boardTeam.name} has the board, pick a question`);
   } else {
     setBoardStatus("Who picks first? Click the ♛ next to their team", true);
   }

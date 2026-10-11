@@ -20,7 +20,7 @@ let rulesContinue = null; // what the button does (set by showRules)
 function getRules(segment) {
   const valueRange = (round) => {
     const values = getRoundValues(round); // game.js
-    return `${formatMoney(Math.min(...values))}–${formatMoney(Math.max(...values))}`;
+    return `${formatMoney(Math.min(...values))} to ${formatMoney(Math.max(...values))}`;
   };
   const answerSeconds = Math.round(ANSWER_TIME_MS / 1000); // buzzer-host.js
   const buzzSeconds = Math.round(BUZZ_WINDOW_MS / 1000);   // question-screen.js
@@ -34,11 +34,11 @@ function getRules(segment) {
         title: "How to Play",
         rules: [
           `The team that **has the board ♛** picks a category and a value (${valueRange(1)}).`,
-          `**Buzz in on your phone** — first to buzz answers. You have **${buzzSeconds} seconds** to buzz; if nobody does, **no one answers**.`,
+          `**Buzz in on your phone.** First to buzz answers. You have **${buzzSeconds} seconds** to buzz, and if nobody does, **no one answers**.`,
           `After you buzz, you have **${answerSeconds} seconds** to answer out loud.`,
           "**Right:** win the points and the board. **Wrong:** lose the points, and the other teams can buzz in. You can buzz again once another team gets it wrong too.",
           "If nobody gets it, the board stays with the team that picked.",
-          `Somewhere hides the **★ Golden Boost** — the team that finds it wagers up to their points (or the question's value, if they have less), then answers alone in **${answerSeconds} seconds**.`,
+          `Somewhere hides the **★ Golden Boost**. The team that finds it wagers up to their points (or the question's value, if they have less), then answers alone in **${answerSeconds} seconds**.`,
         ],
         button: "Start Round 1",
       };
@@ -51,7 +51,7 @@ function getRules(segment) {
           `Same rules as Round 1, but every question is worth **double** (${valueRange(2)}).`,
           `You still have **${buzzSeconds} seconds to buzz** on each question.`,
           "A **new Golden Boost** is hiding somewhere on this board.",
-          "Wrong answers still cost you points — **buzz carefully!**",
+          "Wrong answers still cost you points, so **buzz carefully!**",
           "The top teams after this round have the best shot at the end.",
         ],
         button: "Start Round 2",
@@ -63,7 +63,7 @@ function getRules(segment) {
         title: "Final Wager",
         rules: [
           `The host **picks one category at random** from: ${categories}.`,
-          "**Secretly wager on your phone** — anything from 0 up to the points you have, once you know the category.",
+          "**Secretly wager on your phone.** Anything from 0 up to the points you have, once you know the category.",
           `Then the question appears. You have **${finalWagerTime}** to write your answer on your **whiteboard**.`,
           "**Right:** add your wager. **Wrong:** lose it.",
           "The **top two teams** after Final Wager go to Fast Money!",
@@ -76,9 +76,9 @@ function getRules(segment) {
         eyebrow: "The final showdown",
         title: "Fast Money",
         rules: [
-          "Only the **top two teams** play. **First place goes first**; the other team waits somewhere they can't hear.",
+          "Only the **top two teams** play. **First place goes first**, and the other team waits somewhere they can't hear.",
           `**Five survey questions** appear on your phone. You have **${FAST_MONEY_SECONDS} seconds** for all five.`,
-          "Stuck? Tap **Skip** — the question comes back at the end.",
+          "Stuck? Tap **Skip** and the question comes back at the end.",
           "The second team **can't repeat** an answer the first team gave.",
           "Each answer scores **how many people in the survey said it**.",
           "The **highest Fast Money total wins the game!**",

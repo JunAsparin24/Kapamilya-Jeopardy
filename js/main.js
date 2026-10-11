@@ -208,7 +208,7 @@ async function showFinalWagerScreen() {
   playFinalWagerSting(); // sound-effects.js — drum roll + dark chord
   await playTransition({
     title: "Final Wager",
-    subtitle: "Bet it all — or play it safe",
+    subtitle: "Bet it all or play it safe",
     onCovered: () => showRulesScreen("finalWager", {
       onCovered: () => {
         prepareFinalWager();
