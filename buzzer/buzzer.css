@@ -5,13 +5,13 @@
 
 :root {
   --team-color: #f4c76a;
-  --color-bg: #2e6a51;
-  --color-green: #245a43;
-  --color-green-deep: #173d2e;
+  --color-bg: #711a26;
+  --color-green: #61131d;
+  --color-green-deep: #420b13;
   --color-gold: #f4c76a;
   --color-gold-light: #ffe3a3;
   --color-cream: #fff4dc;
-  --color-sage: #b5dcc6;
+  --color-sage: #dcb5ba;
   --font-display: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
   --font-body: "Montserrat", "Segoe UI", system-ui, sans-serif;
   color-scheme: dark;
@@ -41,8 +41,8 @@ body {
   font-family: var(--font-body);
   color: var(--color-cream);
   background:
-    radial-gradient(ellipse at 20% 0%, #3b7d61 0%, transparent 60%),
-    linear-gradient(180deg, var(--color-bg), #1b4535);
+    radial-gradient(ellipse at 20% 0%, #852431 0%, transparent 60%),
+    linear-gradient(180deg, var(--color-bg), #4a0e16);
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
   user-select: none;
@@ -68,7 +68,7 @@ button {
   font-size: 1.5rem;
   letter-spacing: 0.04em;
   color: var(--color-gold);
-  text-shadow: 2px 2px 0 var(--color-green-deep), 3px 3px 0 #0e271d;
+  text-shadow: 2px 2px 0 var(--color-green-deep), 3px 3px 0 #2a060b;
 }
 
 .top-bar__team {
@@ -81,7 +81,7 @@ button {
   white-space: nowrap;
   text-overflow: ellipsis;
   cursor: pointer;
-  background: rgba(23, 61, 46, 0.8);
+  background: rgba(66, 11, 19, 0.8);
   border: 1px solid var(--team-color);
   border-radius: 999px;
 }
@@ -179,7 +179,7 @@ button {
 
 /* Ready: glowing, in the team's colour */
 .buzz-button[data-mode="ready"] {
-  color: #0f2a20;
+  color: #2e070c;
   /* plain versions first, for older phones that don't understand color-mix() */
   background: var(--team-color);
   box-shadow: 0 0 60px var(--team-color), 0 20px 40px rgba(0, 0, 0, 0.5);
@@ -198,7 +198,7 @@ button {
 }
 
 .buzz-button[data-mode="sending"] {
-  color: #0f2a20;
+  color: #2e070c;
   background: var(--team-color);
   border: 6px solid #fff;
   transform: scale(0.95);
@@ -225,8 +225,8 @@ button {
 .buzz-button[data-mode="locked"] {
   color: rgba(255, 244, 220, 0.7);
   cursor: not-allowed;
-  background: radial-gradient(circle at 50% 35%, #3d5a4c 0%, #1c2e26 100%);
-  border: 6px solid rgba(181, 220, 198, 0.25);
+  background: radial-gradient(circle at 50% 35%, #5c2f35 0%, #301418 100%);
+  border: 6px solid rgba(220, 181, 186, 0.25);
   box-shadow: none;
 }
 
@@ -333,7 +333,7 @@ button {
   font-family: "Sancreek", Georgia, serif;
   font-size: 2.6rem;
   color: var(--color-gold);
-  text-shadow: 2px 2px 0 var(--color-green-deep), 3px 3px 0 #0e271d;
+  text-shadow: 2px 2px 0 var(--color-green-deep), 3px 3px 0 #2a060b;
 }
 
 .fm-wait__text {
@@ -436,7 +436,7 @@ button {
 .fm-quiz__next {
   flex: 1.6;
   color: var(--color-cream);
-  background: linear-gradient(180deg, #4f9c78, #2f7556 55%, #1f5a42);
+  background: linear-gradient(180deg, #a53342, #7e1926 55%, #620e19);
   border: 2px solid var(--color-gold);
 }
 

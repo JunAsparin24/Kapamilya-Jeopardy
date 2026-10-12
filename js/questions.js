@@ -8,11 +8,13 @@
    - Questions are listed top-to-bottom as they appear on the board.
    - Each round has its own category names (the "name" lines).
    - "image" (optional) shows a picture on the question card, e.g.
-       image: "assets/images/flags/greece.svg"
+       image: "assets/images/flags/philippines.svg"
      Put picture files in assets/images/. "imageAlt" (optional) describes
      the picture for screen readers — never include the answer in it.
      A picture question can have no text at all (question: ""), like the
      Flags — then the card shows just the picture, bigger.
+   - "answerImage" (optional) is a second picture that replaces "image"
+     when the answer is shown, like a silhouette turning into the real thing.
    - The hidden GOLDEN BOOST lands on a RANDOM question each round, so
      it's somewhere new every game. To pick the spot yourself instead,
      set RANDOM_GOLDEN_BOOST to false in game.js and put "special: true"
@@ -26,53 +28,57 @@ const gameData = {
   round1: {
     categories: [
       {
-        name: "5th Grade Trivia",
+        name: "High School Trivia",
         questions: [
-          { value: 100, question: "This is the number of continents on Earth", answer: "Seven", special: false },
-          { value: 200, question: "This is the process plants use to make their own food from sunlight", answer: "Photosynthesis", special: false },
-          { value: 300, question: "This is the largest ocean on Earth", answer: "Pacific Ocean", special: false },
-          { value: 400, question: "This is the largest organ of the human body", answer: "Skin", special: false },
-          { value: 500, question: "This is the most abundant gas in Earth's atmosphere", answer: "Nitrogen", special: false },
+          { value: 100, question: "This is the chemical formula for water", answer: "H2O", special: false },
+          { value: 200, question: "In this Shakespeare play, a Scottish general murders the king after three witches tell him he will take the throne", answer: "Macbeth", special: false },
+          { value: 300, question: "Each angle of an equilateral triangle measures this many degrees", answer: "60 degrees", special: false },
+          { value: 400, question: "In chemistry, this is the name for the number of protons in an atom", answer: "Atomic number", special: false },
+          { value: 500, question: "This is the name of the famous sequence where each number is the sum of the two before it: 0, 1, 1, 2, 3, 5, 8, 13...", answer: "The Fibonacci sequence", special: false },
         ],
       },
       {
-        name: "Ang Tamis",
+        // Picture questions: name the brand. The logos are in assets/images/logos/.
+        name: "Logo Motion",
         questions: [
-          { value: 100, question: "This shaved ice dessert is loaded with sweet beans, jellies, fruits, and milk, topped with a scoop of ube ice cream, and its name means \"mix-mix\"", answer: "Halo-halo", special: false },
-          { value: 200, question: "This warm treat of soft tofu, sweet brown sugar syrup, and sago pearls is sold in the morning by street vendors who shout its name", answer: "Taho", special: false },
-          { value: 300, question: "This creamy custard dessert is made with egg yolks and milk and topped with a layer of golden caramel", answer: "Leche flan", special: false },
-          { value: 400, question: "This crispy snack is a banana rolled up like a spring roll and fried with caramelized brown sugar", answer: "Turon", special: false },
-          { value: 500, question: "This cold, creamy dessert mixes young coconut strips with green jelly cubes flavored by a fragrant leaf, and is named after both", answer: "Buko pandan", special: false },
+          { value: 100, question: "", answer: "Target", image: "assets/images/logos/target.svg", imageAlt: "A company's logo", special: false },
+          { value: 200, question: "", answer: "Mastercard", image: "assets/images/logos/mastercard.svg", imageAlt: "A company's logo", special: false },
+          { value: 300, question: "", answer: "Audi", image: "assets/images/logos/audi.svg", imageAlt: "A company's logo", special: false },
+          { value: 400, question: "", answer: "Mitsubishi", image: "assets/images/logos/mitsubishi.svg", imageAlt: "A company's logo", special: false },
+          { value: 500, question: "", answer: "Beats (by Dr. Dre)", image: "assets/images/logos/beats.svg", imageAlt: "A company's logo", special: false },
         ],
       },
       {
-        name: "Turkey Talk",
+        name: "Creature Feature",
         questions: [
-          { value: 100, question: "Thanksgiving is always on this day of the week in October", answer: "Monday", special: false },
-          { value: 200, question: "This is the name for a male turkey", answer: "Tom (or gobbler)", special: false },
-          { value: 300, question: "This is the name for a baby turkey", answer: "A poult", special: false },
-          { value: 400, question: "In 1578, this English explorer held what is often called the first Canadian Thanksgiving, in what is now Nunavut", answer: "Martin Frobisher", special: false },
-          { value: 500, question: "Wild turkeys can fly in short bursts. How fast can they go, in kph?", answer: "90 kph (accept 85 to 95)", special: false },
+          { value: 100, question: "This is the only mammal that can truly fly", answer: "Bat", special: false },
+          { value: 200, question: "This tiny bird is the only one that can fly backwards", answer: "Hummingbird", special: false },
+          { value: 300, question: "This Australian animal has fingerprints so similar to a human's that they have confused crime scene investigators", answer: "Koala", special: false },
+          { value: 400, question: "This is the name for a group of flamingos", answer: "A flamboyance", special: false },
+          { value: 500, question: "This is the only mammal covered in scales, and it rolls into a tight ball when it feels threatened", answer: "Pangolin", special: false },
         ],
       },
       {
-        name: "Ball Knowledge",
+        // Silhouettes, like the TV show: "image" is the shadow, and "answerImage"
+        // is the full-colour picture that replaces it when the answer is shown.
+        name: "Who's That Pokémon?",
         questions: [
-          { value: 100, question: "In 2026, LeBron James left the Los Angeles Lakers and signed with this team", answer: "Philadelphia 76ers", special: false },
-          { value: 200, question: "This country won the 2026 FIFA World Cup", answer: "Spain", special: false },
-          { value: 300, question: "This team won the 2026 NBA championship, its first title since 1973", answer: "New York Knicks", special: false },
-          { value: 400, question: "This Filipina tennis star won her first WTA Tour title in 2026 and became the highest-ranked Filipino player in history", answer: "Alex Eala", special: false },
-          { value: 500, question: "This French star won the Golden Boot as the top goal scorer of the 2026 FIFA World Cup", answer: "Kylian Mbappe", special: false },
+          { value: 100, question: "", answer: "Squirtle", image: "assets/images/pokemon/squirtle-silhouette.png", answerImage: "assets/images/pokemon/squirtle.png", imageAlt: "The silhouette of a Pokémon", special: false },
+          { value: 200, question: "", answer: "Mew", image: "assets/images/pokemon/mew-silhouette.png", answerImage: "assets/images/pokemon/mew.png", imageAlt: "The silhouette of a Pokémon", special: false },
+          { value: 300, question: "", answer: "Giratina", image: "assets/images/pokemon/giratina-silhouette.png", answerImage: "assets/images/pokemon/giratina.png", imageAlt: "The silhouette of a Pokémon", special: false },
+          { value: 400, question: "", answer: "Groudon", image: "assets/images/pokemon/groudon-silhouette.png", answerImage: "assets/images/pokemon/groudon.png", imageAlt: "The silhouette of a Pokémon", special: false },
+          { value: 500, question: "", answer: "Celebi", image: "assets/images/pokemon/celebi-silhouette.png", answerImage: "assets/images/pokemon/celebi.png", imageAlt: "The silhouette of a Pokémon", special: false },
         ],
       },
       {
-        name: "Peak Cinema",
+        // The host reads a statement. "Cap" = it's false. "No cap" = it's true.
+        name: "Cap or No Cap?",
         questions: [
-          { value: 100, question: "A paralyzed former Marine is sent to a distant moon, where he controls a lab-grown body to live among the native people and ends up taking their side. Name the movie", answer: "Avatar", special: false },
-          { value: 200, question: "A teenage girl volunteers to take her little sister's place in a televised contest where 24 kids enter an arena and only one can come out alive. Name the movie", answer: "The Hunger Games", special: false },
-          { value: 300, question: "In the movie Black Panther, this is the name of the rare metal that powers the nation of Wakanda", answer: "Vibranium", special: false },
-          { value: 400, question: "After the whole world finds out who he really is, a teenage hero asks a sorcerer to make everyone forget, but the spell goes wrong and pulls in villains from other universes. Name the movie", answer: "Spider-Man: No Way Home", special: false },
-          { value: 500, question: "In the movie Home Alone, this is the last name of the family that accidentally leaves Kevin behind", answer: "McCallister", special: false },
+          { value: 100, question: "Goldfish only have a three-second memory", answer: "Cap", special: false },
+          { value: 200, question: "Honey never goes bad. Jars found in ancient Egyptian tombs were still safe to eat", answer: "No cap", special: false },
+          { value: 300, question: "Lightning never strikes the same place twice", answer: "Cap", special: false },
+          { value: 400, question: "Sharks have been around longer than trees", answer: "No cap", special: false },
+          { value: 500, question: "On Venus, one day is longer than one year", answer: "No cap", special: false },
         ],
       },
     ],
@@ -84,77 +90,77 @@ const gameData = {
   round2: {
     categories: [
       {
+        // The number of letters in each answer matches the value: $800 = 8 letters
         name: "Spell Your Worth",
         questions: [
-          { value: 200,  question: "This Greek letter is used in math for the never-ending number that starts with 3.14", answer: "Pi", special: false },
-          { value: 400,  question: "This is the name for a baby kangaroo", answer: "Joey", special: false },
-          { value: 600,  question: "This English scientist came up with the three laws of motion and the theory of gravity", answer: "Newton", special: false },
-          { value: 800,  question: "This language, spoken across China, has more native speakers than any other language in the world", answer: "Mandarin", special: false },
-          { value: 1000, question: "This is the name for one half of the Earth, like the northern or southern half split by the equator", answer: "Hemisphere", special: false },
+          { value: 200,  question: "This ancient Chinese board game is played with black and white stones on a grid", answer: "Go", special: false },
+          { value: 400,  question: "This city is the capital of Peru", answer: "Lima", special: false },
+          { value: 600,  question: "This Italian city is built on water and is famous for its canals and gondolas", answer: "Venice", special: false },
+          { value: 800,  question: "This scientist came up with the theory of relativity and the equation E = mc²", answer: "Einstein", special: false },
+          { value: 1000, question: "This icicle-shaped rock formation hangs down from the ceiling of a cave", answer: "Stalactite", special: false },
         ],
       },
       {
-        name: "Quick Maths",
+        // Rearrange every letter of the word in CAPITALS to make the answer
+        name: "Anagrams",
         questions: [
-          { value: 200,  question: "You have 25 stickers. You give 9 to your friend, then your mom gives you 6 more. How many stickers do you have now?", answer: "22 stickers", special: false },
-          { value: 400,  question: "A rectangle is 12 centimeters long and 5 centimeters wide. What is its perimeter?", answer: "34 centimeters", special: false },
-          { value: 600,  question: "You save $15 every week. How many weeks will it take to save $240?", answer: "16 weeks", special: false },
-          { value: 800,  question: "A $40 shirt goes up in price by 25%, then the new price is cut by 20%. What does the shirt cost now?", answer: "$40", special: false },
-          { value: 1000, question: "A swimming pool is 10 meters long, 5 meters wide, and 2 meters deep. If 1 cubic meter holds 1,000 liters, how many liters of water does the pool hold when full?", answer: "100,000 liters", special: false },
+          { value: 200,  question: "Rearrange the letters of EARTH to get the organ that pumps your blood", answer: "Heart", special: false },
+          { value: 400,  question: "Rearrange the letters of LISTEN to get a word that means quiet", answer: "Silent", special: false },
+          { value: 600,  question: "Rearrange the letters of STRESSED to get something sweet you eat after dinner", answer: "Desserts", special: false },
+          { value: 800,  question: "Rearrange the letters of DORMITORY to get two words that describe a messy bedroom", answer: "Dirty room", special: false },
+          { value: 1000, question: "Rearrange the letters of ASTRONOMER to get two words for someone who gazes at the night sky", answer: "Moon starer", special: false },
         ],
       },
       {
         name: "Flags",
         questions: [
-          { value: 200,  question: "", answer: "Greece", image: "assets/images/flags/greece.svg", imageAlt: "A country's flag", special: false },
-          { value: 400,  question: "", answer: "Romania", image: "assets/images/flags/romania.svg", imageAlt: "A country's flag", special: false },
-          { value: 600,  question: "", answer: "Norway", image: "assets/images/flags/norway.svg", imageAlt: "A country's flag", special: false },
-          { value: 800,  question: "", answer: "Iceland", image: "assets/images/flags/iceland.svg", imageAlt: "A country's flag", special: false },
-          { value: 1000, question: "", answer: "Slovenia", image: "assets/images/flags/slovenia.svg", imageAlt: "A country's flag", special: false },
+          { value: 200,  question: "", answer: "Philippines", image: "assets/images/flags/philippines.svg", imageAlt: "A country's flag", special: false },
+          { value: 400,  question: "", answer: "Egypt", image: "assets/images/flags/egypt.svg", imageAlt: "A country's flag", special: false },
+          { value: 600,  question: "", answer: "Nepal", image: "assets/images/flags/nepal.svg", imageAlt: "A country's flag", special: false },
+          { value: 800,  question: "", answer: "Singapore", image: "assets/images/flags/singapore.svg", imageAlt: "A country's flag", special: false },
+          { value: 1000, question: "", answer: "Czech Republic", image: "assets/images/flags/czech-republic.svg", imageAlt: "A country's flag", special: false },
         ],
       },
       {
-        // Which was searched more on Google? The $200, $400, $600 and $1000
-        // answers are category winners from Google's "25 Years in Search"
-        // (December 2023). The $800 is from worldwide Google Trends,
-        // 2004 – present; check it at trends.google.com.
+        // Which was searched more on Google? Every answer is a category winner
+        // from Google's "25 Years in Search" list (December 2023).
         name: "What's Trending?",
         questions: [
-          { value: 200,  question: "Which has been searched more on Google of all time: Queen or The Beatles?", answer: "The Beatles", special: false },
-          { value: 400,  question: "Which has been searched more on Google of all time: Chinese food or Italian food?", answer: "Chinese food", special: false },
-          { value: 600,  question: "Which city has been searched more on Google of all time: New York City or London?", answer: "New York City", special: false },
-          { value: 800,  question: "Which has been searched more on Google of all time: Michael Jackson or Pokemon?", answer: "Pokemon", special: false },
-          { value: 1000, question: "Which has been searched more on Google of all time: The Simpsons or SpongeBob?", answer: "SpongeBob", special: false },
+          { value: 200,  question: "Which sport has been searched more on Google of all time: basketball or soccer?", answer: "Soccer", special: false },
+          { value: 400,  question: "Which landmark has been searched more on Google of all time: the Eiffel Tower or the Statue of Liberty?", answer: "The Eiffel Tower", special: false },
+          { value: 600,  question: "Which superhero has been searched more on Google of all time: Batman or Spider-Man?", answer: "Spider-Man", special: false },
+          { value: 800,  question: "Which boy band has been searched more on Google of all time: BTS or One Direction?", answer: "BTS", special: false },
+          { value: 1000, question: "Which princess has been searched more on Google of all time: Cinderella or Ariel?", answer: "Ariel", special: false },
         ],
       },
       {
         name: "Spelling Bee",
         questions: [
           // "wordInfo" only shows on the host's phone, to read out if teams ask
-          { value: 200,  question: "Spell this word", answer: "Chrysanthemum", special: false, wordInfo: {
-            definition: "A flowering plant with big, colorful blooms made of many layers of petals, often seen in the fall",
-            origin: "Greek: \"chrysos\" (gold) + \"anthemon\" (flower), so \"golden flower\"",
-            sentence: "Grandma planted bright yellow chrysanthemums along the front porch.",
+          { value: 200,  question: "Spell this word", answer: "Lieutenant", special: false, wordInfo: {
+            definition: "An officer in the military or the police, ranked just below a captain",
+            origin: "French: \"lieu\" (place) + \"tenant\" (holding), someone who holds the place of a superior",
+            sentence: "The lieutenant gave the order to move out.",
           } },
-          { value: 400,  question: "Spell this word", answer: "Bureaucracy", special: false, wordInfo: {
-            definition: "A system of government or a big organization with lots of departments, rules, and paperwork that can make things slow",
-            origin: "French \"bureau\" (desk, office) + Greek \"-kratia\" (rule), so \"rule by offices\"",
-            sentence: "Getting a new passport took weeks because of all the bureaucracy.",
+          { value: 400,  question: "Spell this word", answer: "Pterodactyl", special: false, wordInfo: {
+            definition: "A flying reptile with leathery wings that lived in the time of the dinosaurs",
+            origin: "Greek: \"pteron\" (wing) + \"daktylos\" (finger), so \"winged finger\"",
+            sentence: "The pterodactyl swooped down over the water to catch a fish.",
           } },
-          { value: 600,  question: "Spell this word", answer: "Connoisseur", special: false, wordInfo: {
-            definition: "An expert who knows a lot about something, like food, wine, or art, and can judge how good it is",
-            origin: "Old French \"conoisseor\" (one who knows), from Latin \"cognoscere\" (to get to know)",
-            sentence: "My tito is a lechon connoisseur who can pick the best one from a single bite.",
+          { value: 600,  question: "Spell this word", answer: "Vinaigrette", special: false, wordInfo: {
+            definition: "A salad dressing made from oil and vinegar, often with herbs or mustard",
+            origin: "French, from \"vinaigre\" (vinegar), which literally means \"sour wine\"",
+            sentence: "She tossed the salad with a lemon vinaigrette.",
           } },
-          { value: 800,  question: "Spell this word", answer: "Onomatopoeia", special: false, wordInfo: {
-            definition: "A word that sounds like the thing it describes, like \"buzz,\" \"sizzle,\" or \"boom\"",
-            origin: "Greek: \"onoma\" (name) + \"poiein\" (to make), so \"making a name\"",
-            sentence: "Comic books are full of onomatopoeia, like \"POW!\" and \"BAM!\"",
+          { value: 800,  question: "Spell this word", answer: "Dilettante", special: false, wordInfo: {
+            definition: "Someone who dabbles in an art or a subject for fun, without studying it seriously",
+            origin: "Italian, from \"dilettare\" (to delight), from Latin \"delectare\"",
+            sentence: "He called himself a painter, but he was really a dilettante who never finished a canvas.",
           } },
-          { value: 1000, question: "Spell this word", answer: "Bourgeoisie", special: false, wordInfo: {
-            definition: "The middle class, especially people who own property or businesses",
-            origin: "French, from \"bourgeois\" (a town dweller), from \"bourg\" (market town)",
-            sentence: "In the story, the poor workers grumble about the rich bourgeoisie in the city.",
+          { value: 1000, question: "Spell this word", answer: "Asphyxiation", special: false, wordInfo: {
+            definition: "Being unable to breathe, so the body does not get enough oxygen",
+            origin: "Greek: \"a-\" (without) + \"sphyxis\" (pulse), so \"without a pulse\"",
+            sentence: "Firefighters wear masks to protect themselves from asphyxiation by smoke.",
           } },
         ],
       },
@@ -180,61 +186,61 @@ const finalWagerQuestions = [
     name: "Pop Culture",
     questions: [
       { question: "In the TV show Friends, what is the name of the coffee shop where the group always hangs out?", answer: "Central Perk" },
-      { question: "In the Marvel movies, what is the name of Thor's hammer?", answer: "Mjolnir" },
-      { question: "In the TV show Stranger Things, what do the kids call the dark, creepy version of their town?", answer: "The Upside Down" },
-      { question: "Which K-pop girl group released the songs \"How You Like That\" and \"Pink Venom\"?", answer: "BLACKPINK" },
-      { question: "Which singer released the album \"Renaissance\" in 2022 and went on the Renaissance World Tour?", answer: "Beyonce" },
+      { question: "In the TV show The Office, what is the name of the paper company everyone works for?", answer: "Dunder Mifflin" },
+      { question: "In Star Wars, what is the name of Han Solo's ship?", answer: "The Millennium Falcon" },
+      { question: "In The Hunger Games, which district is Katniss Everdeen from?", answer: "District 12" },
+      { question: "In the show Squid Game, what is the player number of the main character, Seong Gi-hun?", answer: "456" },
     ],
   },
   {
     name: "History",
     questions: [
-      { question: "Of the Seven Wonders of the Ancient World, which is the only one still standing today?", answer: "The Great Pyramid of Giza" },
-      { question: "In what year did the Titanic sink on its first voyage?", answer: "1912" },
-      { question: "Which Philippine president declared martial law across the country in 1972?", answer: "Ferdinand Marcos" },
       { question: "Which wall, built to split a European city in two, was torn down in 1989?", answer: "The Berlin Wall" },
-      { question: "In what year did Canada become a country, an event celebrated every July 1st?", answer: "1867" },
+      { question: "Who was the first woman to win a Nobel Prize?", answer: "Marie Curie" },
+      { question: "Which ancient empire built Machu Picchu, high in the mountains of Peru?", answer: "The Inca Empire" },
+      { question: "In what year did World War II end?", answer: "1945" },
+      { question: "Which Filipino chieftain defeated Ferdinand Magellan at the Battle of Mactan in 1521?", answer: "Lapulapu" },
     ],
   },
   {
     name: "Science",
     questions: [
-      { question: "What is the chemical symbol for gold on the periodic table?", answer: "Au" },
-      { question: "Which planet in our solar system has the most moons?", answer: "Saturn" },
-      { question: "Which part of a cell is known as \"the powerhouse of the cell\"?", answer: "The mitochondria" },
       { question: "What is the only metal that is a liquid at room temperature?", answer: "Mercury" },
-      { question: "Roughly how fast does light travel, in kilometers per second?", answer: "About 300,000 km per second" },
+      { question: "Which gas do plants take in from the air to make their food?", answer: "Carbon dioxide" },
+      { question: "What is the largest organ inside the human body?", answer: "The liver" },
+      { question: "Which tiny particle in an atom has a negative charge?", answer: "The electron" },
+      { question: "What is the most common blood type in the world?", answer: "O positive" },
     ],
   },
   {
     name: "Common Knowledge",
     questions: [
-      { question: "How many minutes are there in one full day?", answer: "1,440" },
-      { question: "In cooking, how many teaspoons make up one tablespoon?", answer: "3" },
       { question: "Airplanes carry a \"black box\" flight recorder. What color is it actually painted?", answer: "Orange" },
-      { question: "How many time zones does Canada have?", answer: "6" },
-      { question: "What is the name for a group of crows?", answer: "A murder" },
+      { question: "What are the first six letters on the top row of a standard keyboard?", answer: "QWERTY" },
+      { question: "How many cards are in a standard deck, not counting the jokers?", answer: "52" },
+      { question: "What do the letters \"www\" at the start of a web address stand for?", answer: "World Wide Web" },
+      { question: "Counting the goalie, how many players does a hockey team have on the ice at full strength?", answer: "6" },
     ],
   },
   {
     name: "Geography",
     questions: [
       { question: "What is the capital city of Australia?", answer: "Canberra" },
-      { question: "What is the smallest country in the world?", answer: "Vatican City" },
-      { question: "Mount Kilimanjaro, the tallest mountain in Africa, is in which country?", answer: "Tanzania" },
-      { question: "Which country has the most people in all of Africa?", answer: "Nigeria" },
-      { question: "Which two countries share the longest border in the world?", answer: "Canada and the United States" },
+      { question: "What is the longest river in South America?", answer: "The Amazon" },
+      { question: "Which country has the most people in the world?", answer: "India" },
+      { question: "What is the largest island in the Philippines?", answer: "Luzon" },
+      { question: "What is the smallest province in Canada?", answer: "Prince Edward Island" },
     ],
   },
   {
     name: "Music",
     questions: [
-      { question: "Which instrument did jazz legend Louis Armstrong, singer of \"What a Wonderful World,\" famously play?", answer: "The trumpet" },
-      { question: "Which band's 1973 album \"The Dark Side of the Moon\" stayed on the Billboard album chart for more than 900 weeks?", answer: "Pink Floyd" },
-      { question: "Which Italian composer wrote the famous set of violin concertos called \"The Four Seasons\"?", answer: "Antonio Vivaldi" },
-      { question: "Which instrument usually has 47 strings and seven foot pedals?", answer: "The harp" },
-      { question: "Which Austrian composer wrote the opera \"The Magic Flute\" and started performing for royalty as a young child?", answer: "Wolfgang Amadeus Mozart" },
       { question: "Which Filipino rock band, formed in the late 1980s, recorded \"Ang Huling El Bimbo\"?", answer: "Eraserheads" },
+      { question: "How many strings does a violin have?", answer: "4" },
+      { question: "Freddie Mercury was the lead singer of which band?", answer: "Queen" },
+      { question: "The saxophone is made of brass, but which family of instruments does it actually belong to?", answer: "Woodwinds" },
+      { question: "Which rapper from Toronto first became famous as an actor on the TV show Degrassi?", answer: "Drake" },
+      { question: "What do you call a long piece of music written for a full orchestra, like Beethoven's Fifth?", answer: "A symphony" },
     ],
   },
 ];
@@ -253,80 +259,77 @@ const FAST_MONEY_SECONDS = 60;
 
 const fastMoneyQuestions = [
   {
-    question: "Name something you see at Christmas time",
+    question: "Name a body part with 3 letters",
     answers: [
-      { answer: "Christmas tree", points: 28, also: ["Tree", "Christmas trees", "Pine tree"] },
-      { answer: "Lights", points: 18, also: ["Christmas lights", "Fairy lights", "String lights"] },
-      { answer: "Presents", points: 15, also: ["Gifts", "Present", "Gift", "Wrapping paper"] },
-      { answer: "Santa Claus", points: 12, also: ["Santa", "Saint Nick", "Father Christmas"] },
-      { answer: "Star", points: 7, also: ["Stars", "Christmas star", "Parol", "Star lantern", "Lantern"] },
-      { answer: "Snow", points: 6, also: ["Snowman", "Snowflakes", "Snowmen"] },
-      { answer: "Ornaments", points: 5, also: ["Decorations", "Ornament", "Baubles", "Tinsel"] },
-      { answer: "Stockings", points: 4, also: ["Stocking"] },
-      { answer: "Reindeer", points: 3, also: ["Rudolph", "Reindeers"] },
-      { answer: "Noche Buena food", points: 2, also: ["Ham", "Hamon", "Queso de bola", "Noche Buena", "Feast"] },
+      { answer: "Eye", points: 22, also: ["Eyes"] },
+      { answer: "Arm", points: 18, also: ["Arms"] },
+      { answer: "Leg", points: 16, also: ["Legs"] },
+      { answer: "Ear", points: 14, also: ["Ears"] },
+      { answer: "Toe", points: 9, also: ["Toes"] },
+      { answer: "Lip", points: 7, also: ["Lips"] },
+      { answer: "Hip", points: 5, also: ["Hips"] },
+      { answer: "Jaw", points: 4, also: ["Jaws"] },
+      { answer: "Rib", points: 3, also: ["Ribs"] },
+      { answer: "Gum", points: 2, also: ["Gums"] },
     ],
   },
   {
-    question: "Name a job where people wear a uniform",
+    question: "Name something you'd never share",
     answers: [
-      { answer: "Police officer", points: 25, also: ["Police", "Cop", "Cops", "Policeman", "RCMP", "Officer"] },
-      { answer: "Nurse", points: 18, also: ["Nurses", "Nursing"] },
-      { answer: "Firefighter", points: 14, also: ["Fireman", "Firemen", "Fire fighter"] },
-      { answer: "Soldier", points: 12, also: ["Military", "Army", "Navy", "Marine", "Air Force"] },
-      { answer: "Fast food worker", points: 8, also: ["McDonald's", "Jollibee", "Tim Hortons", "Cashier", "Restaurant worker"] },
-      { answer: "Doctor", points: 7, also: ["Doctors", "Surgeon", "Physician"] },
-      { answer: "Pilot", points: 5, also: ["Flight attendant", "Airline", "Stewardess"] },
-      { answer: "Chef", points: 4, also: ["Cook", "Chefs"] },
-      { answer: "Security guard", points: 4, also: ["Security", "Guard", "Bouncer"] },
-      { answer: "Mail carrier", points: 3, also: ["Mailman", "Postman", "Canada Post", "Delivery driver", "UPS", "FedEx"] },
+      { answer: "Toothbrush", points: 30, also: ["Tooth brush"] },
+      { answer: "Underwear", points: 18, also: ["Undies", "Boxers", "Panties", "Bra", "Socks"] },
+      { answer: "Password", points: 12, also: ["Passwords", "Passcode", "PIN"] },
+      { answer: "Deodorant", points: 8, also: ["Deo"] },
+      { answer: "Phone", points: 7, also: ["Cellphone", "Cell phone", "iPhone"] },
+      { answer: "Money", points: 6, also: ["Wallet", "Bank account", "Credit card", "Cash"] },
+      { answer: "Food", points: 6, also: ["Drink", "Fries", "Snacks", "Straw", "Dessert", "My plate"] },
+      { answer: "Boyfriend/Girlfriend", points: 5, also: ["Husband", "Wife", "Partner", "Spouse", "My man"] },
+      { answer: "Secrets", points: 4, also: ["Secret", "Diary", "Journal"] },
+      { answer: "Razor", points: 2, also: ["Shaver"] },
+      { answer: "Towel", points: 2, also: ["Bath towel"] },
     ],
   },
   {
-    question: "Name a superhero that cannot fly",
+    question: "Name something you squeeze to get more out of it",
     answers: [
-      { answer: "Batman", points: 20, also: ["Bruce Wayne", "The Batman", "Dark Knight", "The Dark Knight"] },
-      { answer: "Spider-Man", points: 18, also: ["Spiderman", "Spidey", "Peter Parker", "Miles Morales"] },
-      { answer: "Captain America", points: 10, also: ["Cap", "Steve Rogers", "Captain"] },
-      { answer: "Hulk", points: 9, also: ["The Hulk", "Incredible Hulk", "Bruce Banner"] },
-      { answer: "The Flash", points: 8, also: ["Flash", "Barry Allen"] },
-      { answer: "Wolverine", points: 7, also: ["Logan"] },
-      { answer: "Black Panther", points: 6, also: ["T'Challa", "Panther"] },
-      { answer: "Black Widow", points: 6, also: ["Natasha", "Natasha Romanoff", "Widow"] },
-      { answer: "Hawkeye", points: 5, also: ["Hawk eye", "Clint Barton"] },
-      { answer: "Aquaman", points: 4, also: ["Aqua man", "Arthur Curry"] },
-      { answer: "Ant-Man", points: 4, also: ["Antman", "Ant man", "Scott Lang"] },
-      { answer: "Daredevil", points: 3, also: ["Dare devil", "Matt Murdock"] },
+      { answer: "Toothpaste", points: 34, also: ["Toothpaste tube", "Colgate", "Tooth paste"] },
+      { answer: "Lemon", points: 16, also: ["Lemons", "Lime", "Calamansi"] },
+      { answer: "Ketchup", points: 13, also: ["Ketchup bottle", "Mustard", "Mayo", "Sauce", "Condiments"] },
+      { answer: "Sponge", points: 9, also: ["Rag", "Washcloth", "Wet towel", "Mop"] },
+      { answer: "Lotion", points: 8, also: ["Sunscreen", "Shampoo", "Conditioner", "Soap", "Body wash"] },
+      { answer: "Orange", points: 7, also: ["Oranges", "Fruit", "Juice"] },
+      { answer: "Juice box", points: 5, also: ["Juice pouch", "Capri Sun", "Zesto"] },
+      { answer: "Pimple", points: 4, also: ["Zit", "Pimples"] },
+      { answer: "Stress ball", points: 2, also: ["Stressball"] },
+      { answer: "Glue", points: 2, also: ["Glue bottle"] },
     ],
   },
   {
-    question: "Name something people do at the gym",
+    question: "Name something you'd have a hard time doing if you didn't have any lips",
     answers: [
-      { answer: "Lift weights", points: 30, also: ["Weights", "Weightlifting", "Lifting", "Bench press", "Bench", "Squat", "Squats", "Deadlift", "Dumbbells"] },
-      { answer: "Run on the treadmill", points: 22, also: ["Treadmill", "Run", "Running", "Cardio", "Jog", "Jogging"] },
-      { answer: "Sweat", points: 12, also: ["Sweating", "Get sweaty"] },
-      { answer: "Listen to music", points: 10, also: ["Music", "Headphones", "AirPods", "Earbuds"] },
-      { answer: "Take selfies", points: 8, also: ["Selfie", "Mirror selfie", "Pictures", "Photos", "Flex in the mirror", "Mirror", "Flex"] },
-      { answer: "Stretch", points: 6, also: ["Stretching", "Yoga", "Warm up"] },
-      { answer: "Ride the bike", points: 4, also: ["Bike", "Bicycle", "Spin", "Spin class", "Cycling", "Stationary bike"] },
-      { answer: "Talk", points: 3, also: ["Chat", "Gossip", "Flirt", "Socialize", "Make friends"] },
-      { answer: "Drink water", points: 3, also: ["Water", "Protein shake", "Shake", "Protein"] },
-      { answer: "Swim", points: 2, also: ["Swimming", "Pool"] },
+      { answer: "Talking", points: 28, also: ["Talk", "Speak", "Speaking"] },
+      { answer: "Eating/Drinking", points: 22, also: ["Eat", "Drink", "Chew", "Sip", "Using a straw", "Straw"] },
+      { answer: "Whistling", points: 16, also: ["Whistle"] },
+      { answer: "Kissing", points: 14, also: ["Kiss", "Making out"] },
+      { answer: "Smiling", points: 7, also: ["Smile"] },
+      { answer: "Blowing", points: 4, also: ["Blow", "Blow out candles", "Blowing bubbles", "Bubble gum"] },
+      { answer: "Putting on lipstick", points: 4, also: ["Lipstick", "Lip balm", "Chapstick", "Lip gloss", "Makeup"] },
+      { answer: "Playing an instrument", points: 3, also: ["Instrument", "Trumpet", "Flute", "Play the trumpet"] },
+      { answer: "Singing", points: 2, also: ["Sing"] },
     ],
   },
   {
-    question: "Name a popular pizza topping",
+    question: "Name a sound a farm animal makes",
     answers: [
-      { answer: "Pepperoni", points: 35, also: ["Peperoni"] },
-      { answer: "Cheese", points: 15, also: ["Extra cheese", "Mozzarella"] },
-      { answer: "Sausage", points: 10, also: ["Italian sausage"] },
-      { answer: "Mushrooms", points: 8, also: ["Mushroom"] },
-      { answer: "Pineapple", points: 8, also: ["Hawaiian", "Pineapples"] },
-      { answer: "Ham", points: 6, also: [] },
-      { answer: "Onions", points: 5, also: ["Onion", "Red onion"] },
-      { answer: "Green peppers", points: 5, also: ["Peppers", "Bell peppers", "Pepper"] },
-      { answer: "Olives", points: 4, also: ["Black olives", "Olive"] },
-      { answer: "Bacon", points: 4, also: ["Bacon bits"] },
+      { answer: "Moo", points: 34, also: ["Mooo", "Cow"] },
+      { answer: "Oink", points: 18, also: ["Oink oink", "Pig", "Snort"] },
+      { answer: "Baa", points: 13, also: ["Baaa", "Bah", "Sheep", "Bleat"] },
+      { answer: "Neigh", points: 11, also: ["Nay", "Horse", "Whinny"] },
+      { answer: "Cluck", points: 8, also: ["Bawk", "Bok", "Chicken", "Hen"] },
+      { answer: "Cock-a-doodle-doo", points: 7, also: ["Cockadoodledoo", "Crow", "Rooster", "Tiktilaok"] },
+      { answer: "Quack", points: 6, also: ["Duck"] },
+      { answer: "Maa", points: 2, also: ["Meh", "Goat"] },
+      { answer: "Gobble", points: 1, also: ["Gobble gobble", "Turkey"] },
     ],
   },
 ];

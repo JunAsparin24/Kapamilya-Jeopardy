@@ -31,7 +31,7 @@ body.is-question-open .board-footer {
 .question-screen__backdrop {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, rgba(23, 61, 46, 0.55), rgba(3, 12, 8, 0.85));
+  background: radial-gradient(ellipse at center, rgba(66, 11, 19, 0.55), rgba(12, 2, 3, 0.85));
   opacity: 0;
   transition: opacity 0.35s ease;
 }
@@ -50,12 +50,12 @@ body.is-question-open .board-footer {
   padding: clamp(22px, 4vh, 48px) clamp(20px, 4vw, 64px);
   border-radius: var(--radius-lg);
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(79, 156, 120, 0.35), transparent 60%),
-    linear-gradient(180deg, #245a43 0%, #1b4535 55%, #123226 100%);
+    radial-gradient(ellipse at 50% 0%, rgba(165, 51, 66, 0.35), transparent 60%),
+    linear-gradient(180deg, #61131d 0%, #4a0e16 55%, #36080e 100%);
   border: 1px solid var(--color-gold);
   box-shadow:
     0 40px 100px rgba(0, 0, 0, 0.65),
-    0 0 60px rgba(47, 117, 86, 0.35),
+    0 0 60px rgba(126, 25, 38, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
 
   /* Start state for the open animation */
@@ -95,7 +95,7 @@ body.is-question-open .board-footer {
   color: var(--color-sage);
   cursor: pointer;
   border-radius: 50%;
-  background: rgba(8, 26, 19, 0.5);
+  background: rgba(28, 3, 7, 0.5);
   border: 1px solid var(--color-border-sage);
   transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s var(--ease-out);
 }
@@ -256,7 +256,7 @@ body.is-question-open .board-footer {
   border-radius: 6px;
   /* A thin light edge so white flags (like Japan's) stand out from the card */
   border: 2px solid rgba(255, 244, 220, 0.6);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(79, 156, 120, 0.35);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(165, 51, 66, 0.35);
   transition: max-height 0.4s var(--ease-out), opacity 0.4s ease;
 }
 
@@ -426,7 +426,7 @@ body.is-question-open .board-footer {
   color: var(--color-cream);
   cursor: pointer;
   border-radius: 14px;
-  background: rgba(8, 26, 19, 0.7);
+  background: rgba(28, 3, 7, 0.7);
   border: 1px solid var(--color-border-gold);
   transition: border-color 0.2s ease, opacity 0.2s ease;
 }
@@ -537,4 +537,59 @@ body.is-question-open .board-footer {
 
 .question-card.has-image.has-no-text.is-answer-shown .question-card__image {
   max-height: 28vh;
+}
+
+/* =========================================================
+   SILHOUETTE REVEAL (e.g. Who's That Pokémon?)
+   question-screen.js adds .has-reveal-image when a question has an
+   "answerImage". The silhouette pops in and gently pulses while teams
+   think; on SHOW ANSWER the real picture flashes white and bounces in.
+   ========================================================= */
+.question-card.has-reveal-image #question-image {
+  animation:
+    silhouette-pop 0.7s var(--ease-out) backwards,
+    silhouette-pulse 2.4s ease-in-out 0.7s infinite;
+}
+
+.question-card.has-reveal-image #question-answer-image {
+  animation:
+    reveal-flash 0.9s var(--ease-out),
+    reveal-glow 1.6s ease-out;
+}
+
+@keyframes silhouette-pop {
+  0%   { opacity: 0; transform: scale(0.4) rotate(-8deg); }
+  60%  { opacity: 1; transform: scale(1.08) rotate(2deg); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes silhouette-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.03); }
+}
+
+/* Starts washed out to white, overshoots, then settles in full colour */
+@keyframes reveal-flash {
+  0%   { transform: scale(0.9);  filter: brightness(3.2) saturate(0); }
+  30%  { transform: scale(1.14); filter: brightness(1.9) saturate(0.5); }
+  65%  { transform: scale(0.97); filter: none; }
+  100% { transform: none;        filter: none; }
+}
+
+@keyframes reveal-glow {
+  0%   { box-shadow: 0 0 0 0 rgba(255, 227, 163, 0.95), 0 0 90px 30px rgba(244, 199, 106, 0.9); }
+  100% { box-shadow: 0 0 0 26px rgba(255, 227, 163, 0), 0 16px 40px rgba(0, 0, 0, 0.5); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .question-card.has-reveal-image #question-image,
+  .question-card.has-reveal-image #question-answer-image {
+    animation: none;
+  }
+}
+
+/* Let the bounce and glow spill past the middle section instead of being
+   clipped or flashing a scrollbar */
+.question-card.has-reveal-image .question-card__body {
+  overflow: visible;
 }

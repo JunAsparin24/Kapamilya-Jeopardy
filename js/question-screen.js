@@ -23,6 +23,7 @@ const questionCategoryElement = document.getElementById("question-category");
 const questionValueElement = document.getElementById("question-value");
 const questionTextElement = document.getElementById("question-text");
 const questionImageElement = document.getElementById("question-image");
+const questionAnswerImageElement = document.getElementById("question-answer-image");
 const goldenBadge = document.getElementById("golden-badge");
 const answerBlock = document.getElementById("answer-block");
 const answerTextElement = document.getElementById("answer-text");
@@ -97,7 +98,17 @@ function openQuestionScreen(categoryIndex, questionIndex, goldenWager = null) {
     questionImageElement.removeAttribute("src");
     questionImageElement.hidden = true;
   }
+  // Optional second picture that replaces the first when the answer is shown
+  // (e.g. a Pokémon silhouette turning into the real thing). Loaded now, hidden, so the swap is instant.
+  questionAnswerImageElement.hidden = true;
+  if (question.answerImage) {
+    questionAnswerImageElement.src = question.answerImage;
+    questionAnswerImageElement.alt = `Picture of the answer: ${question.answer}`;
+  } else {
+    questionAnswerImageElement.removeAttribute("src");
+  }
   questionCard.classList.toggle("has-image", Boolean(question.image));
+  questionCard.classList.toggle("has-reveal-image", Boolean(question.answerImage)); // extra animation (question.css)
   // No question text (e.g. Flags): just the picture, shown bigger (question.css)
   questionCard.classList.toggle("has-no-text", !question.question.trim());
 
@@ -340,6 +351,10 @@ function showAnswer() {
   stopBuzzWindow();
   playAnswerRevealSound(); // sound-effects.js
   questionCard.classList.add("is-answer-shown"); // triggers the reveal animation
+  if (questionAnswerImageElement.hasAttribute("src")) {
+    questionImageElement.hidden = true;
+    questionAnswerImageElement.hidden = false;
+  }
   answerBlock.hidden = false;
   showAnswerButton.hidden = true;
   backToBoardButton.hidden = false;

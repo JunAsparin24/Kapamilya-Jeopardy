@@ -271,14 +271,14 @@ function makeJoinQrCodes() {
 
   if (joinUrl && window.QRCode && qrCodeMadeFor !== joinUrl) {
     buzzerQrElement.innerHTML = "";
-    new QRCode(buzzerQrElement, { text: joinUrl, width: 200, height: 200, colorDark: "#173d2e", colorLight: "#ffffff" });
+    new QRCode(buzzerQrElement, { text: joinUrl, width: 200, height: 200, colorDark: "#420b13", colorLight: "#ffffff" });
     qrCodeMadeFor = joinUrl;
   }
   buzzerQrElement.hidden = !qrCodeMadeFor;
 
   if (onlineUrl && window.QRCode && onlineQrMadeFor !== onlineUrl) {
     onlineQrElement.innerHTML = "";
-    new QRCode(onlineQrElement, { text: onlineUrl, width: 200, height: 200, colorDark: "#173d2e", colorLight: "#ffffff" });
+    new QRCode(onlineQrElement, { text: onlineUrl, width: 200, height: 200, colorDark: "#420b13", colorLight: "#ffffff" });
     onlineQrMadeFor = onlineUrl;
   }
   onlineQrElement.hidden = !onlineUrl || onlineQrMadeFor !== onlineUrl;

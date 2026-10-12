@@ -3,13 +3,13 @@
    ========================================================= */
 
 :root {
-  --color-bg: #2e6a51;
-  --color-green: #245a43;
-  --color-green-deep: #173d2e;
+  --color-bg: #711a26;
+  --color-green: #61131d;
+  --color-green-deep: #420b13;
   --color-gold: #f4c76a;
   --color-gold-light: #ffe3a3;
   --color-cream: #fff4dc;
-  --color-sage: #b5dcc6;
+  --color-sage: #dcb5ba;
   --font-title: "Sancreek", Georgia, serif;
   --font-display: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
   --font-body: "Montserrat", "Segoe UI", system-ui, sans-serif;
@@ -37,8 +37,8 @@ body {
   font-family: var(--font-body);
   color: var(--color-cream);
   background:
-    radial-gradient(ellipse at 20% 0%, #3b7d61 0%, transparent 60%),
-    linear-gradient(180deg, var(--color-bg), #1b4535);
+    radial-gradient(ellipse at 20% 0%, #852431 0%, transparent 60%),
+    linear-gradient(180deg, var(--color-bg), #4a0e16);
   background-attachment: fixed;
 }
 
@@ -60,7 +60,7 @@ h1 {
   font-size: 1.5rem;
   letter-spacing: 0.04em;
   color: var(--color-gold);
-  text-shadow: 2px 2px 0 var(--color-green-deep), 3px 3px 0 #0e271d;
+  text-shadow: 2px 2px 0 var(--color-green-deep), 3px 3px 0 #2a060b;
 }
 
 .top-bar__tag {
@@ -134,7 +134,7 @@ h1 {
   letter-spacing: 0.08em;
   color: var(--color-cream);
   cursor: pointer;
-  background: linear-gradient(180deg, #4f9c78, #2f7556 55%, #1f5a42);
+  background: linear-gradient(180deg, #a53342, #7e1926 55%, #620e19);
   border: 2px solid var(--color-gold);
   border-radius: 999px;
 }
@@ -155,7 +155,7 @@ h1 {
   padding: 22px 18px 24px;
   text-align: center;
   border-radius: 20px;
-  background: linear-gradient(160deg, rgba(52, 118, 90, 0.95), rgba(29, 74, 56, 0.95));
+  background: linear-gradient(160deg, rgba(126, 30, 43, 0.95), rgba(80, 15, 24, 0.95));
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
 }
 
@@ -323,7 +323,7 @@ h1 {
   letter-spacing: 0.06em;
   text-align: center;
   border-radius: 999px;
-  background: rgba(12, 32, 24, 0.9);
+  background: rgba(35, 6, 10, 0.9);
   border: 2px solid var(--team-color, var(--color-gold));
   box-shadow: 0 0 24px var(--team-color, var(--color-gold));
 }

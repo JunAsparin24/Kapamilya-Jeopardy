@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PANALO!</title>
   <!-- Browser tab icon: a gold star on green (drawn inline, no image file needed) -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232e6a51'/%3E%3Cpath d='M32 11l6.2 12.6 13.8 2-10 9.8 2.4 13.8L32 42.7l-12.4 6.5 2.4-13.8-10-9.8 13.8-2z' fill='%23f4c76a'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23711a26'/%3E%3Cpath d='M32 11l6.2 12.6 13.8 2-10 9.8 2.4 13.8L32 42.7l-12.4 6.5 2.4-13.8-10-9.8 13.8-2z' fill='%23f4c76a'/%3E%3C/svg%3E">
 
   <!-- Fonts (falls back to Georgia / Impact / Segoe UI if you're offline) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -313,6 +313,8 @@
         <p id="question-text" class="question-card__question"></p>
         <!-- Only shown when a question has an "image" in questions.js (e.g. Flags) -->
         <img id="question-image" class="question-card__image" alt="" hidden>
+        <!-- Optional "answerImage": takes the picture's place when the answer is shown (e.g. a Pokémon silhouette revealed) -->
+        <img id="question-answer-image" class="question-card__image" alt="" hidden>
 
         <div id="answer-block" class="question-card__answer" hidden>
           <p class="question-card__label question-card__label--gold">Answer</p>

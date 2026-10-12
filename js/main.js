@@ -320,7 +320,7 @@ function launchConfetti(count) {
   container.innerHTML = ""; // clear pieces from a previous game
   if (prefersReducedMotion) return;
 
-  const colors = ["#f4c76a", "#ffe3a3", "#fff4dc", "#4f9c78", "#b5dcc6"];
+  const colors = ["#f4c76a", "#ffe3a3", "#fff4dc", "#a53342", "#dcb5ba"];
   const randomBetween = (min, max) => min + Math.random() * (max - min);
 
   for (let i = 0; i < count; i++) {
