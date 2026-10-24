@@ -3,7 +3,7 @@
 
    A question with an "audio" file (questions.js) gets a player on
    its card instead of the 30-second buzz clock:
-     PLAY        → plays the first 0.5 seconds of the song
+     PLAY        → plays the first 0.3 seconds of the song
      LONGER CLIP → unlocks the next length (1s, 2s, 8s, 15s) and plays it
    Every clip starts from the same spot. Teams can buzz any time.
    Once the answer is shown, PLAY THE SONG plays it properly.
@@ -16,7 +16,7 @@
    Clip lengths are set in SONG_CLIP_SECONDS below.
    ========================================================= */
 
-const SONG_CLIP_SECONDS = [0.5, 1, 2, 8, 15];
+const SONG_CLIP_SECONDS = [0.3, 1, 2, 8, 15];
 const SONG_VOLUME = 0.9;
 const SONG_SILENCE_LEVEL = 0.02; // quieter than this at the start counts as silence
 
@@ -260,7 +260,7 @@ function formatClip(seconds) {
   return `${seconds}s`;
 }
 
-// The row of lengths (0.5s · 1s · 2s · 8s · 15s) and the unlocked part of the bar
+// The row of lengths (0.3s · 1s · 2s · 8s · 15s) and the unlocked part of the bar
 function buildSongSteps() {
   const total = SONG_CLIP_SECONDS[SONG_CLIP_SECONDS.length - 1];
   songStepsElement.textContent = "";

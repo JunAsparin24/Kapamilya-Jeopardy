@@ -607,7 +607,7 @@ body.is-question-open .board-footer {
   margin: 0 auto;
 }
 
-/* 0.5s · 1s · 2s · 8s · 15s */
+/* 0.3s · 1s · 2s · 8s · 15s */
 .song-steps {
   display: flex;
   flex-wrap: wrap;

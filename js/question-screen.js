@@ -77,9 +77,7 @@ let buzzWindow = null;
 /* ---------- Say the word (Spelling Bee) ----------
    Uses the browser's built-in voice, so no audio files are needed. */
 const sayWordButton = document.getElementById("say-word-button");
-// The word is said twice: once at a steady pace, then slower and clearer
-const SAY_WORD_RATES = [0.75, 0.55];
-const SAY_WORD_GAP_MS = 700; // pause between the two
+const SAY_WORD_RATE = 0.9; // normal speaking pace (1 = the voice's default)
 let sayWordText = null;
 
 function pickEnglishVoice() {
@@ -109,18 +107,9 @@ function sayWord() {
   const run = sayWordRun;
   sayWordButton.classList.add("is-speaking");
 
-  const [firstRate, secondRate] = SAY_WORD_RATES;
-  const first = makeWordUtterance(firstRate);
-  first.onend = () => {
-    if (run !== sayWordRun) return;
-    sayWordGapTimer = setTimeout(() => {
-      const second = makeWordUtterance(secondRate);
-      second.onend = second.onerror = () => { if (run === sayWordRun) sayWordButton.classList.remove("is-speaking"); };
-      speechSynthesis.speak(second);
-    }, SAY_WORD_GAP_MS);
-  };
-  first.onerror = () => { if (run === sayWordRun) sayWordButton.classList.remove("is-speaking"); };
-  speechSynthesis.speak(first);
+  const utterance = makeWordUtterance(SAY_WORD_RATE);
+  utterance.onend = utterance.onerror = () => { if (run === sayWordRun) sayWordButton.classList.remove("is-speaking"); };
+  speechSynthesis.speak(utterance);
 }
 
 function stopSayingWord() {
