@@ -13,7 +13,7 @@
    The phone checks in with the laptop a few times a second.
    ========================================================= */
 
-const POLL_MS = 350;
+const POLL_MS = 400;
 const TEAM_KEY = "trivia-buzzer-team";
 const PLAYER_KEY = "trivia-buzzer-player";
 
@@ -37,9 +37,14 @@ let isChoosingTeam = false;
 
 /* ---------- Talking to the laptop ---------- */
 
+// Gives up on a request after 5 seconds, so one stuck request can't stall the phone
+function requestTimeout() {
+  return window.AbortSignal && AbortSignal.timeout ? AbortSignal.timeout(5000) : undefined;
+}
+
 async function checkIn() {
   try {
-    const response = await fetch(`/api/state?player=${encodeURIComponent(playerId)}`, { cache: "no-store" });
+    const response = await fetch(`/api/state?player=${encodeURIComponent(playerId)}`, { cache: "no-store", signal: requestTimeout() });
     if (!response.ok) throw new Error(response.status);
     latestState = await response.json();
     connectionBanner.hidden = true;
@@ -220,5 +225,10 @@ function writeStorage(key, value) {
 
 /* ---------- Start ---------- */
 
-checkIn();
-setInterval(checkIn, POLL_MS);
+// Asks again only after the last answer arrives, so a busy laptop never
+// gets a pile-up of requests from every phone
+async function pollLoop() {
+  await checkIn();
+  setTimeout(pollLoop, POLL_MS);
+}
+pollLoop();

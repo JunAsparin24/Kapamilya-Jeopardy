@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PANALO!</title>
-  <!-- Browser tab icon: a gold star on green (drawn inline, no image file needed) -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23711a26'/%3E%3Cpath d='M32 11l6.2 12.6 13.8 2-10 9.8 2.4 13.8L32 42.7l-12.4 6.5 2.4-13.8-10-9.8 13.8-2z' fill='%23f4c76a'/%3E%3C/svg%3E">
+  <!-- Browser tab icon: a gold star on pink (drawn inline, no image file needed) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23b83a72'/%3E%3Cpath d='M32 11l6.2 12.6 13.8 2-10 9.8 2.4 13.8L32 42.7l-12.4 6.5 2.4-13.8-10-9.8 13.8-2z' fill='%23f4c76a'/%3E%3C/svg%3E">
 
   <!-- Fonts (falls back to Georgia / Impact / Segoe UI if you're offline) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@500;600;700&family=Sancreek&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@500;600;700&family=Noto+Color+Emoji&family=Sancreek&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/menu.css">
@@ -46,9 +46,26 @@
          =================================================== -->
     <section id="home-screen" class="screen screen--centered is-active" aria-labelledby="home-title">
       <div class="showcase-card">
+        <!-- Little hearts and sparkles floating around the card (menu.css) -->
+        <div class="anniv-floaters" aria-hidden="true">
+          <span class="anniv-floater anniv-floater--heart" style="--fx: 7%;  --fy: 12%; --fs: 1.6rem; --fd: 0s"></span>
+          <span class="anniv-floater anniv-floater--spark" style="--fx: 92%; --fy: 10%; --fs: 1.2rem; --fd: 1.2s"></span>
+          <span class="anniv-floater anniv-floater--heart" style="--fx: 94%; --fy: 56%; --fs: 1.3rem; --fd: 2.1s"></span>
+          <span class="anniv-floater anniv-floater--spark" style="--fx: 5%;  --fy: 62%; --fs: 1rem;   --fd: 0.6s"></span>
+          <span class="anniv-floater anniv-floater--heart" style="--fx: 10%; --fy: 90%; --fs: 1rem;   --fd: 1.7s"></span>
+          <span class="anniv-floater anniv-floater--spark" style="--fx: 89%; --fy: 90%; --fs: 1.4rem; --fd: 2.6s"></span>
+        </div>
+
         <p class="eyebrow reveal" style="--reveal-delay: 100ms">Welcome to</p>
 
         <h1 id="home-title" class="game-title title-lettering reveal reveal--title" style="--reveal-delay: 200ms">PANALO!</h1>
+
+        <!-- Anniversary Edition ribbon (menu.css) -->
+        <p class="anniv-ribbon reveal" style="--reveal-delay: 380ms">
+          <span class="anniv-ribbon__heart" aria-hidden="true">&#9829;</span>
+          <span class="anniv-ribbon__text">Anniversary Edition</span>
+          <span class="anniv-ribbon__heart" aria-hidden="true">&#9829;</span>
+        </p>
 
         <div class="star-divider reveal" style="--reveal-delay: 450ms" aria-hidden="true">
           <span class="star-divider__star">&#9733;</span>
@@ -311,10 +328,26 @@
       <div class="question-card__body">
         <p class="question-card__label">Question</p>
         <p id="question-text" class="question-card__question"></p>
+        <!-- Spelling Bee: says the word out loud (question-screen.js). Press again to repeat. -->
+        <button id="say-word-button" class="btn btn--secondary say-word" type="button" hidden>&#128266; Say the word</button>
         <!-- Only shown when a question has an "image" in questions.js (e.g. Flags) -->
         <img id="question-image" class="question-card__image" alt="" hidden>
         <!-- Optional "answerImage": takes the picture's place when the answer is shown (e.g. a Pokémon silhouette revealed) -->
         <img id="question-answer-image" class="question-card__image" alt="" hidden>
+
+        <!-- Only shown when a question has an "audio" song (song-player.js) -->
+        <div id="song-player" class="song-player" hidden>
+          <ol id="song-steps" class="song-steps" aria-label="Clip lengths"></ol>
+          <div class="song-bar" aria-hidden="true">
+            <div id="song-bar-unlocked" class="song-bar__unlocked"></div>
+            <div id="song-bar-fill" class="song-bar__fill"></div>
+          </div>
+          <div class="song-player__controls">
+            <button id="song-play-button" class="btn btn--secondary song-player__play" type="button">&#9654; Play 0.5s</button>
+            <button id="song-more-button" class="btn btn--ghost" type="button">Longer clip: 1s &#9656;</button>
+          </div>
+          <p id="song-status" class="song-player__status" aria-live="polite" hidden></p>
+        </div>
 
         <div id="answer-block" class="question-card__answer" hidden>
           <p class="question-card__label question-card__label--gold">Answer</p>
@@ -444,6 +477,7 @@
   <script src="js/sound-effects.js"></script>
   <script src="js/board.js"></script>
   <script src="js/scoreboard.js"></script>
+  <script src="js/song-player.js"></script>
   <script src="js/question-screen.js"></script>
   <script src="js/golden-boost.js"></script>
   <script src="js/rules.js"></script>
@@ -452,6 +486,7 @@
   <script src="js/fast-money.js"></script>
   <script src="js/buzzer-host.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/host-control.js"></script>
   <script src="js/fit.js"></script>
 </body>
 </html>

@@ -72,6 +72,11 @@ function prepareFinalWager() {
     timerId: null,
     timerEndsAt: 0,
   };
+  // The host may have chosen a question on their phone ahead of time (host-control.js)
+  const preset = typeof hostFinalWagerPick !== "undefined" ? hostFinalWagerPick : null;
+  if (preset && preset.questionIndex !== null) {
+    finalWager.questionPicks[preset.categoryIndex] = preset.questionIndex;
+  }
   renderFinalWager();
 }
 
@@ -155,13 +160,18 @@ function renderFinalWagerCategories() {
 }
 
 // "Pick a random category": the highlight hops around the cards,
-// slowing down until it lands on the chosen one
-async function pickRandomFinalWagerCategory() {
+// slowing down until it lands on the chosen one. If the host chose a
+// category on their phone (host-control.js), it lands on that one instead.
+async function pickRandomFinalWagerCategory(forcedIndex = null) {
   if (!finalWager || finalWager.step !== "category" || finalWager.isPicking) return;
 
   const pick = finalWager; // if the game moves on mid-spin, stop quietly
   const cards = [...finalWagerCategoryCards.children];
-  const pickedIndex = Math.floor(Math.random() * cards.length);
+  const preset = typeof hostFinalWagerPick !== "undefined" ? hostFinalWagerPick : null;
+  const pickedIndex =
+    forcedIndex !== null ? forcedIndex :
+    preset ? preset.categoryIndex :
+    Math.floor(Math.random() * cards.length);
   pick.isPicking = true;
   renderFinalWager();
 
@@ -445,7 +455,7 @@ function updateFinalWagerTimer() {
 
 /* ---------- Buttons ---------- */
 
-finalWagerPickButton.addEventListener("click", pickRandomFinalWagerCategory);
+finalWagerPickButton.addEventListener("click", () => pickRandomFinalWagerCategory());
 finalWagerBackButton.addEventListener("click", backToFinalWagerCategories);
 finalWagerTimerButton.addEventListener("click", toggleFinalWagerTimer);
 finalWagerAnswerButton.addEventListener("click", () => {

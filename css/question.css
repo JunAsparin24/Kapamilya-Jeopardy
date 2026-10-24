@@ -31,7 +31,7 @@ body.is-question-open .board-footer {
 .question-screen__backdrop {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, rgba(66, 11, 19, 0.55), rgba(12, 2, 3, 0.85));
+  background: radial-gradient(ellipse at center, rgba(92, 18, 56, 0.55), rgba(20, 3, 12, 0.85));
   opacity: 0;
   transition: opacity 0.35s ease;
 }
@@ -50,12 +50,12 @@ body.is-question-open .board-footer {
   padding: clamp(22px, 4vh, 48px) clamp(20px, 4vw, 64px);
   border-radius: var(--radius-lg);
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(165, 51, 66, 0.35), transparent 60%),
-    linear-gradient(180deg, #61131d 0%, #4a0e16 55%, #36080e 100%);
+    radial-gradient(ellipse at 50% 0%, rgba(224, 96, 154, 0.35), transparent 60%),
+    linear-gradient(180deg, #8f2459 0%, #6a1a42 55%, #4a0d2c 100%);
   border: 1px solid var(--color-gold);
   box-shadow:
     0 40px 100px rgba(0, 0, 0, 0.65),
-    0 0 60px rgba(126, 25, 38, 0.35),
+    0 0 60px rgba(192, 60, 122, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
 
   /* Start state for the open animation */
@@ -95,7 +95,7 @@ body.is-question-open .board-footer {
   color: var(--color-sage);
   cursor: pointer;
   border-radius: 50%;
-  background: rgba(28, 3, 7, 0.5);
+  background: rgba(46, 6, 26, 0.5);
   border: 1px solid var(--color-border-sage);
   transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s var(--ease-out);
 }
@@ -256,7 +256,7 @@ body.is-question-open .board-footer {
   border-radius: 6px;
   /* A thin light edge so white flags (like Japan's) stand out from the card */
   border: 2px solid rgba(255, 244, 220, 0.6);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(165, 51, 66, 0.35);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(224, 96, 154, 0.35);
   transition: max-height 0.4s var(--ease-out), opacity 0.4s ease;
 }
 
@@ -426,7 +426,7 @@ body.is-question-open .board-footer {
   color: var(--color-cream);
   cursor: pointer;
   border-radius: 14px;
-  background: rgba(28, 3, 7, 0.7);
+  background: rgba(46, 6, 26, 0.7);
   border: 1px solid var(--color-border-gold);
   transition: border-color 0.2s ease, opacity 0.2s ease;
 }
@@ -502,7 +502,7 @@ body.is-question-open .board-footer {
 .buzz-window.is-over {
   cursor: default;
   border-color: #ff7a7a;
-  background: rgba(90, 16, 24, 0.85);
+  background: rgba(128, 28, 80, 0.85);
 }
 
 .buzz-window.is-over .buzz-window__label {
@@ -592,4 +592,224 @@ body.is-question-open .board-footer {
    clipped or flashing a scrollbar */
 .question-card.has-reveal-image .question-card__body {
   overflow: visible;
+}
+
+/* =========================================================
+   SONG CLIPS (e.g. Love at First Listen) — song-player.js
+   Clip lengths, a bar showing how much is unlocked, and buttons.
+   ========================================================= */
+.song-player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 2.4vh, 22px);
+  width: min(760px, 100%);
+  margin: 0 auto;
+}
+
+/* 0.5s · 1s · 2s · 8s · 15s */
+.song-steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.song-step {
+  min-width: 4.2em;
+  padding: 0.3em 0.8em;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, min(2.2vw, 3.4vh), 1.8rem);
+  letter-spacing: 0.06em;
+  color: var(--color-sage);
+  border-radius: 999px;
+  background: rgba(46, 6, 26, 0.55);
+  border: 1px solid var(--color-border-sage);
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s var(--ease-out);
+}
+
+.song-step.is-used {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.song-step.is-current {
+  color: #5c1238;
+  background: linear-gradient(180deg, var(--color-gold-light), var(--color-gold));
+  border-color: var(--color-gold);
+  transform: scale(1.12);
+  box-shadow: 0 0 22px rgba(244, 199, 106, 0.55);
+}
+
+/* The bar: full width = 15 seconds */
+.song-bar {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(46, 6, 26, 0.7);
+  border: 1px solid var(--color-border-sage);
+}
+
+.song-bar__unlocked,
+.song-bar__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+}
+
+.song-bar__unlocked {
+  min-width: 6px;
+  background: rgba(248, 198, 218, 0.28);
+  transition: width 0.5s var(--ease-out);
+}
+
+.song-bar__fill {
+  width: 0;
+  background: linear-gradient(90deg, var(--color-green-bright), var(--color-gold));
+  box-shadow: 0 0 14px rgba(244, 199, 106, 0.7);
+}
+
+.song-player__controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.song-player__controls .btn {
+  font-size: clamp(1.1rem, min(2.2vw, 3.4vh), 1.7rem);
+}
+
+.song-player__controls .btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* A soft pulse on the play button while a clip is playing */
+.song-player.is-playing .song-player__play {
+  animation: song-playing 0.9s ease-in-out infinite;
+}
+
+@keyframes song-playing {
+  50% { box-shadow: 0 0 0 6px rgba(244, 199, 106, 0.35), 0 0 30px rgba(244, 199, 106, 0.5); }
+}
+
+.song-player__status {
+  font-size: 0.95rem;
+  color: var(--color-sage);
+}
+
+/* After the answer: the clip lengths go away, the bar shows the whole song */
+.song-player.is-full-song .song-steps,
+.song-player.is-full-song .song-bar__unlocked {
+  display: none;
+}
+
+/* Song questions: the question line is small, the player is the star */
+.question-card.has-song .question-card__question {
+  font-size: clamp(1.3rem, min(3.2vw, 4.8vh), 3.2rem);
+}
+
+.question-card.is-revealing .song-player {
+  opacity: 0;
+}
+
+.song-player {
+  transition: opacity 0.4s ease;
+}
+
+/* =========================================================
+   EMOJI QUESTIONS (e.g. Emoji Movies) — question-screen.js adds
+   .has-emoji when a question is only emojis. Each emoji sits on its
+   own tile, pops in one at a time, then gently bobs.
+   ========================================================= */
+.question-card.has-emoji .question-card__question {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(12px, 2.5vw, 34px);
+  max-width: none;
+  font-family: "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  font-size: clamp(3.4rem, min(11vw, 17vh), 9.5rem);
+  font-weight: 400;
+  line-height: 1;
+  text-transform: none;
+}
+
+.question-emoji {
+  display: grid;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 0.28em;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.18), transparent 65%),
+    linear-gradient(180deg, rgba(224, 96, 154, 0.45), rgba(92, 18, 56, 0.6));
+  border: 2px solid rgba(244, 199, 106, 0.6);
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  filter: none;
+  transform: scale(0.3) rotate(-14deg);
+  transition: none;
+}
+
+/* Pop in, then bob — each tile bobs slightly out of step with the others */
+.question-emoji.is-shown {
+  animation:
+    emoji-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+    emoji-bob 2.6s ease-in-out 0.6s infinite;
+}
+
+.question-emoji:nth-child(2).is-shown { animation-delay: 0s, 0.9s; }
+.question-emoji:nth-child(3).is-shown { animation-delay: 0s, 1.2s; }
+.question-emoji:nth-child(4).is-shown { animation-delay: 0s, 1.5s; }
+
+@keyframes emoji-pop {
+  0%   { opacity: 0; transform: scale(0.3) rotate(-14deg); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes emoji-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-0.06em) rotate(2deg); }
+}
+
+/* Once the answer is shown, the emojis shrink to make room */
+.question-card.has-emoji.is-answer-shown .question-card__question {
+  font-size: clamp(2rem, min(6vw, 9vh), 4.8rem);
+}
+
+.question-card.has-emoji.is-answer-shown .question-emoji {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .question-emoji.is-shown {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Spelling Bee: "Say the word" button ---------- */
+.say-word {
+  align-self: center;
+  font-size: clamp(1.1rem, min(2.4vw, 3.6vh), 1.8rem);
+}
+
+/* Glows while the word is being spoken */
+.say-word.is-speaking {
+  animation: song-playing 0.9s ease-in-out infinite;
+}
+
+.question-card.is-revealing .say-word {
+  opacity: 0;
 }

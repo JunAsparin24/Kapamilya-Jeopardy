@@ -73,6 +73,22 @@
     </section>
 
     <p id="buzz" class="buzz" hidden></p>
+
+    <!-- Game controls: jump to a round, choose the Final Wager question (host-control.js in the game) -->
+    <section id="controls" class="controls" hidden>
+      <h2 class="controls__title">Game controls</h2>
+      <p class="controls__now">On screen: <strong id="controls-now"></strong></p>
+
+      <p class="controls__label">Jump to</p>
+      <div id="controls-jump" class="controls__jump"></div>
+
+      <p class="controls__label">Final Wager question</p>
+      <p id="fw-choice" class="controls__choice"></p>
+      <button id="fw-random" class="controls__small" type="button">Go back to a random pick</button>
+      <div id="fw-picker" class="fw-picker"></div>
+
+      <p id="controls-toast" class="controls__toast" role="status" hidden></p>
+    </section>
   </main>
 
   <script src="/host/host.js"></script>

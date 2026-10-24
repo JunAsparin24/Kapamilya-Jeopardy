@@ -28,57 +28,60 @@ const gameData = {
   round1: {
     categories: [
       {
-        name: "High School Trivia",
+        // The question is just emojis: name the movie
+        name: "Emoji Movies",
         questions: [
-          { value: 100, question: "This is the chemical formula for water", answer: "H2O", special: false },
-          { value: 200, question: "In this Shakespeare play, a Scottish general murders the king after three witches tell him he will take the throne", answer: "Macbeth", special: false },
-          { value: 300, question: "Each angle of an equilateral triangle measures this many degrees", answer: "60 degrees", special: false },
-          { value: 400, question: "In chemistry, this is the name for the number of protons in an atom", answer: "Atomic number", special: false },
-          { value: 500, question: "This is the name of the famous sequence where each number is the sum of the two before it: 0, 1, 1, 2, 3, 5, 8, 13...", answer: "The Fibonacci sequence", special: false },
+          { value: 100, question: "🕷️👦🏙️", answer: "Spider-Man", special: false },
+          { value: 200, question: "🔍🐠🌊", answer: "Finding Nemo", special: false },
+          { value: 300, question: "🤠🚀🧸", answer: "Toy Story", special: false },
+          { value: 400, question: "👻👻🚫", answer: "Ghostbusters", special: false },
+          { value: 500, question: "🍫🏭🎫", answer: "Charlie and the Chocolate Factory", special: false },
         ],
       },
       {
-        // Picture questions: name the brand. The logos are in assets/images/logos/.
-        name: "Logo Motion",
+        // Countries, cities and landmarks
+        name: "Around the World",
         questions: [
-          { value: 100, question: "", answer: "Target", image: "assets/images/logos/target.svg", imageAlt: "A company's logo", special: false },
-          { value: 200, question: "", answer: "Mastercard", image: "assets/images/logos/mastercard.svg", imageAlt: "A company's logo", special: false },
-          { value: 300, question: "", answer: "Audi", image: "assets/images/logos/audi.svg", imageAlt: "A company's logo", special: false },
-          { value: 400, question: "", answer: "Mitsubishi", image: "assets/images/logos/mitsubishi.svg", imageAlt: "A company's logo", special: false },
-          { value: 500, question: "", answer: "Beats (by Dr. Dre)", image: "assets/images/logos/beats.svg", imageAlt: "A company's logo", special: false },
+          { value: 100, question: "Kangaroos and koalas are found in the wild only in this country", answer: "Australia", special: false },
+          { value: 200, question: "Known as the \"Land of the Rising Sun\", this island country is home to Mount Fuji", answer: "Japan", special: false },
+          { value: 300, question: "This South American country is named after the imaginary line that runs right through it", answer: "Ecuador", special: false },
+          { value: 400, question: "This is the smallest country in the world, and it sits completely inside the city of Rome", answer: "Vatican City", special: false },
+          { value: 500, question: "This African country has more ancient pyramids than Egypt, with over 200 built by the kingdom of Kush", answer: "Sudan", special: false },
         ],
       },
       {
-        name: "Creature Feature",
+        // Filipino food — "Let's eat!"
+        name: "Kain Tayo",
         questions: [
-          { value: 100, question: "This is the only mammal that can truly fly", answer: "Bat", special: false },
-          { value: 200, question: "This tiny bird is the only one that can fly backwards", answer: "Hummingbird", special: false },
-          { value: 300, question: "This Australian animal has fingerprints so similar to a human's that they have confused crime scene investigators", answer: "Koala", special: false },
-          { value: 400, question: "This is the name for a group of flamingos", answer: "A flamboyance", special: false },
-          { value: 500, question: "This is the only mammal covered in scales, and it rolls into a tight ball when it feels threatened", answer: "Pangolin", special: false },
+          { value: 100, question: "Bay leaves, whole peppercorns and garlic go into this dish, where the meat is slowly simmered in vinegar and soy sauce until tender", answer: "Adobo", special: false },
+          { value: 200, question: "This sour broth can be made with pork, shrimp or bangus, and gets its tang from guava, kamias or the classic sampalok", answer: "Sinigang", special: false },
+          { value: 300, question: "Ground pork, carrots and onions are rolled up tightly in a thin wrapper, then deep-fried until golden and crunchy", answer: "Lumpia", special: false },
+          { value: 400, question: "A whole pig is rubbed with salt, stuffed with lemongrass, garlic and onions, then roasted over charcoal for hours until the skin turns crispy", answer: "Lechon", special: false },
+          { value: 500, question: "Named after a train line, this fiery dish of pork cooked in coconut milk with shrimp paste and lots of chilies was actually created in Manila", answer: "Bicol Express", special: false },
         ],
       },
       {
-        // Silhouettes, like the TV show: "image" is the shadow, and "answerImage"
-        // is the full-colour picture that replaces it when the answer is shown.
-        name: "Who's That Pokémon?",
+        // Name that song, Songless-style: the host plays 0.5s, then 1s, 2s, 8s
+        // and 15s of it (song-player.js). The songs are in assets/audio/songs/.
+        // Optional audioStart: 42.5 starts the clips 42.5 seconds in.
+        name: "Love at First Listen",
         questions: [
-          { value: 100, question: "", answer: "Squirtle", image: "assets/images/pokemon/squirtle-silhouette.png", answerImage: "assets/images/pokemon/squirtle.png", imageAlt: "The silhouette of a Pokémon", special: false },
-          { value: 200, question: "", answer: "Mew", image: "assets/images/pokemon/mew-silhouette.png", answerImage: "assets/images/pokemon/mew.png", imageAlt: "The silhouette of a Pokémon", special: false },
-          { value: 300, question: "", answer: "Giratina", image: "assets/images/pokemon/giratina-silhouette.png", answerImage: "assets/images/pokemon/giratina.png", imageAlt: "The silhouette of a Pokémon", special: false },
-          { value: 400, question: "", answer: "Groudon", image: "assets/images/pokemon/groudon-silhouette.png", answerImage: "assets/images/pokemon/groudon.png", imageAlt: "The silhouette of a Pokémon", special: false },
-          { value: 500, question: "", answer: "Celebi", image: "assets/images/pokemon/celebi-silhouette.png", answerImage: "assets/images/pokemon/celebi.png", imageAlt: "The silhouette of a Pokémon", special: false },
+          { value: 100, question: "Name that love song", answer: "Just the Way You Are (Bruno Mars)", audio: "assets/audio/songs/just-the-way-you-are.mp3", special: false },
+          { value: 200, question: "Name that love song", answer: "My Heart Will Go On (Celine Dion)", audio: "assets/audio/songs/my-heart-will-go-on.mp3", special: false },
+          { value: 300, question: "Name that love song", answer: "Photograph (Ed Sheeran)", audio: "assets/audio/songs/photograph.mp3", special: false },
+          { value: 400, question: "Name that love song", answer: "Risk It All (Bruno Mars)", audio: "assets/audio/songs/risk-it-all.mp3", special: false },
+          { value: 500, question: "Name that love song", answer: "Can't Help Falling in Love (Elvis Presley)", audio: "assets/audio/songs/cant-help-falling-in-love.mp3", special: false },
         ],
       },
       {
-        // The host reads a statement. "Cap" = it's false. "No cap" = it's true.
-        name: "Cap or No Cap?",
+        // Rooms, furniture and household items
+        name: "Home Sweet Home",
         questions: [
-          { value: 100, question: "Goldfish only have a three-second memory", answer: "Cap", special: false },
-          { value: 200, question: "Honey never goes bad. Jars found in ancient Egyptian tombs were still safe to eat", answer: "No cap", special: false },
-          { value: 300, question: "Lightning never strikes the same place twice", answer: "Cap", special: false },
-          { value: 400, question: "Sharks have been around longer than trees", answer: "No cap", special: false },
-          { value: 500, question: "On Venus, one day is longer than one year", answer: "No cap", special: false },
+          { value: 100, question: "The stove, the oven and the fridge are all usually found in this room", answer: "Kitchen", special: false },
+          { value: 200, question: "This countertop appliance blows super-hot air around food to make it crispy, like frying but with little or no oil", answer: "Air fryer", special: false },
+          { value: 300, question: "This bathroom fixture, common in Europe, sits next to the toilet and sprays water to wash you", answer: "Bidet", special: false },
+          { value: 400, question: "This bathroom tool has a wooden handle and a rubber cup on the end, and it's what you grab when the toilet gets clogged", answer: "Plunger", special: false },
+          { value: 500, question: "The inner pot of this kitchen appliance has numbered water lines inside, but you can just ignore them and measure the water up to the first knuckle of your finger", answer: "Rice cooker", special: false },
         ],
       },
     ],
@@ -93,74 +96,75 @@ const gameData = {
         // The number of letters in each answer matches the value: $800 = 8 letters
         name: "Spell Your Worth",
         questions: [
-          { value: 200,  question: "This ancient Chinese board game is played with black and white stones on a grid", answer: "Go", special: false },
-          { value: 400,  question: "This city is the capital of Peru", answer: "Lima", special: false },
-          { value: 600,  question: "This Italian city is built on water and is famous for its canals and gondolas", answer: "Venice", special: false },
-          { value: 800,  question: "This scientist came up with the theory of relativity and the equation E = mc²", answer: "Einstein", special: false },
-          { value: 1000, question: "This icicle-shaped rock formation hangs down from the ceiling of a cave", answer: "Stalactite", special: false },
+          { value: 200,  question: "In this 2009 Pixar movie, a grumpy old man ties thousands of balloons to his house and flies away", answer: "Up", special: false },
+          { value: 400,  question: "This planet is nicknamed the Red Planet", answer: "Mars", special: false },
+          { value: 600,  question: "This continent has the most countries, with 54 of them", answer: "Africa", special: false },
+          { value: 800,  question: "This French emperor was finally defeated at the Battle of Waterloo in 1815", answer: "Napoleon", special: false },
+          { value: 1000, question: "This fancy light fixture hangs from the ceiling, often dripping with sparkling crystals", answer: "Chandelier", special: false },
         ],
       },
       {
-        // Rearrange every letter of the word in CAPITALS to make the answer
-        name: "Anagrams",
+        // Name the year it happened
+        name: "Name That Year",
         questions: [
-          { value: 200,  question: "Rearrange the letters of EARTH to get the organ that pumps your blood", answer: "Heart", special: false },
-          { value: 400,  question: "Rearrange the letters of LISTEN to get a word that means quiet", answer: "Silent", special: false },
-          { value: 600,  question: "Rearrange the letters of STRESSED to get something sweet you eat after dinner", answer: "Desserts", special: false },
-          { value: 800,  question: "Rearrange the letters of DORMITORY to get two words that describe a messy bedroom", answer: "Dirty room", special: false },
-          { value: 1000, question: "Rearrange the letters of ASTRONOMER to get two words for someone who gazes at the night sky", answer: "Moon starer", special: false },
+          { value: 200,  question: "COVID-19 was declared a pandemic and lockdowns started all over the world in this year", answer: "2020", special: false },
+          { value: 400,  question: "The Titanic hit an iceberg and sank on its very first voyage in this year", answer: "1912", special: false },
+          { value: 600,  question: "Steve Jobs showed off the very first iPhone in this year", answer: "2007", special: false },
+          { value: 800,  question: "Neil Armstrong became the first person to walk on the Moon in this year", answer: "1969", special: false },
+          { value: 1000, question: "World War I ended in this year", answer: "1918", special: false },
         ],
       },
       {
-        name: "Flags",
+        // "I love you" around the world: name the language
+        name: "Love Language",
         questions: [
-          { value: 200,  question: "", answer: "Philippines", image: "assets/images/flags/philippines.svg", imageAlt: "A country's flag", special: false },
-          { value: 400,  question: "", answer: "Egypt", image: "assets/images/flags/egypt.svg", imageAlt: "A country's flag", special: false },
-          { value: 600,  question: "", answer: "Nepal", image: "assets/images/flags/nepal.svg", imageAlt: "A country's flag", special: false },
-          { value: 800,  question: "", answer: "Singapore", image: "assets/images/flags/singapore.svg", imageAlt: "A country's flag", special: false },
-          { value: 1000, question: "", answer: "Czech Republic", image: "assets/images/flags/czech-republic.svg", imageAlt: "A country's flag", special: false },
+          { value: 200,  question: "\"Mahal kita\" means \"I love you\" in this language", answer: "Tagalog (Filipino)", special: false },
+          { value: 400,  question: "\"사랑해\" (Saranghae) means \"I love you\" in this language", answer: "Korean", special: false },
+          { value: 600,  question: "\"Ich liebe dich\" means \"I love you\" in this language", answer: "German", special: false },
+          { value: 800,  question: "\"Eu te amo\" means \"I love you\" in this language", answer: "Portuguese", special: false },
+          { value: 1000, question: "\"ฉันรักคุณ\" (Chan rak khun) means \"I love you\" in this language", answer: "Thai", special: false },
         ],
       },
       {
-        // Which was searched more on Google? Every answer is a category winner
-        // from Google's "25 Years in Search" list (December 2023).
-        name: "What's Trending?",
+        // Pets you can keep at home in Canada
+        name: "Pawsitive Knowledge",
         questions: [
-          { value: 200,  question: "Which sport has been searched more on Google of all time: basketball or soccer?", answer: "Soccer", special: false },
-          { value: 400,  question: "Which landmark has been searched more on Google of all time: the Eiffel Tower or the Statue of Liberty?", answer: "The Eiffel Tower", special: false },
-          { value: 600,  question: "Which superhero has been searched more on Google of all time: Batman or Spider-Man?", answer: "Spider-Man", special: false },
-          { value: 800,  question: "Which boy band has been searched more on Google of all time: BTS or One Direction?", answer: "BTS", special: false },
-          { value: 1000, question: "Which princess has been searched more on Google of all time: Cinderella or Ariel?", answer: "Ariel", special: false },
+          { value: 200,  question: "This small rodent is known for stuffing food into its cheek pouches and running on an exercise wheel", answer: "Hamster", special: false },
+          { value: 400,  question: "This pet has long ears, a fluffy cotton-ball tail, and loves to hop around and munch on hay", answer: "Rabbit", special: false },
+          { value: 600,  question: "This long, skinny, furry pet is a cousin of the weasel, and it loves squeezing through tubes and tunnels", answer: "Ferret", special: false },
+          { value: 800,  question: "Most kinds of this small lizard have no eyelids, so they lick their own eyes to keep them clean", answer: "Gecko", special: false },
+          { value: 1000, question: "This pet smells the air by flicking its forked tongue, sheds its whole skin in one piece, and swallows its food whole", answer: "Snake (corn snake)", special: false },
         ],
       },
       {
         name: "Spelling Bee",
         questions: [
-          // "wordInfo" only shows on the host's phone, to read out if teams ask
-          { value: 200,  question: "Spell this word", answer: "Lieutenant", special: false, wordInfo: {
-            definition: "An officer in the military or the police, ranked just below a captain",
-            origin: "French: \"lieu\" (place) + \"tenant\" (holding), someone who holds the place of a superior",
-            sentence: "The lieutenant gave the order to move out.",
+          // "wordInfo" only shows on the host's phone, to read out if teams ask.
+          // The 🔊 button on the card says the word; "say" spells out a tricky pronunciation.
+          { value: 200,  question: "Spell this word", answer: "Juxtaposition", say: "juck-stuh-puh-zish-un", special: false, wordInfo: {
+            definition: "Putting two very different things side by side so their differences stand out",
+            origin: "Latin \"juxta\" (next to) + French \"position\" (placing)",
+            sentence: "The juxtaposition of the tiny puppy and the huge dog made everyone laugh.",
           } },
-          { value: 400,  question: "Spell this word", answer: "Pterodactyl", special: false, wordInfo: {
-            definition: "A flying reptile with leathery wings that lived in the time of the dinosaurs",
-            origin: "Greek: \"pteron\" (wing) + \"daktylos\" (finger), so \"winged finger\"",
-            sentence: "The pterodactyl swooped down over the water to catch a fish.",
+          { value: 400,  question: "Spell this word", answer: "Cymotrichous", say: "sigh-mott-trick-us", special: false, wordInfo: {
+            definition: "Having wavy hair",
+            origin: "Greek: \"kyma\" (wave) + \"thrix, trichos\" (hair)",
+            sentence: "She was born with cymotrichous hair that curled up whenever it rained.",
           } },
-          { value: 600,  question: "Spell this word", answer: "Vinaigrette", special: false, wordInfo: {
-            definition: "A salad dressing made from oil and vinegar, often with herbs or mustard",
-            origin: "French, from \"vinaigre\" (vinegar), which literally means \"sour wine\"",
-            sentence: "She tossed the salad with a lemon vinaigrette.",
+          { value: 600,  question: "Spell this word", answer: "Sesquipedalian", say: "sess-kwih-pih-day-lee-un", special: false, wordInfo: {
+            definition: "Having lots of syllables (a very long word); or someone who loves using long words",
+            origin: "Latin: \"sesquipedalis\" (a foot and a half long), from \"sesqui-\" (one and a half) + \"pes\" (foot)",
+            sentence: "His sesquipedalian vocabulary made his essays hard to read.",
           } },
-          { value: 800,  question: "Spell this word", answer: "Dilettante", special: false, wordInfo: {
-            definition: "Someone who dabbles in an art or a subject for fun, without studying it seriously",
-            origin: "Italian, from \"dilettare\" (to delight), from Latin \"delectare\"",
-            sentence: "He called himself a painter, but he was really a dilettante who never finished a canvas.",
+          { value: 800,  question: "Spell this word", answer: "Tintinnabulation", say: "tin-tin-nab-yoo-lay-shun", special: false, wordInfo: {
+            definition: "The ringing or jingling sound of bells",
+            origin: "Latin: \"tintinnabulum\" (a bell), from \"tintinnare\" (to ring); made famous by Edgar Allan Poe's poem \"The Bells\"",
+            sentence: "The tintinnabulation of the church bells filled the town on Christmas morning.",
           } },
-          { value: 1000, question: "Spell this word", answer: "Asphyxiation", special: false, wordInfo: {
-            definition: "Being unable to breathe, so the body does not get enough oxygen",
-            origin: "Greek: \"a-\" (without) + \"sphyxis\" (pulse), so \"without a pulse\"",
-            sentence: "Firefighters wear masks to protect themselves from asphyxiation by smoke.",
+          { value: 1000, question: "Spell this word", answer: "Arachibutyrophobia", say: "uh-rack-ih-byoo-tih-roh-foe-bee-uh", special: false, wordInfo: {
+            definition: "The fear of peanut butter sticking to the roof of your mouth",
+            origin: "Greek and Latin: \"arachis\" (peanut) + \"butyrum\" (butter) + \"phobia\" (fear)",
+            sentence: "His arachibutyrophobia means he only eats his sandwiches with jam.",
           } },
         ],
       },

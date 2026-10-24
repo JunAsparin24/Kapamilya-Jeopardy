@@ -43,6 +43,7 @@ const LONG_ANSWER_LENGTH = 24;
 // breath after commas and full stops. Smaller numbers = faster.
 const REVEAL_WORD_MS = 160;
 const REVEAL_PUNCTUATION_PAUSE_MS = 120;
+const REVEAL_EMOJI_MS = 450; // emoji questions: one emoji at a time, a bit slower
 
 let isQuestionScreenOpen = false;
 let isAnswerShown = false;
@@ -72,6 +73,67 @@ const buzzWindowFill = document.getElementById("buzz-window-fill");
 let buzzWindowPending = null;
 // While it's running: { mode, teamId, totalMs, timeLeftMs, runningSince, hostPaused, intervalId, lastTick }
 let buzzWindow = null;
+
+/* ---------- Say the word (Spelling Bee) ----------
+   Uses the browser's built-in voice, so no audio files are needed. */
+const sayWordButton = document.getElementById("say-word-button");
+// The word is said twice: once at a steady pace, then slower and clearer
+const SAY_WORD_RATES = [0.75, 0.55];
+const SAY_WORD_GAP_MS = 700; // pause between the two
+let sayWordText = null;
+
+function pickEnglishVoice() {
+  const voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+  const english = voices.filter((voice) => voice.lang.toLowerCase().startsWith("en"));
+  // Natural-sounding voices first, then any US/UK English voice
+  return english.find((voice) => /natural|google|online/i.test(voice.name)) ||
+    english.find((voice) => /en-(us|gb|ca)/i.test(voice.lang)) ||
+    english[0] || null;
+}
+
+let sayWordGapTimer = null;
+let sayWordRun = 0; // bumps on every press or stop, so an old read never carries on
+
+function makeWordUtterance(rate) {
+  const utterance = new SpeechSynthesisUtterance(sayWordText);
+  const voice = pickEnglishVoice();
+  if (voice) utterance.voice = voice;
+  utterance.lang = voice ? voice.lang : "en-US";
+  utterance.rate = rate;
+  return utterance;
+}
+
+function sayWord() {
+  if (!sayWordText || !window.speechSynthesis) return;
+  stopSayingWord();
+  const run = sayWordRun;
+  sayWordButton.classList.add("is-speaking");
+
+  const [firstRate, secondRate] = SAY_WORD_RATES;
+  const first = makeWordUtterance(firstRate);
+  first.onend = () => {
+    if (run !== sayWordRun) return;
+    sayWordGapTimer = setTimeout(() => {
+      const second = makeWordUtterance(secondRate);
+      second.onend = second.onerror = () => { if (run === sayWordRun) sayWordButton.classList.remove("is-speaking"); };
+      speechSynthesis.speak(second);
+    }, SAY_WORD_GAP_MS);
+  };
+  first.onerror = () => { if (run === sayWordRun) sayWordButton.classList.remove("is-speaking"); };
+  speechSynthesis.speak(first);
+}
+
+function stopSayingWord() {
+  sayWordRun += 1;
+  clearTimeout(sayWordGapTimer);
+  if (window.speechSynthesis) speechSynthesis.cancel();
+  sayWordButton.classList.remove("is-speaking");
+}
+
+sayWordButton.addEventListener("click", sayWord);
+// Some browsers load their voices a moment after the page
+if (window.speechSynthesis) speechSynthesis.getVoices();
+if (!window.speechSynthesis) sayWordButton.title = "This browser can't speak words out loud";
 
 /* ---------- Opening ---------- */
 
@@ -111,6 +173,15 @@ function openQuestionScreen(categoryIndex, questionIndex, goldenWager = null) {
   questionCard.classList.toggle("has-reveal-image", Boolean(question.answerImage)); // extra animation (question.css)
   // No question text (e.g. Flags): just the picture, shown bigger (question.css)
   questionCard.classList.toggle("has-no-text", !question.question.trim());
+  // Spelling Bee: the "Say the word" button reads the answer aloud.
+  // An optional "say" in questions.js spells out a tricky pronunciation.
+  stopSayingWord();
+  sayWordText = question.wordInfo ? (question.say || question.answer) : null;
+  sayWordButton.hidden = !sayWordText;
+
+  // Song questions get the clip player (song-player.js)
+  prepareSongPlayer(question);
+  questionCard.classList.toggle("has-song", Boolean(question.audio));
 
   // The Golden Boost question gets a gold card and a badge (golden-boost.css)
   const isGolden = isGoldenBoost(categoryIndex, questionIndex); // game.js
@@ -129,8 +200,13 @@ function openQuestionScreen(categoryIndex, questionIndex, goldenWager = null) {
 
   // 30 seconds to buzz — or, on a Golden Boost, the wagering team's
   // answer clock, which starts without anyone buzzing
+  // Song questions skip the buzz clock: the host takes it clip by clip,
+  // and teams can buzz whenever they think they know it
   stopBuzzWindow();
-  buzzWindowPending = wagerTeam ? { mode: "answer", teamId: wagerTeam.id } : { mode: "buzz" };
+  buzzWindowPending =
+    wagerTeam ? { mode: "answer", teamId: wagerTeam.id } :
+    question.audio ? null :
+    { mode: "buzz" };
 
   // Start in the "question only" state
   isAnswerShown = false;
@@ -182,16 +258,37 @@ function prepareQuestionReveal(text) {
   // Every word is on the card from the start, just invisible, so the
   // text doesn't jump around as it fills in
   questionTextElement.textContent = "";
-  revealWords = text.split(/\s+/).filter(Boolean).map((word, index) => {
+
+  // Emoji-only questions (e.g. Emoji Movies): each emoji gets its own big
+  // tile and pops in one at a time (question.css)
+  const isEmoji = isEmojiOnly(text);
+  questionCard.classList.toggle("has-emoji", isEmoji);
+  const pieces = isEmoji ? splitEmoji(text) : text.split(/\s+/).filter(Boolean);
+
+  revealWords = pieces.map((word, index) => {
     const span = document.createElement("span");
-    span.className = "question-word";
+    span.className = isEmoji ? "question-word question-emoji" : "question-word";
     span.textContent = word;
-    if (index > 0) questionTextElement.append(" ");
+    if (index > 0 && !isEmoji) questionTextElement.append(" ");
     questionTextElement.append(span);
     return span;
   });
   revealIndex = 0;
   questionCard.classList.add("is-revealing"); // hides the picture until the text is done
+}
+
+// True when the question is only emojis (no letters)
+function isEmojiOnly(text) {
+  return /\p{Extended_Pictographic}/u.test(text) &&
+    /^[\p{Extended_Pictographic}\p{Emoji_Component}‍️\s]+$/u.test(text);
+}
+
+// Splits into single emojis, keeping combined ones (👨‍🍳, 🇫🇷) whole
+function splitEmoji(text) {
+  const pieces = window.Intl && Intl.Segmenter
+    ? Array.from(new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(text), (part) => part.segment)
+    : Array.from(text);
+  return pieces.filter((piece) => piece.trim());
 }
 
 function scheduleNextWord(delay) {
@@ -211,7 +308,8 @@ function revealNextWord() {
     finishQuestionReveal();
   } else {
     const hasPunctuation = /[,.;:?!]$/.test(word.textContent);
-    scheduleNextWord(REVEAL_WORD_MS + (hasPunctuation ? REVEAL_PUNCTUATION_PAUSE_MS : 0));
+    const isEmoji = word.classList.contains("question-emoji");
+    scheduleNextWord(isEmoji ? REVEAL_EMOJI_MS : REVEAL_WORD_MS + (hasPunctuation ? REVEAL_PUNCTUATION_PAUSE_MS : 0));
   }
 }
 
@@ -349,6 +447,7 @@ function showAnswer() {
   finishQuestionReveal();
   stopAnswerTimer(); // buzzer-host.js — no more countdown once the answer is out
   stopBuzzWindow();
+  switchSongToFullPlay(); // song-player.js — the clips stop; "Play the song" plays it all
   playAnswerRevealSound(); // sound-effects.js
   questionCard.classList.add("is-answer-shown"); // triggers the reveal animation
   if (questionAnswerImageElement.hasAttribute("src")) {
@@ -389,6 +488,8 @@ async function closeQuestionScreen(markAsPlayed) {
   awardRowElement.hidden = true;
   stopQuestionReveal();
   stopBuzzWindow();
+  prepareSongPlayer({}); // song-player.js — stops the song and frees it
+  stopSayingWord();
   resetBuzzersForQuestion(); // buzzer-host.js — clears any buzz and closes the buzzers
   sendQuestionToHostScreen(null); // buzzer-host.js — host's phone goes back to "waiting"
 

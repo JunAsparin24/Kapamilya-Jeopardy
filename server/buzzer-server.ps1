@@ -48,12 +48,23 @@ $state = @{
   timeUp = $false  # the 30 seconds to buzz ran out on this question
 }
 $lastSeenPlayers = @{}   # phone id -> when it last checked in
+$stateCache = @{ at = [datetime]::MinValue; bytes = $null }  # the last /api/state answer
+$StateCacheMs = 150
 $PlayerTimeoutSeconds = 6
 
 # Host screen: the open question and its answer (sent by the game), kept
 # out of the public state so players can never see the answer
 $hostQuestion = $null
 $HostCode = "{0:D4}" -f (Get-Random -Minimum 0 -Maximum 10000)
+
+# Host controls: the host's phone sends commands (jump to a round, pick the
+# Final Wager question). The game picks them up and runs them, and sends back
+# what's on screen so the phone can show it.
+$ctl = @{
+  seq      = 0      # goes up with every command
+  commands = @()    # the last few commands: @{ id; action; ... }
+  info     = $null  # sent by the game: current screen, round, Final Wager choices
+}
 
 # Fast Money: the answering team plays on their phone. The server keeps the
 # clock and the answers; answers only go back to the game (this laptop).
@@ -86,8 +97,18 @@ $fw = @{
 # Helpers
 # ---------------------------------------------------------
 
-# This laptop's Wi-Fi / network addresses, e.g. 192.168.1.20
+# This laptop's Wi-Fi / network addresses, e.g. 192.168.1.20.
+# Looked up at most every 20 seconds: phones ask for the state several times
+# a second, and looking it up every time slows everything down.
+$lanCache = @{ at = [datetime]::MinValue; addresses = @() }
 function Get-LanAddresses {
+  if (((Get-Date) - $lanCache.at).TotalSeconds -lt 20) { return @($lanCache.addresses) }
+  $lanCache.addresses = @(Find-LanAddresses)
+  $lanCache.at = Get-Date
+  return @($lanCache.addresses)
+}
+
+function Find-LanAddresses {
   $addresses = [System.Net.Dns]::GetHostAddresses([System.Net.Dns]::GetHostName()) |
     Where-Object { $_.AddressFamily -eq [System.Net.Sockets.AddressFamily]::InterNetwork } |
     ForEach-Object { $_.IPAddressToString } |
@@ -281,6 +302,7 @@ function Get-PublicState {
     onlineStatus = $script:onlineStatus  # off | starting | on | failed
     fastMoney = Get-FastMoneyState
     finalWager = Get-FinalWagerState
+    commandSeq = $ctl.seq                # the game fetches new host commands when this changes
   }
 }
 
@@ -294,7 +316,7 @@ function Send-Bytes($context, [byte[]]$bytes, [string]$contentType, [int]$status
 }
 
 function Send-Json($context, $data, [int]$status = 200) {
-  $json = ConvertTo-Json -InputObject $data -Depth 6 -Compress
+  $json = ConvertTo-Json -InputObject $data -Depth 10 -Compress
   Send-Bytes $context ([System.Text.Encoding]::UTF8.GetBytes($json)) "application/json; charset=utf-8" $status
 }
 
@@ -362,9 +384,18 @@ function Handle-Request($context) {
   $playerId = $request.QueryString["player"]
   if ($playerId) { $lastSeenPlayers[$playerId.Substring(0, [Math]::Min(40, $playerId.Length))] = Get-Date }
 
+  # Anything that changes the game comes in as a POST: start fresh after one
+  if ($method -eq "POST") { $stateCache.at = [datetime]::MinValue }
+
   # --- Everyone: current state -------------------------------------
+  # Every phone asks a few times a second, so the answer is reused for a
+  # split second instead of being rebuilt for each phone
   if ($path -eq "/api/state" -and $method -eq "GET") {
-    Send-Json $context (Get-PublicState); return
+    if (((Get-Date) - $stateCache.at).TotalMilliseconds -gt $StateCacheMs) {
+      $stateCache.bytes = [System.Text.Encoding]::UTF8.GetBytes((ConvertTo-Json -InputObject (Get-PublicState) -Depth 10 -Compress))
+      $stateCache.at = Get-Date
+    }
+    Send-Bytes $context $stateCache.bytes "application/json; charset=utf-8"; return
   }
 
   # --- Phones: BUZZ! -------------------------------------------------
@@ -548,7 +579,41 @@ function Handle-Request($context) {
       question = $hostQuestion
       locked   = $state.locked
       winner   = $state.winner
+      control  = $ctl.info
     }; return
+  }
+
+  # The host's phone sends a command: { action: "goto", target: "round" | "finalWager" | "fastMoney", round }
+  # or { action: "fwPick", categoryIndex, questionIndex } or { action: "fwRandom" }
+  if ($path -eq "/api/host/command" -and $method -eq "POST") {
+    if ($request.QueryString["code"] -ne $HostCode) { Send-Json $context @{ error = "wrong code" } 403; return }
+    $body = Read-JsonBody $context
+    $ctl.seq = $ctl.seq + 1
+    $command = @{
+      id            = $ctl.seq
+      action        = [string]$body.action
+      target        = [string]$body.target
+      round         = if ($null -ne $body.round) { [int]$body.round } else { $null }
+      categoryIndex = if ($null -ne $body.categoryIndex) { [int]$body.categoryIndex } else { $null }
+      questionIndex = if ($null -ne $body.questionIndex) { [int]$body.questionIndex } else { $null }
+    }
+    $ctl.commands = @(@($ctl.commands) + $command | Select-Object -Last 20)
+    Write-Host ("  HOST: {0} {1}{2}  ({3})" -f $command.action, $command.target, $(if ($command.round) { " $($command.round)" } else { "" }), (Get-Date -Format "HH:mm:ss")) -ForegroundColor Cyan
+    Send-Json $context @{ ok = $true; id = $ctl.seq }; return
+  }
+
+  # The game (this laptop) collects the commands it hasn't run yet
+  if ($path -eq "/api/commands" -and $method -eq "GET") {
+    if (-not (Test-IsHost $request)) { Send-Text $context "Only the host can do that" 403; return }
+    $after = [int]$request.QueryString["after"]
+    Send-Json $context @{ commands = @($ctl.commands | Where-Object { $_.id -gt $after }) }; return
+  }
+
+  # The game says what's on screen, for the host's phone
+  if ($path -eq "/api/control" -and $method -eq "POST") {
+    if (-not (Test-IsHost $request)) { Send-Text $context "Only the host can do that" 403; return }
+    $ctl.info = Read-JsonBody $context
+    Send-Json $context @{ ok = $true }; return
   }
 
   if ($path -eq "/api/teams" -and $method -eq "POST") {

@@ -57,6 +57,7 @@ let lockedOutTeamIds = [];   // teams that can't buzz at all on this question (G
 let lastWrongTeamId = null;  // the last team to get it wrong — waits until another team tries
 let isBuzzWindowOver = false; // the 30 seconds to buzz ran out — nobody can buzz on this question
 let answerTimer = null;      // { teamId, deadline, intervalId } while a team is answering
+let connectAttempts = 0;     // retries if the server is slow to answer at first
 
 /* ---------- Used by other files ---------- */
 
@@ -157,7 +158,8 @@ function handleAnswerTimeUp(teamId) {
 /* ---------- Talking to the server ---------- */
 
 async function buzzerRequest(path, options = {}) {
-  const response = await fetch(path, { cache: "no-store", ...options });
+  const timeout = window.AbortSignal && AbortSignal.timeout ? AbortSignal.timeout(5000) : undefined; // never wait forever
+  const response = await fetch(path, { cache: "no-store", signal: timeout, ...options });
   if (!response.ok) throw new Error(`Buzzer server answered ${response.status}`);
   return response.json();
 }
@@ -168,7 +170,13 @@ async function connectToBuzzerServer() {
   try {
     buzzerState = await buzzerRequest("/api/state");
   } catch (error) {
-    return; // served some other way, without the buzzer server
+    // The server may just be busy (or still starting): keep trying for a minute.
+    // Served some other way, without the buzzer server, it simply stays off.
+    if (connectAttempts < 30) {
+      connectAttempts += 1;
+      setTimeout(connectToBuzzerServer, 2000);
+    }
+    return;
   }
 
   isBuzzerConnected = true;
@@ -182,7 +190,13 @@ async function connectToBuzzerServer() {
   unlockBuzzers(); // clears any old buzz; stays closed until a question opens
   sendQuestionToHostScreen(null);
   showHostScreenInfo();
-  setInterval(checkForBuzz, BUZZER_POLL_MS);
+  pollBuzzerServer();
+}
+
+// Asks again only after the last answer arrives, so requests never pile up
+async function pollBuzzerServer() {
+  await checkForBuzz();
+  setTimeout(pollBuzzerServer, BUZZER_POLL_MS);
 }
 
 async function checkForBuzz() {
@@ -214,6 +228,7 @@ function handleBuzzerState(state) {
   handleBuzzersChanged(); // question-screen.js — pauses/resumes the question text
   handleFastMoneyServerState(state.fastMoney); // fast-money.js — phones answering Fast Money
   handleFinalWagerServerState(state.finalWager); // final-wager.js — which teams have wagered
+  if (typeof handleHostControl === "function") handleHostControl(state); // host-control.js — the host's phone controls
 }
 
 function sendTeamsToBuzzer() {
@@ -271,14 +286,14 @@ function makeJoinQrCodes() {
 
   if (joinUrl && window.QRCode && qrCodeMadeFor !== joinUrl) {
     buzzerQrElement.innerHTML = "";
-    new QRCode(buzzerQrElement, { text: joinUrl, width: 200, height: 200, colorDark: "#420b13", colorLight: "#ffffff" });
+    new QRCode(buzzerQrElement, { text: joinUrl, width: 200, height: 200, colorDark: "#5c1238", colorLight: "#ffffff" });
     qrCodeMadeFor = joinUrl;
   }
   buzzerQrElement.hidden = !qrCodeMadeFor;
 
   if (onlineUrl && window.QRCode && onlineQrMadeFor !== onlineUrl) {
     onlineQrElement.innerHTML = "";
-    new QRCode(onlineQrElement, { text: onlineUrl, width: 200, height: 200, colorDark: "#420b13", colorLight: "#ffffff" });
+    new QRCode(onlineQrElement, { text: onlineUrl, width: 200, height: 200, colorDark: "#5c1238", colorLight: "#ffffff" });
     onlineQrMadeFor = onlineUrl;
   }
   onlineQrElement.hidden = !onlineUrl || onlineQrMadeFor !== onlineUrl;
