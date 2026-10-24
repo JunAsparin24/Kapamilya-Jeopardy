@@ -74,56 +74,6 @@ let buzzWindowPending = null;
 // While it's running: { mode, teamId, totalMs, timeLeftMs, runningSince, hostPaused, intervalId, lastTick }
 let buzzWindow = null;
 
-/* ---------- Say the word (Spelling Bee) ----------
-   Uses the browser's built-in voice, so no audio files are needed. */
-const sayWordButton = document.getElementById("say-word-button");
-const SAY_WORD_RATE = 0.9; // normal speaking pace (1 = the voice's default)
-let sayWordText = null;
-
-function pickEnglishVoice() {
-  const voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
-  const english = voices.filter((voice) => voice.lang.toLowerCase().startsWith("en"));
-  // Natural-sounding voices first, then any US/UK English voice
-  return english.find((voice) => /natural|google|online/i.test(voice.name)) ||
-    english.find((voice) => /en-(us|gb|ca)/i.test(voice.lang)) ||
-    english[0] || null;
-}
-
-let sayWordGapTimer = null;
-let sayWordRun = 0; // bumps on every press or stop, so an old read never carries on
-
-function makeWordUtterance(rate) {
-  const utterance = new SpeechSynthesisUtterance(sayWordText);
-  const voice = pickEnglishVoice();
-  if (voice) utterance.voice = voice;
-  utterance.lang = voice ? voice.lang : "en-US";
-  utterance.rate = rate;
-  return utterance;
-}
-
-function sayWord() {
-  if (!sayWordText || !window.speechSynthesis) return;
-  stopSayingWord();
-  const run = sayWordRun;
-  sayWordButton.classList.add("is-speaking");
-
-  const utterance = makeWordUtterance(SAY_WORD_RATE);
-  utterance.onend = utterance.onerror = () => { if (run === sayWordRun) sayWordButton.classList.remove("is-speaking"); };
-  speechSynthesis.speak(utterance);
-}
-
-function stopSayingWord() {
-  sayWordRun += 1;
-  clearTimeout(sayWordGapTimer);
-  if (window.speechSynthesis) speechSynthesis.cancel();
-  sayWordButton.classList.remove("is-speaking");
-}
-
-sayWordButton.addEventListener("click", sayWord);
-// Some browsers load their voices a moment after the page
-if (window.speechSynthesis) speechSynthesis.getVoices();
-if (!window.speechSynthesis) sayWordButton.title = "This browser can't speak words out loud";
-
 /* ---------- Opening ---------- */
 
 // goldenWager (Golden Boost only): { teamId, amount } from the wager step,
@@ -162,12 +112,6 @@ function openQuestionScreen(categoryIndex, questionIndex, goldenWager = null) {
   questionCard.classList.toggle("has-reveal-image", Boolean(question.answerImage)); // extra animation (question.css)
   // No question text (e.g. Flags): just the picture, shown bigger (question.css)
   questionCard.classList.toggle("has-no-text", !question.question.trim());
-  // Spelling Bee: the "Say the word" button reads the answer aloud.
-  // An optional "say" in questions.js spells out a tricky pronunciation.
-  stopSayingWord();
-  sayWordText = question.wordInfo ? (question.say || question.answer) : null;
-  sayWordButton.hidden = !sayWordText;
-
   // Song questions get the clip player (song-player.js)
   prepareSongPlayer(question);
   questionCard.classList.toggle("has-song", Boolean(question.audio));
@@ -478,7 +422,6 @@ async function closeQuestionScreen(markAsPlayed) {
   stopQuestionReveal();
   stopBuzzWindow();
   prepareSongPlayer({}); // song-player.js — stops the song and frees it
-  stopSayingWord();
   resetBuzzersForQuestion(); // buzzer-host.js — clears any buzz and closes the buzzers
   sendQuestionToHostScreen(null); // buzzer-host.js — host's phone goes back to "waiting"
 

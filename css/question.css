@@ -798,18 +798,3 @@ body.is-question-open .board-footer {
     transform: none;
   }
 }
-
-/* ---------- Spelling Bee: "Say the word" button ---------- */
-.say-word {
-  align-self: center;
-  font-size: clamp(1.1rem, min(2.4vw, 3.6vh), 1.8rem);
-}
-
-/* Glows while the word is being spoken */
-.say-word.is-speaking {
-  animation: song-playing 0.9s ease-in-out infinite;
-}
-
-.question-card.is-revealing .say-word {
-  opacity: 0;
-}

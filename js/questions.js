@@ -28,14 +28,14 @@ const gameData = {
   round1: {
     categories: [
       {
-        // The question is just emojis: name the movie
-        name: "Emoji Movies",
+        // Picture questions: name the country. The flags are in assets/images/flags/.
+        name: "Flags",
         questions: [
-          { value: 100, question: "🕷️👦🏙️", answer: "Spider-Man", special: false },
-          { value: 200, question: "🔍🐠🌊", answer: "Finding Nemo", special: false },
-          { value: 300, question: "🤠🚀🧸", answer: "Toy Story", special: false },
-          { value: 400, question: "👻👻🚫", answer: "Ghostbusters", special: false },
-          { value: 500, question: "🍫🏭🎫", answer: "Charlie and the Chocolate Factory", special: false },
+          { value: 100, question: "", answer: "Denmark", image: "assets/images/flags/denmark.svg", imageAlt: "A country's flag", special: false },
+          { value: 200, question: "", answer: "South Africa", image: "assets/images/flags/south-africa.svg", imageAlt: "A country's flag", special: false },
+          { value: 300, question: "", answer: "Trinidad and Tobago", image: "assets/images/flags/trinidad-and-tobago.svg", imageAlt: "A country's flag", special: false },
+          { value: 400, question: "", answer: "Lithuania", image: "assets/images/flags/lithuania.svg", imageAlt: "A country's flag", special: false },
+          { value: 500, question: "", answer: "Zimbabwe", image: "assets/images/flags/zimbabwe.svg", imageAlt: "A country's flag", special: false },
         ],
       },
       {
@@ -105,13 +105,13 @@ const gameData = {
       },
       {
         // Name the year it happened
-        name: "Name That Year",
+        name: "A Year to Remember",
         questions: [
           { value: 200,  question: "COVID-19 was declared a pandemic and lockdowns started all over the world in this year", answer: "2020", special: false },
           { value: 400,  question: "The Titanic hit an iceberg and sank on its very first voyage in this year", answer: "1912", special: false },
-          { value: 600,  question: "Steve Jobs showed off the very first iPhone in this year", answer: "2007", special: false },
-          { value: 800,  question: "Neil Armstrong became the first person to walk on the Moon in this year", answer: "1969", special: false },
-          { value: 1000, question: "World War I ended in this year", answer: "1918", special: false },
+          { value: 600,  question: "Neil Armstrong became the first person to walk on the Moon in this year", answer: "1969", special: false },
+          { value: 800,  question: "World War I ended in this year", answer: "1918", special: false },
+          { value: 1000, question: "JayBam got married in this year", answer: "2023", special: false },
         ],
       },
       {
@@ -139,29 +139,28 @@ const gameData = {
       {
         name: "Spelling Bee",
         questions: [
-          // "wordInfo" only shows on the host's phone, to read out if teams ask.
-          // The 🔊 button on the card says the word; "say" spells out a tricky pronunciation.
-          { value: 200,  question: "Spell this word", answer: "Juxtaposition", say: "juck-stuh-puh-zish-un", special: false, wordInfo: {
+          // "wordInfo" only shows on the host's phone, to read out if teams ask
+          { value: 200,  question: "Spell this word", answer: "Juxtaposition", special: false, wordInfo: {
             definition: "Putting two very different things side by side so their differences stand out",
             origin: "Latin \"juxta\" (next to) + French \"position\" (placing)",
             sentence: "The juxtaposition of the tiny puppy and the huge dog made everyone laugh.",
           } },
-          { value: 400,  question: "Spell this word", answer: "Cymotrichous", say: "sigh-mott-trick-us", special: false, wordInfo: {
+          { value: 400,  question: "Spell this word", answer: "Cymotrichous", special: false, wordInfo: {
             definition: "Having wavy hair",
             origin: "Greek: \"kyma\" (wave) + \"thrix, trichos\" (hair)",
             sentence: "She was born with cymotrichous hair that curled up whenever it rained.",
           } },
-          { value: 600,  question: "Spell this word", answer: "Sesquipedalian", say: "sess-kwih-pih-day-lee-un", special: false, wordInfo: {
+          { value: 600,  question: "Spell this word", answer: "Sesquipedalian", special: false, wordInfo: {
             definition: "Having lots of syllables (a very long word); or someone who loves using long words",
             origin: "Latin: \"sesquipedalis\" (a foot and a half long), from \"sesqui-\" (one and a half) + \"pes\" (foot)",
             sentence: "His sesquipedalian vocabulary made his essays hard to read.",
           } },
-          { value: 800,  question: "Spell this word", answer: "Tintinnabulation", say: "tin-tin-nab-yoo-lay-shun", special: false, wordInfo: {
+          { value: 800,  question: "Spell this word", answer: "Tintinnabulation", special: false, wordInfo: {
             definition: "The ringing or jingling sound of bells",
             origin: "Latin: \"tintinnabulum\" (a bell), from \"tintinnare\" (to ring); made famous by Edgar Allan Poe's poem \"The Bells\"",
             sentence: "The tintinnabulation of the church bells filled the town on Christmas morning.",
           } },
-          { value: 1000, question: "Spell this word", answer: "Arachibutyrophobia", say: "uh-rack-ih-byoo-tih-roh-foe-bee-uh", special: false, wordInfo: {
+          { value: 1000, question: "Spell this word", answer: "Arachibutyrophobia", special: false, wordInfo: {
             definition: "The fear of peanut butter sticking to the roof of your mouth",
             origin: "Greek and Latin: \"arachis\" (peanut) + \"butyrum\" (butter) + \"phobia\" (fear)",
             sentence: "His arachibutyrophobia means he only eats his sandwiches with jam.",
