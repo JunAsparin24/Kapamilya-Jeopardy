@@ -509,3 +509,9 @@
     padding: 0.35em 0.8em;
   }
 }
+
+/* An "L" before a round or slanted letter (e.g. "LOVE") leaves a gap in the
+   all-caps font that looks like a space, so it's pulled in a bit (board.js) */
+.kern-l {
+  margin-right: -0.09em;
+}

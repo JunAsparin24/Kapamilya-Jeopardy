@@ -133,7 +133,7 @@ function openQuestionScreen(categoryIndex, questionIndex, goldenWager = null) {
 
   // Fill in the card
   questionRoundElement.textContent = `Round ${gameState.currentRound}`;
-  questionCategoryElement.textContent = getCategory(categoryIndex).name;
+  setCategoryNameText(questionCategoryElement, getCategory(categoryIndex).name); // board.js
   questionValueElement.textContent = formatMoney(question.value);
   prepareQuestionReveal(question.question);
   answerTextElement.textContent = question.answer;

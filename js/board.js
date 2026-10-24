@@ -30,6 +30,26 @@ function formatMoney(amount) {
   return `${sign}$${Math.abs(amount).toLocaleString("en-US")}`;
 }
 
+// Writes a category name into an element. In the all-caps board font, an
+// "L" next to a round or slanted letter (LO, LT, LV…) leaves a gap that
+// reads like a space ("L OVE"), so that L is tucked in a little (game.css).
+function setCategoryNameText(element, text) {
+  element.textContent = "";
+  text.split(/([Ll](?=[OoCcGgQqTtVvWwYy]))/).forEach((part) => {
+    if (!part) return;
+    if (part === "L" || part === "l") {
+      const tucked = document.createElement("span");
+      tucked.className = "kern-l";
+      tucked.textContent = part;
+      element.appendChild(tucked);
+    } else {
+      const rest = document.createElement("span");
+      rest.textContent = part;
+      element.appendChild(rest);
+    }
+  });
+}
+
 function getTileElement(categoryIndex, questionIndex) {
   return boardElement.querySelector(
     `.tile[data-category="${categoryIndex}"][data-question="${questionIndex}"]`
@@ -86,7 +106,7 @@ function createCategoryHeader(category, categoryIndex) {
 
   const name = document.createElement("span");
   name.className = "category__name";
-  name.textContent = category.name;
+  setCategoryNameText(name, category.name);
 
   header.appendChild(name);
   return header;
