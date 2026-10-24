@@ -100,6 +100,20 @@ function resetScores() {
   teamsChanged();
 }
 
+// Replaces every team at once (the random team maker, team-maker.js).
+// groups: [{ name, members: ["Ana", "Ben"] }, ...]. Scores start at $0.
+function replaceTeams(groups) {
+  const list = groups.slice(0, MAX_TEAMS);
+  if (list.length === 0) return;
+  teams = list.map((group, index) => {
+    const team = createTeam(String(group.name).trim().slice(0, 24) || `Team ${index + 1}`, TEAM_COLORS[index % TEAM_COLORS.length]);
+    team.members = (group.members || []).map((member) => String(member).slice(0, 40));
+    return team;
+  });
+  boardTeamId = null;
+  teamsChanged();
+}
+
 /* ---------- Listening for changes ---------- */
 
 // fn is called every time a team is added, removed, renamed or scores
@@ -135,6 +149,7 @@ function loadTeams() {
           name: String(team.name).slice(0, 24),
           score: Number(team.score) || 0,
           color: TEAM_COLORS.includes(team.color) ? team.color : TEAM_COLORS[index % TEAM_COLORS.length],
+          members: Array.isArray(team.members) ? team.members.map(String).slice(0, 20) : [],
         }));
       if (savedTeams.length > 0) return savedTeams;
     }

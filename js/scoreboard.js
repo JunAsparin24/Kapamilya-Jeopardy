@@ -61,6 +61,7 @@ function createTeamChip(team) {
   chip.className = "team-chip";
   chip.dataset.teamId = team.id;
   chip.style.setProperty("--team-color", team.color);
+  if (team.members && team.members.length) chip.title = `${team.name}: ${team.members.join(", ")}`;
 
   // ♛ — lights up for the team with the board; click to give them the board
   const boardButton = document.createElement("button");

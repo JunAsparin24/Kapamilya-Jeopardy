@@ -1,0 +1,211 @@
+/* =========================================================
+   team-maker.css — Random team maker (team-maker.js)
+   ========================================================= */
+
+/* The button on the home screen, under Start Game */
+.team-maker-open {
+  margin-top: 14px;
+  padding: 0.45em 1.2em 0.35em;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  letter-spacing: 0.08em;
+  color: var(--color-gold-light);
+  cursor: pointer;
+  background: rgba(92, 18, 56, 0.55);
+  border: 1px solid var(--color-border-gold);
+  border-radius: 999px;
+  transition: background 0.2s ease, transform 0.2s var(--ease-out);
+}
+
+.team-maker-open:hover {
+  background: rgba(92, 18, 56, 0.85);
+  transform: translateY(-2px);
+}
+
+/* The panel */
+.team-maker {
+  position: fixed;
+  inset: 0;
+  z-index: 54;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(ellipse at center, rgba(92, 18, 56, 0.75), rgba(20, 3, 12, 0.92));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.team-maker.is-open {
+  opacity: 1;
+}
+
+.team-maker__card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: min(900px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: clamp(20px, 4vh, 40px) clamp(18px, 4vw, 48px);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(160deg, rgba(184, 58, 114, 0.96), rgba(138, 36, 86, 0.98));
+  border: 1px solid var(--color-gold);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+}
+
+.team-maker__title {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(2.2rem, min(6vw, 8vh), 4.2rem);
+  line-height: 1;
+}
+
+.team-maker__setup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.team-maker__label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+.team-maker__label span {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--color-sage);
+}
+
+.team-maker__names {
+  width: 100%;
+  min-height: 9em;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--color-cream);
+  resize: vertical;
+  background: rgba(46, 6, 26, 0.55);
+  border: 1px solid var(--color-border-sage);
+  border-radius: var(--radius-md);
+}
+
+.team-maker__names:focus,
+.team-maker__stepper input:focus {
+  outline: 2px solid var(--color-gold-light);
+  outline-offset: 2px;
+}
+
+.team-maker__names::placeholder {
+  color: rgba(248, 198, 218, 0.45);
+}
+
+.team-maker__size {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.team-maker__stepper {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid var(--color-border-gold);
+  border-radius: 999px;
+}
+
+.team-maker__stepper button,
+.team-maker__stepper input {
+  height: 44px;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--color-gold-light);
+  text-align: center;
+  background: rgba(46, 6, 26, 0.55);
+  border: none;
+}
+
+.team-maker__stepper button {
+  width: 46px;
+  cursor: pointer;
+}
+
+.team-maker__stepper button:hover {
+  background: rgba(92, 18, 56, 0.9);
+}
+
+.team-maker__stepper input {
+  width: 3ch;
+}
+
+.team-maker__summary {
+  min-height: 1.4em;
+  font-weight: 700;
+  color: var(--color-cream);
+}
+
+.team-maker__summary.is-problem {
+  color: #ffd0d0;
+}
+
+/* The shuffled teams */
+.team-maker__results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.team-maker__team {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: rgba(46, 6, 26, 0.55);
+  border-top: 5px solid var(--team-color);
+  animation: team-card-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) var(--card-delay, 0ms) backwards;
+}
+
+@keyframes team-card-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.92); }
+}
+
+.team-maker__team-name {
+  margin-bottom: 6px;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.06em;
+  color: var(--team-color);
+}
+
+.team-maker__members {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.team-maker__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.team-maker__actions .btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team-maker__team {
+    animation: none;
+  }
+}

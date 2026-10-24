@@ -68,6 +68,7 @@ async function runHostCommand(command) {
 // Closes anything that's open on top of the current screen
 async function leaveCurrentScreen() {
   clearTimeout(roundEndTimer); // main.js
+  closeFirstPicker();          // first-pick.js
   resetMenuButton();           // main.js
   if (isQuestionScreenOpen) await closeQuestionScreen(false); // question-screen.js — goes back on the board
   if (gameState.activeQuestion) cancelActiveQuestion();      // e.g. mid Golden Boost reveal

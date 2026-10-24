@@ -20,6 +20,7 @@ const TILE_PICK_DELAY_MS = 450;
 const BOARD_ENTRANCE_MS = 1600;
 
 let tilePickTimer = null;
+const firstPickOpenButton = document.getElementById("first-pick-open");
 let boardEntranceTimer = null;
 
 /* ---------- Helpers ---------- */
@@ -188,8 +189,10 @@ function showWhoPicksNext() {
   if (boardTeam) {
     setBoardStatus(`${boardTeam.name} has the board, pick a question`);
   } else {
-    setBoardStatus("Who picks first? Click the ♛ next to their team", true);
+    setBoardStatus("Who picks first? Spin, or click the ♛ next to their team", true);
   }
+  // The "Who goes first?" spinner button (first-pick.js), while nobody has the board
+  firstPickOpenButton.hidden = Boolean(boardTeam) || getTeams().length < 2;
 }
 
 // The board changing hands (or a team being renamed) updates the line,

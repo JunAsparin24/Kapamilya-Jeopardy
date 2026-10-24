@@ -1,0 +1,194 @@
+/* =========================================================
+   first-pick.css — "Who goes first?" random picker (first-pick.js)
+   ========================================================= */
+.first-pick {
+  position: fixed;
+  inset: 0;
+  z-index: 54; /* above the board, below the Golden Boost and music button */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(ellipse at center, rgba(92, 18, 56, 0.75), rgba(20, 3, 12, 0.92));
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.first-pick.is-open {
+  opacity: 1;
+}
+
+.first-pick__card {
+  width: min(980px, 100%);
+  padding: clamp(18px, 3.5vh, 40px) clamp(20px, 4vw, 56px);
+  text-align: center;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(160deg, rgba(184, 58, 114, 0.95), rgba(138, 36, 86, 0.97));
+  border: 1px solid var(--color-gold);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+}
+
+.first-pick__title {
+  margin: 0.1em 0 0.35em;
+  font-size: clamp(2.2rem, min(6vw, 8vh), 4.6rem);
+  line-height: 1;
+}
+
+/* The team cards */
+.first-pick__teams {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(10px, 2vw, 20px);
+}
+
+.first-pick__team {
+  min-width: 9em;
+  padding: 0.55em 1em 0.45em;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, min(3vw, 4.5vh), 2.4rem);
+  letter-spacing: 0.06em;
+  color: var(--color-cream);
+  border-radius: var(--radius-md);
+  background: rgba(46, 6, 26, 0.6);
+  border: 3px solid var(--team-color, var(--color-gold));
+  transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+}
+
+/* Lit up while the spin passes over it */
+.first-pick__team.is-highlighted {
+  transform: scale(1.08);
+  background: var(--team-color, var(--color-gold));
+  color: #1a0410;
+  box-shadow: 0 0 30px var(--team-color, var(--color-gold));
+}
+
+/* The winner */
+.first-pick__team.is-picked {
+  background: var(--team-color, var(--color-gold));
+  color: #1a0410;
+  box-shadow: 0 0 0 4px var(--color-gold-light), 0 0 50px var(--team-color, var(--color-gold));
+  animation: first-pick-win 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: scale(1.12);
+}
+
+@keyframes first-pick-win {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.25); }
+  100% { transform: scale(1.12); }
+}
+
+.first-pick__result {
+  min-height: 1.3em;
+  margin: 0.7em 0 0.3em;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, min(4.5vw, 6.5vh), 3.6rem);
+  letter-spacing: 0.05em;
+  color: var(--color-gold-light);
+  text-shadow: 0 0 24px var(--team-color, rgba(244, 199, 106, 0.6));
+}
+
+.first-pick__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.first-pick__actions .btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .first-pick__team.is-picked {
+    animation: none;
+  }
+}
+
+/* =========================================================
+   THE WHEEL (first-pick.js draws it as an SVG)
+   ========================================================= */
+.first-pick__teams {
+  display: block;
+}
+
+.wheel {
+  display: block;
+  width: min(44vh, 74vw, 480px);
+  height: auto;
+  margin: 0 auto;
+  overflow: visible;
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.45));
+}
+
+.wheel__slice {
+  stroke: #fff8ec;
+  stroke-width: 1.2;
+  transition: filter 0.3s ease;
+}
+
+/* The winning slice glows once the wheel stops */
+.wheel__slice.is-picked {
+  filter: brightness(1.25) drop-shadow(0 0 6px #ffe3a3);
+  animation: wheel-win 0.9s ease-in-out 2;
+}
+
+@keyframes wheel-win {
+  50% { filter: brightness(1.6) drop-shadow(0 0 10px #ffe3a3); }
+}
+
+.wheel__label {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
+
+.wheel__rim {
+  fill: none;
+  stroke: var(--color-gold);
+  stroke-width: 5;
+}
+
+.wheel__stud {
+  fill: var(--color-gold-light);
+}
+
+.wheel__hub {
+  fill: var(--color-gold);
+  stroke: #a8771e;
+  stroke-width: 2;
+}
+
+.wheel__hub-dot {
+  fill: #a8771e;
+}
+
+.wheel__pointer {
+  fill: var(--color-cream);
+  stroke: #5c1238;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  transform-origin: 0 -112px;
+  transform-box: view-box;
+}
+
+/* The pointer flicks each time a slice passes it */
+.first-pick__teams.is-ticking .wheel__pointer {
+  animation: wheel-flick 0.12s ease-out;
+}
+
+@keyframes wheel-flick {
+  50% { transform: rotate(-14deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wheel__slice.is-picked,
+  .first-pick__teams.is-ticking .wheel__pointer {
+    animation: none;
+  }
+}

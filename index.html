@@ -23,6 +23,8 @@
   <link rel="stylesheet" href="css/rules.css">
   <link rel="stylesheet" href="css/final-wager.css">
   <link rel="stylesheet" href="css/fast-money.css">
+  <link rel="stylesheet" href="css/first-pick.css">
+  <link rel="stylesheet" href="css/team-maker.css">
 </head>
 <body data-screen="home">
 
@@ -91,6 +93,11 @@
           <button id="start-button" class="btn btn--primary" type="button">Start Game</button>
         </div>
 
+        <!-- Random team maker (team-maker.js) -->
+        <div class="reveal" style="--reveal-delay: 950ms">
+          <button id="team-maker-open" class="team-maker-open" type="button">&#127922; Make random teams</button>
+        </div>
+
         <!-- Only appears when the buzzer server is running — see buzzer-host.js -->
         <button id="home-buzzer-join" class="home-join reveal" style="--reveal-delay: 1000ms" type="button" hidden>
           Buzzers on! Players join at <strong id="home-buzzer-url"></strong>
@@ -133,7 +140,11 @@
         <div class="progress" aria-hidden="true">
           <div id="round-progress-bar" class="progress__bar"></div>
         </div>
-        <p id="board-status" class="board-footer__status" aria-live="polite"></p>
+        <div class="board-footer__status-wrap">
+          <p id="board-status" class="board-footer__status" aria-live="polite"></p>
+          <!-- Shown while nobody has the board — opens the random picker (first-pick.js) -->
+          <button id="first-pick-open" class="first-pick-open" type="button" hidden>&#127922; Who goes first?</button>
+        </div>
         <!-- Team names and scores — built by scoreboard.js -->
         <div id="scoreboard" class="scoreboard" aria-label="Team scores"></div>
       </footer>
@@ -394,6 +405,59 @@
     </div>
   </div>
 
+  <!-- ===================================================
+       WHO GOES FIRST? (random picker at the start of each round)
+       See first-pick.js
+       =================================================== -->
+  <div id="first-pick" class="first-pick" hidden role="dialog" aria-modal="true" aria-labelledby="first-pick-title">
+    <div class="first-pick__card">
+      <p class="eyebrow">Round <span id="first-pick-round">1</span></p>
+      <h2 id="first-pick-title" class="first-pick__title title-lettering">Who goes first?</h2>
+      <div id="first-pick-teams" class="first-pick__teams"></div>
+      <p id="first-pick-result" class="first-pick__result" aria-live="polite"></p>
+      <div class="first-pick__actions">
+        <button id="first-pick-spin" class="btn btn--primary" type="button">&#127905; Spin the wheel</button>
+        <button id="first-pick-done" class="btn btn--primary" type="button" hidden>Let's play!</button>
+        <button id="first-pick-skip" class="btn btn--ghost" type="button">Skip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================
+       RANDOM TEAM MAKER (from the home screen) — see team-maker.js
+       =================================================== -->
+  <div id="team-maker" class="team-maker" hidden role="dialog" aria-modal="true" aria-labelledby="team-maker-title">
+    <div class="team-maker__card">
+      <h2 id="team-maker-title" class="team-maker__title title-lettering">Make Teams</h2>
+
+      <!-- Step 1: names and team size -->
+      <div id="team-maker-setup" class="team-maker__setup">
+        <label class="team-maker__label" for="team-maker-names">Everyone's names <span>(one per line, or separated by commas)</span></label>
+        <textarea id="team-maker-names" class="team-maker__names" rows="7" placeholder="Jay&#10;Bam&#10;Tita Lorna&#10;Kuya Ben&#10;…"></textarea>
+
+        <div class="team-maker__size">
+          <label class="team-maker__label" for="team-maker-size">People per team</label>
+          <div class="team-maker__stepper">
+            <button id="team-maker-less" type="button" aria-label="Fewer people per team">&minus;</button>
+            <input id="team-maker-size" type="number" min="1" max="20" value="2" inputmode="numeric">
+            <button id="team-maker-more" type="button" aria-label="More people per team">+</button>
+          </div>
+        </div>
+        <p id="team-maker-summary" class="team-maker__summary" aria-live="polite"></p>
+      </div>
+
+      <!-- Step 2: the shuffled teams -->
+      <div id="team-maker-results" class="team-maker__results" hidden></div>
+
+      <div class="team-maker__actions">
+        <button id="team-maker-cancel" class="btn btn--ghost" type="button">Cancel</button>
+        <button id="team-maker-back" class="btn btn--ghost" type="button" hidden>&larr; Edit names</button>
+        <button id="team-maker-shuffle" class="btn btn--secondary" type="button">&#127922; Shuffle</button>
+        <button id="team-maker-use" class="btn btn--primary" type="button" hidden>Use these teams</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Fast Money: pick which survey answer a team's answer matches -->
   <div id="fm-picker" class="fm-picker" hidden role="dialog" aria-modal="true" aria-labelledby="fm-picker-question">
     <div class="fm-picker__card">
@@ -478,6 +542,8 @@
   <script src="js/song-player.js"></script>
   <script src="js/question-screen.js"></script>
   <script src="js/golden-boost.js"></script>
+  <script src="js/first-pick.js"></script>
+  <script src="js/team-maker.js"></script>
   <script src="js/rules.js"></script>
   <script src="js/final-wager.js"></script>
   <script src="js/answer-match.js"></script>

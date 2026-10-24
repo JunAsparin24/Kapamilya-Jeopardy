@@ -124,6 +124,7 @@ async function handleReturnToMenu() {
   if (isTransitioning) return;
   isTransitioning = true;
   clearTimeout(roundEndTimer);
+  closeFirstPicker(); // first-pick.js
   playSong("menu"); // music.js — back to the horn theme
   resetFinalWager(); // final-wager.js — stops its timer if one was running
   resetFastMoney(); // fast-money.js

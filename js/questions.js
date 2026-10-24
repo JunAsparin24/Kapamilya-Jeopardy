@@ -93,14 +93,15 @@ const gameData = {
   round2: {
     categories: [
       {
-        // The number of letters in each answer matches the value: $800 = 8 letters
-        name: "Spell Your Worth",
+        // Emoji movies: the question is just emojis, name the movie.
+        // Each emoji pops in on its own tile (question-screen.js / question.css).
+        name: "Lights, Camera, Emoji!",
         questions: [
-          { value: 200,  question: "In this 2009 Pixar movie, a grumpy old man ties thousands of balloons to his house and flies away", answer: "Up", special: false },
-          { value: 400,  question: "This planet is nicknamed the Red Planet", answer: "Mars", special: false },
-          { value: 600,  question: "This continent has the most countries, with 54 of them", answer: "Africa", special: false },
-          { value: 800,  question: "This French emperor was finally defeated at the Battle of Waterloo in 1815", answer: "Napoleon", special: false },
-          { value: 1000, question: "This fancy light fixture hangs from the ceiling, often dripping with sparkling crystals", answer: "Chandelier", special: false },
+          { value: 200,  question: "🕷️👦🏙️", answer: "Spider-Man", special: false },
+          { value: 400,  question: "🔍🐠🌊", answer: "Finding Nemo", special: false },
+          { value: 600,  question: "🤠🚀🧸", answer: "Toy Story", special: false },
+          { value: 800,  question: "👻👻🚫", answer: "Ghostbusters", special: false },
+          { value: 1000, question: "🍫🏭🎫", answer: "Charlie and the Chocolate Factory", special: false },
         ],
       },
       {
