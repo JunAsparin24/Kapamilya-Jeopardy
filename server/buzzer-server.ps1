@@ -93,6 +93,21 @@ $fw = @{
   wagers   = @{}   # teamId -> amount
 }
 
+# Golden Boost: the team that found it wagers on their phone. The amount
+# isn't secret (it's shown on the big screen anyway).
+$gb = @{
+  active = $false
+  teamId = $null
+  max    = 0       # the most they may wager
+  value  = 0       # the question's value (shown as a suggestion)
+  amount = $null   # what they locked in, or $null
+}
+
+function Get-GoldenBoostState {
+  if (-not $gb.active) { return @{ active = $false } }
+  return @{ active = $true; teamId = $gb.teamId; max = $gb.max; value = $gb.value; amount = $gb.amount }
+}
+
 # ---------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------
@@ -302,6 +317,7 @@ function Get-PublicState {
     onlineStatus = $script:onlineStatus  # off | starting | on | failed
     fastMoney = Get-FastMoneyState
     finalWager = Get-FinalWagerState
+    goldenBoost = Get-GoldenBoostState
     commandSeq = $ctl.seq                # the game fetches new host commands when this changes
   }
 }
@@ -369,7 +385,63 @@ function Send-ProjectFile($context, [string]$urlPath) {
 
   $extension = [System.IO.Path]::GetExtension($fullPath).ToLowerInvariant()
   $contentType = if ($MimeTypes.ContainsKey($extension)) { $MimeTypes[$extension] } else { "application/octet-stream" }
-  Send-Bytes $context ([System.IO.File]::ReadAllBytes($fullPath)) $contentType
+  Send-FilePart $context $fullPath $contentType
+}
+
+# Sends a file, or just the part the browser asked for.
+# Music players ask for big files a piece at a time ("Range: bytes=…") and
+# pause between pieces. Sending a whole 70 MB song in one go would leave
+# this server stuck waiting while the player pauses, and every phone would
+# freeze. So an open-ended request gets at most $FilePartBytes, and the
+# player simply asks for the next part when it needs it.
+$FilePartBytes = 1MB
+function Send-FilePart($context, [string]$fullPath, [string]$contentType) {
+  $response = $context.Response
+  $stream = [System.IO.File]::Open($fullPath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::Read)
+  try {
+    $total = $stream.Length
+    $start = 0
+    $end = $total - 1
+    $isPart = $false
+
+    $range = $context.Request.Headers["Range"]
+    if ($range -match '^bytes=(\d*)-(\d*)$' -and $total -gt 0) {
+      if ($Matches[1] -ne "") {
+        $start = [long]$Matches[1]
+        $end = if ($Matches[2] -ne "") { [Math]::Min([long]$Matches[2], $total - 1) } else { $total - 1 }
+      } elseif ($Matches[2] -ne "") {
+        $start = [Math]::Max(0, $total - [long]$Matches[2]) # "the last N bytes"
+      }
+      if ($start -ge $total) {
+        $response.StatusCode = 416
+        $response.Headers["Content-Range"] = "bytes */$total"
+        return
+      }
+      $end = [Math]::Min($end, $start + $FilePartBytes - 1)
+      $isPart = $true
+    }
+
+    $length = $end - $start + 1
+    $response.StatusCode = if ($isPart) { 206 } else { 200 }
+    $response.ContentType = $contentType
+    $response.Headers["Accept-Ranges"] = "bytes"
+    $response.Headers["Cache-Control"] = "no-store"
+    if ($isPart) { $response.Headers["Content-Range"] = "bytes $start-$end/$total" }
+    $response.ContentLength64 = $length
+
+    # Copy in small chunks rather than loading the whole file into memory
+    $stream.Position = $start
+    $buffer = New-Object byte[] 65536
+    $left = $length
+    while ($left -gt 0) {
+      $read = $stream.Read($buffer, 0, [int][Math]::Min($buffer.Length, $left))
+      if ($read -le 0) { break }
+      $response.OutputStream.Write($buffer, 0, $read)
+      $left -= $read
+    }
+  } finally {
+    $stream.Close()
+  }
 }
 
 # ---------------------------------------------------------
@@ -492,6 +564,38 @@ function Handle-Request($context) {
     Send-Json $context @{ accepted = [bool]$accepted; amount = $amount; finalWager = (Get-FinalWagerState) }; return
   }
 
+  # --- Golden Boost wager ----------------------------------------------
+  if ($path -like "/api/gb/*" -and $path -ne "/api/gb/wager" -and -not (Test-IsHost $request)) {
+    Send-Text $context "Only the host can do that" 403; return
+  }
+
+  # The game says which team found it and how much they may wager
+  if ($path -eq "/api/gb/setup" -and $method -eq "POST") {
+    $body = Read-JsonBody $context
+    $gb.active = $true
+    $gb.teamId = [string]$body.teamId
+    $gb.max = [int]$body.max
+    $gb.value = [int]$body.value
+    $gb.amount = $null
+    Send-Json $context (Get-GoldenBoostState); return
+  }
+
+  if ($path -eq "/api/gb/end" -and $method -eq "POST") {
+    $gb.active = $false
+    $gb.amount = $null
+    Send-Json $context (Get-GoldenBoostState); return
+  }
+
+  # A phone on the team that found it locks in (or changes) the wager
+  if ($path -eq "/api/gb/wager" -and $method -eq "POST") {
+    $body = Read-JsonBody $context
+    $accepted = $gb.active -and [string]$body.teamId -eq $gb.teamId
+    if ($accepted) {
+      $gb.amount = [int][Math]::Max([Math]::Min(1, $gb.max), [Math]::Min($gb.max, [Math]::Round([double]$body.amount)))
+    }
+    Send-Json $context @{ accepted = [bool]$accepted; goldenBoost = (Get-GoldenBoostState) }; return
+  }
+
   # --- Fast Money: the game (this laptop) runs it ----------------------
   if ($path -like "/api/fm/*" -and $path -ne "/api/fm/answer" -and -not (Test-IsHost $request)) {
     Send-Text $context "Only the host can do that" 403; return
@@ -585,6 +689,7 @@ function Handle-Request($context) {
 
   # The host's phone sends a command: { action: "goto", target: "round" | "finalWager" | "fastMoney", round }
   # or { action: "fwPick", categoryIndex, questionIndex } or { action: "fwRandom" }
+  # or { action: "score", teamId, amount } (add/subtract) or { action: "setScore", teamId, amount }
   if ($path -eq "/api/host/command" -and $method -eq "POST") {
     if ($request.QueryString["code"] -ne $HostCode) { Send-Json $context @{ error = "wrong code" } 403; return }
     $body = Read-JsonBody $context
@@ -596,6 +701,8 @@ function Handle-Request($context) {
       round         = if ($null -ne $body.round) { [int]$body.round } else { $null }
       categoryIndex = if ($null -ne $body.categoryIndex) { [int]$body.categoryIndex } else { $null }
       questionIndex = if ($null -ne $body.questionIndex) { [int]$body.questionIndex } else { $null }
+      teamId        = if ($null -ne $body.teamId) { [string]$body.teamId } else { $null }
+      amount        = if ($null -ne $body.amount) { [int]$body.amount } else { $null }
     }
     $ctl.commands = @(@($ctl.commands) + $command | Select-Object -Last 20)
     Write-Host ("  HOST: {0} {1}{2}  ({3})" -f $command.action, $command.target, $(if ($command.round) { " $($command.round)" } else { "" }), (Get-Date -Format "HH:mm:ss")) -ForegroundColor Cyan
@@ -624,6 +731,8 @@ function Handle-Request($context) {
         id    = [string]$_.id
         name  = ([string]$_.name).Substring(0, [Math]::Min(24, ([string]$_.name).Length))
         color = if ([string]$_.color -match '^#[0-9a-fA-F]{6}$') { [string]$_.color } else { "#f4c76a" }
+        score  = [int]$_.score    # live scores on the phones
+        streak = [int]$_.streak   # 🔥 hot streak
       }
     })
     Send-Json $context (Get-PublicState); return
@@ -703,6 +812,14 @@ try {
 # ---------------------------------------------------------
 # Running
 # ---------------------------------------------------------
+# A browser or phone that stops reading (or vanishes mid-download) is cut
+# off instead of keeping this one-at-a-time server waiting forever
+try {
+  $listener.TimeoutManager.MinSendBytesPerSecond = 16384
+  $listener.TimeoutManager.IdleConnection = [TimeSpan]::FromSeconds(30)
+  $listener.TimeoutManager.EntityBody = [TimeSpan]::FromSeconds(10)
+} catch { }
+
 $hostUrl = "http://localhost:$Port/"
 Write-Host ""
 Write-Host "  ============================================" -ForegroundColor Magenta
@@ -744,7 +861,12 @@ try {
     try {
       Handle-Request $context
     } catch {
-      Write-Host "  Problem handling $($context.Request.Url.AbsolutePath): $($_.Exception.Message)" -ForegroundColor Red
+      # A browser or phone hanging up mid-download (e.g. the music player has
+      # buffered enough) is normal — only report real problems
+      $message = $_.Exception.Message
+      if ($message -notmatch "aborted|network name|connection|forcibly closed|does not exist") {
+        Write-Host "  Problem handling $($context.Request.Url.AbsolutePath): $message" -ForegroundColor Red
+      }
       try { Send-Text $context "Server error" 500 } catch { }
     } finally {
       try { $context.Response.Close() } catch { }

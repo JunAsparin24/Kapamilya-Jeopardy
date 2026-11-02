@@ -95,8 +95,13 @@ function createTeamChip(team) {
   scoreButton.title = "Click to change this score";
   scoreButton.addEventListener("click", () => startEditingScore(chip, team));
 
-  chip.append(boardButton, nameInput, scoreButton);
+  // 🔥 Hot streak badge (shown from HOT_STREAK_AT questions in a row)
+  const streakBadge = document.createElement("span");
+  streakBadge.className = "team-chip__streak";
+
+  chip.append(boardButton, nameInput, scoreButton, streakBadge);
   updateBoardMarker(chip, team);
+  updateStreakBadge(chip, team);
 
   // Remove (only when there's more than one team)
   if (getTeams().length > 1) {
@@ -170,6 +175,7 @@ function updateScoreboardScores() {
     if (nameInput && document.activeElement !== nameInput) nameInput.value = team.name;
     if (!scoreButton) return; // score is being edited
 
+    updateStreakBadge(chip, team);
     const newText = formatMoney(team.score);
     if (scoreButton.textContent !== newText) {
       scoreButton.textContent = newText;
@@ -295,6 +301,43 @@ function renderAward(teamId) {
   award.querySelector(".award__btn--wrong").setAttribute("aria-pressed", String(value === -1));
   award.classList.toggle("is-right", value === 1);
   award.classList.toggle("is-wrong", value === -1);
+}
+
+/* ---------- 🔥 Hot streaks ---------- */
+
+function updateStreakBadge(chip, team) {
+  const badge = chip.querySelector(".team-chip__streak");
+  if (!badge) return;
+  const streak = team.streak || 0;
+  const isHot = streak >= HOT_STREAK_AT; // teams.js
+  badge.hidden = !isHot;
+  badge.textContent = `🔥${streak}`;
+  badge.title = `${team.name} has won ${streak} questions in a row`;
+  chip.classList.toggle("is-hot", isHot);
+}
+
+// question-screen.js calls this when a question is finished: whoever got it
+// right extends their streak, everyone else's breaks (teams.js)
+function recordStreaksForQuestion() {
+  const rightIds = Object.keys(currentAwards).filter((id) => currentAwards[id] === 1);
+  const wrongIds = Object.keys(currentAwards).filter((id) => currentAwards[id] === -1);
+  recordQuestionResult(rightIds, wrongIds).forEach((team, index) => {
+    setTimeout(() => showOnFire(team), 500 + index * 2600);
+  });
+}
+
+// "🔥 TEAM 1 IS ON FIRE!" across the screen for a couple of seconds
+function showOnFire(team) {
+  const banner = document.createElement("div");
+  banner.className = "on-fire";
+  banner.setAttribute("role", "status");
+  banner.style.setProperty("--team-color", team.color);
+  banner.innerHTML = `<span class="on-fire__flame" aria-hidden="true">🔥</span><span class="on-fire__text"></span><span class="on-fire__flame" aria-hidden="true">🔥</span>`;
+  banner.querySelector(".on-fire__text").textContent = `${team.name} is on fire!`;
+  document.body.appendChild(banner);
+  playCategoryChosenSound(); // sound-effects.js
+  setTimeout(() => playRevealPopSound(), 250);
+  setTimeout(() => banner.remove(), 2500);
 }
 
 // Marks the team that buzzed in first, so the host can find them quickly

@@ -5,13 +5,13 @@
 
 :root {
   --team-color: #f4c76a;
-  --color-bg: #b83a72;
-  --color-green: #8f2459;
-  --color-green-deep: #5c1238;
+  --color-bg: #a3141f;
+  --color-green: #8a1019;
+  --color-green-deep: #44070d;
   --color-gold: #f4c76a;
   --color-gold-light: #ffe3a3;
   --color-cream: #fff4dc;
-  --color-sage: #f8c6da;
+  --color-sage: #f6e7d8;
   --font-display: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
   --font-body: "Montserrat", "Segoe UI", system-ui, sans-serif;
   color-scheme: dark;
@@ -41,8 +41,8 @@ body {
   font-family: var(--font-body);
   color: var(--color-cream);
   background:
-    radial-gradient(ellipse at 20% 0%, #e46fa5 0%, transparent 60%),
-    linear-gradient(180deg, var(--color-bg), #6a1a42);
+    radial-gradient(ellipse at 20% 0%, #d6403a 0%, transparent 60%),
+    linear-gradient(180deg, var(--color-bg), #520a10);
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
   user-select: none;
@@ -68,7 +68,7 @@ button {
   font-size: 1.5rem;
   letter-spacing: 0.04em;
   color: var(--color-gold);
-  text-shadow: 2px 2px 0 var(--color-green-deep), 3px 3px 0 #3d0a24;
+  text-shadow: 2px 2px 0 var(--color-green-deep), 3px 3px 0 #2a0407;
 }
 
 .top-bar__team {
@@ -81,7 +81,7 @@ button {
   white-space: nowrap;
   text-overflow: ellipsis;
   cursor: pointer;
-  background: rgba(92, 18, 56, 0.8);
+  background: rgba(80, 10, 16, 0.8);
   border: 1px solid var(--team-color);
   border-radius: 999px;
 }
@@ -179,7 +179,7 @@ button {
 
 /* Ready: glowing, in the team's colour */
 .buzz-button[data-mode="ready"] {
-  color: #420c28;
+  color: #36060b;
   /* plain versions first, for older phones that don't understand color-mix() */
   background: var(--team-color);
   box-shadow: 0 0 60px var(--team-color), 0 20px 40px rgba(0, 0, 0, 0.5);
@@ -198,7 +198,7 @@ button {
 }
 
 .buzz-button[data-mode="sending"] {
-  color: #420c28;
+  color: #36060b;
   background: var(--team-color);
   border: 6px solid #fff;
   transform: scale(0.95);
@@ -225,8 +225,8 @@ button {
 .buzz-button[data-mode="locked"] {
   color: rgba(255, 244, 220, 0.7);
   cursor: not-allowed;
-  background: radial-gradient(circle at 50% 35%, #6e3a52 0%, #42162e 100%);
-  border: 6px solid rgba(248, 198, 218, 0.25);
+  background: radial-gradient(circle at 50% 35%, #5a2a2e 0%, #36100f 100%);
+  border: 6px solid rgba(246, 231, 216, 0.25);
   box-shadow: none;
 }
 
@@ -333,7 +333,7 @@ button {
   font-family: "Sancreek", Georgia, serif;
   font-size: 2.6rem;
   color: var(--color-gold);
-  text-shadow: 2px 2px 0 var(--color-green-deep), 3px 3px 0 #3d0a24;
+  text-shadow: 2px 2px 0 var(--color-green-deep), 3px 3px 0 #2a0407;
 }
 
 .fm-wait__text {
@@ -436,7 +436,7 @@ button {
 .fm-quiz__next {
   flex: 1.6;
   color: var(--color-cream);
-  background: linear-gradient(180deg, #e0609a, #c03c7a 55%, #962b5e);
+  background: linear-gradient(180deg, #3cb371, #1f8a4c 55%, #146b37);
   border: 2px solid var(--color-gold);
 }
 
@@ -451,7 +451,7 @@ button {
 /* "The other team already said that!" */
 .fm-quiz__note.is-warning {
   padding: 10px 12px;
-  color: #4e0e2e;
+  color: #3f070d;
   background: #ffb0b0;
   border-radius: 12px;
 }
@@ -461,4 +461,80 @@ button {
     animation: none !important;
     transition: none;
   }
+}
+
+/* =========================================================
+   LIVE SCORES (buzzer.js) — always at the bottom of the phone
+   ========================================================= */
+.phone-scores {
+  order: 10; /* below whichever screen is showing */
+  margin: 0 0 calc(14px + env(safe-area-inset-bottom, 0px));
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(40, 4, 8, 0.5);
+  border: 1px solid rgba(244, 199, 106, 0.35);
+}
+
+.phone-scores__mine {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 0 8px;
+}
+
+.phone-scores__amount {
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--team-color, var(--color-gold));
+}
+
+.phone-scores__place {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: right;
+  color: var(--color-gold-light);
+}
+
+.phone-scores__list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.phone-scores__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 8px 4px 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border-left: 4px solid var(--row-color, var(--color-gold));
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.phone-scores__row.is-mine {
+  font-weight: 700;
+  background: rgba(244, 199, 106, 0.16);
+}
+
+.phone-scores__name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.phone-scores__score {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Golden Boost wager screen (golden-boost-phone.js) */
+.gb-phone__title {
+  font-size: 2.2rem;
+  text-align: center;
 }

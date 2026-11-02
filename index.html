@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PANALO!</title>
   <!-- Browser tab icon: a gold star on pink (drawn inline, no image file needed) -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23b83a72'/%3E%3Cpath d='M32 11l6.2 12.6 13.8 2-10 9.8 2.4 13.8L32 42.7l-12.4 6.5 2.4-13.8-10-9.8 13.8-2z' fill='%23f4c76a'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23a3141f'/%3E%3Cpath d='M32 11l6.2 12.6 13.8 2-10 9.8 2.4 13.8L32 42.7l-12.4 6.5 2.4-13.8-10-9.8 13.8-2z' fill='%23f4c76a'/%3E%3C/svg%3E">
 
   <!-- Fonts (falls back to Georgia / Impact / Segoe UI if you're offline) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,25 +48,27 @@
          =================================================== -->
     <section id="home-screen" class="screen screen--centered is-active" aria-labelledby="home-title">
       <div class="showcase-card">
-        <!-- Little hearts and sparkles floating around the card (menu.css) -->
-        <div class="anniv-floaters" aria-hidden="true">
-          <span class="anniv-floater anniv-floater--heart" style="--fx: 7%;  --fy: 12%; --fs: 1.6rem; --fd: 0s"></span>
-          <span class="anniv-floater anniv-floater--spark" style="--fx: 92%; --fy: 10%; --fs: 1.2rem; --fd: 1.2s"></span>
-          <span class="anniv-floater anniv-floater--heart" style="--fx: 94%; --fy: 56%; --fs: 1.3rem; --fd: 2.1s"></span>
-          <span class="anniv-floater anniv-floater--spark" style="--fx: 5%;  --fy: 62%; --fs: 1rem;   --fd: 0.6s"></span>
-          <span class="anniv-floater anniv-floater--heart" style="--fx: 10%; --fy: 90%; --fs: 1rem;   --fd: 1.7s"></span>
-          <span class="anniv-floater anniv-floater--spark" style="--fx: 89%; --fy: 90%; --fs: 1.4rem; --fd: 2.6s"></span>
+        <!-- Holly in the corners, and snowflakes and stars floating around the card (menu.css) -->
+        <span class="holly holly--left" aria-hidden="true"></span>
+        <span class="holly holly--right" aria-hidden="true"></span>
+        <div class="xmas-floaters" aria-hidden="true">
+          <span class="xmas-floater" style="--fx: 7%;  --fy: 14%; --fs: 1.7rem; --fd: 0s">&#10052;</span>
+          <span class="xmas-floater xmas-floater--star" style="--fx: 92%; --fy: 12%; --fs: 1.3rem; --fd: 1.2s">&#9733;</span>
+          <span class="xmas-floater" style="--fx: 94%; --fy: 56%; --fs: 1.4rem; --fd: 2.1s">&#10052;</span>
+          <span class="xmas-floater xmas-floater--star" style="--fx: 5%;  --fy: 62%; --fs: 1.1rem; --fd: 0.6s">&#9733;</span>
+          <span class="xmas-floater" style="--fx: 10%; --fy: 90%; --fs: 1.2rem; --fd: 1.7s">&#10053;</span>
+          <span class="xmas-floater" style="--fx: 89%; --fy: 90%; --fs: 1.6rem; --fd: 2.6s">&#10053;</span>
         </div>
 
         <p class="eyebrow reveal" style="--reveal-delay: 100ms">Welcome to</p>
 
         <h1 id="home-title" class="game-title title-lettering reveal reveal--title" style="--reveal-delay: 200ms">PANALO!</h1>
 
-        <!-- Anniversary Edition ribbon (menu.css) -->
-        <p class="anniv-ribbon reveal" style="--reveal-delay: 380ms">
-          <span class="anniv-ribbon__heart" aria-hidden="true">&#9829;</span>
-          <span class="anniv-ribbon__text">Anniversary Edition</span>
-          <span class="anniv-ribbon__heart" aria-hidden="true">&#9829;</span>
+        <!-- Candy-cane "Christmas Edition" ribbon (menu.css) -->
+        <p class="xmas-ribbon reveal" style="--reveal-delay: 380ms">
+          <span class="xmas-ribbon__icon" aria-hidden="true">&#127876;</span>
+          <span class="xmas-ribbon__text">Christmas Edition</span>
+          <span class="xmas-ribbon__icon" aria-hidden="true">&#127873;</span>
         </p>
 
         <div class="star-divider reveal" style="--reveal-delay: 450ms" aria-hidden="true">
@@ -399,6 +401,8 @@
           <input id="golden-wager-amount" type="number" inputmode="numeric" min="0" step="100">
         </div>
         <p id="golden-wager-hint" class="golden-wager__hint"></p>
+        <!-- With the buzzers on, the team can wager from their phones (golden-boost.js) -->
+        <p id="golden-wager-phone" class="golden-wager__phone" hidden></p>
 
         <button id="golden-reveal-button" class="btn btn--primary" type="submit">Reveal Question</button>
       </form>

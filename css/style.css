@@ -6,21 +6,21 @@
    ========================================================= */
 
 /* ---------- Design tokens ----------
-   The PANALO! look: rich pink, gold and cream (Anniversary Edition).
+   The PANALO! look: Christmas red, evergreen, gold and snow (Christmas Edition).
    (The "green" in some names below is left over from the original
-   green theme; those colors are now shades of pink.) */
+   green theme; the button and tile ones are green again, the rest are red.) */
 :root {
   /* Backgrounds */
-  --color-bg: #b83a72;          /* the main pink */
-  --color-bg-darkest: #3d0a24;
-  --color-bg-dark: #7a1d4b;
-  --color-green-deep: #5c1238;
-  --color-green: #8f2459;
+  --color-bg: #a3141f;          /* the main Christmas red */
+  --color-bg-darkest: #2a0407;
+  --color-bg-dark: #5e0b12;
+  --color-green-deep: #44070d;
+  --color-green: #8a1019;
 
-  /* Pinks (buttons, tiles) */
-  --color-green-bright: #e0609a;
-  --color-green-mid: #c03c7a;
-  --color-green-dark: #962b5e;
+  /* Evergreens (buttons, tiles) */
+  --color-green-bright: #3cb371;
+  --color-green-mid: #1f8a4c;
+  --color-green-dark: #146b37;
 
   /* Gold / cream */
   --color-gold: #f4c76a;
@@ -29,9 +29,9 @@
   --color-cream: #fff4dc;
 
   /* Soft accents & borders */
-  --color-sage: #f8c6da;
+  --color-sage: #f6e7d8;
   --color-border-gold: rgba(244, 199, 106, 0.45);
-  --color-border-sage: rgba(248, 198, 218, 0.3);
+  --color-border-sage: rgba(246, 231, 216, 0.3);
 
   /* Fonts. --font-title is the ornate PANALO! lettering, for big titles only */
   --font-title: "Sancreek", "Rockwell Extra Bold", Georgia, serif;
@@ -122,10 +122,10 @@ input[type="number"]::-webkit-outer-spin-button {
     -2px 0 0 var(--color-cream),
     2px 0 0 var(--color-cream),
     /* stepped shadow */
-    3px 3px 0 #6e1844,
-    4px 4px 0 #6e1844,
-    5px 5px 0 #5c1238,
-    6px 6px 0 #5c1238,
+    3px 3px 0 #5a0a12,
+    4px 4px 0 #5a0a12,
+    5px 5px 0 #44070d,
+    6px 6px 0 #44070d,
     8px 10px 18px rgba(0, 0, 0, 0.35);
 }
 
@@ -199,8 +199,8 @@ input[type="number"]::-webkit-outer-spin-button {
   padding: clamp(36px, 6vh, 64px) clamp(22px, 5vw, 64px);
   text-align: center;
   border-radius: var(--radius-lg);
-  background: linear-gradient(160deg, rgba(184, 58, 114, 0.92), rgba(138, 36, 86, 0.94));
-  border: 1px solid rgba(61, 10, 36, 0.6);
+  background: linear-gradient(160deg, rgba(163, 20, 31, 0.92), rgba(110, 14, 22, 0.94));
+  border: 1px solid rgba(54, 6, 10, 0.6);
   box-shadow:
     0 30px 80px rgba(0, 0, 0, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -278,7 +278,7 @@ input[type="number"]::-webkit-outer-spin-button {
   max-width: 200px;
   padding: 14px 12px 12px;
   border-radius: var(--radius-md);
-  background: rgba(92, 18, 56, 0.6);
+  background: rgba(80, 10, 16, 0.6);
   border: 1px solid var(--color-border-sage);
 }
 
@@ -353,9 +353,9 @@ input[type="number"]::-webkit-outer-spin-button {
   overflow: hidden;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 20% 0%, #e46fa5 0%, transparent 60%),
-    radial-gradient(ellipse at 50% 120%, #6b1640 0%, transparent 55%),
-    linear-gradient(180deg, var(--color-bg) 0%, #9c2c62 60%, var(--color-bg-dark) 100%);
+    radial-gradient(ellipse at 20% 0%, #d6403a 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 120%, #4f0910 0%, transparent 55%),
+    linear-gradient(180deg, var(--color-bg) 0%, #86101a 60%, var(--color-bg-dark) 100%);
   transition: opacity 0.8s ease;
 }
 
@@ -393,7 +393,7 @@ body[data-screen="game"] .stage {
   bottom: -25vmax;
   width: 65vmax;
   height: 65vmax;
-  background: radial-gradient(circle, #ff8fc0 0%, transparent 65%);
+  background: radial-gradient(circle, #2fa35e 0%, transparent 65%);
   opacity: 0.4;
   animation: drift-two 34s ease-in-out infinite alternate;
 }
@@ -426,7 +426,7 @@ body[data-screen="game"] .stage {
   top: -10vh;
   width: 34vw;
   height: 130vh;
-  background: linear-gradient(180deg, rgba(255, 232, 190, 0.13), rgba(248, 198, 218, 0.05) 45%, transparent 75%);
+  background: linear-gradient(180deg, rgba(255, 232, 190, 0.13), rgba(246, 231, 216, 0.05) 45%, transparent 75%);
   clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
   transform-origin: 50% 0;
   mix-blend-mode: screen;
@@ -460,8 +460,8 @@ body[data-screen="game"] .stage {
   bottom: 0;
   height: 45vh;
   background-image:
-    linear-gradient(rgba(255, 210, 228, 0.18) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 210, 228, 0.18) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.18) 1px, transparent 1px);
   background-size: 70px 70px;
   transform: perspective(420px) rotateX(58deg);
   transform-origin: 50% 100%;
@@ -475,7 +475,7 @@ body[data-screen="game"] .stage {
   to { background-position: 0 70px; }
 }
 
-/* Particles (created by main.js) */
+/* Falling snow (the flakes are created by main.js) */
 .stage__particles {
   position: absolute;
   inset: 0;
@@ -483,22 +483,83 @@ body[data-screen="game"] .stage {
 
 .particle {
   position: absolute;
-  bottom: -10px;
+  top: -12px;
   left: var(--x);
   width: var(--size);
   height: var(--size);
   border-radius: 50%;
-  background: var(--color-gold-light);
-  box-shadow: 0 0 8px rgba(255, 227, 163, 0.9);
+  background: #ffffff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.85);
   opacity: 0;
-  animation: particle-rise var(--duration) linear var(--delay) infinite;
+  animation: snow-fall var(--duration) linear var(--delay) infinite;
 }
 
-@keyframes particle-rise {
+/* Drifts down, swaying gently side to side */
+@keyframes snow-fall {
   0%   { transform: translate3d(0, 0, 0); opacity: 0; }
-  10%  { opacity: var(--opacity); }
-  85%  { opacity: var(--opacity); }
-  100% { transform: translate3d(var(--sway), -105vh, 0); opacity: 0; }
+  8%   { opacity: var(--opacity); }
+  25%  { transform: translate3d(calc(var(--sway) * 0.5), 26vh, 0); }
+  50%  { transform: translate3d(calc(var(--sway) * -0.3), 52vh, 0); }
+  75%  { transform: translate3d(calc(var(--sway) * 0.4), 78vh, 0); }
+  92%  { opacity: var(--opacity); }
+  100% { transform: translate3d(0, 106vh, 0); opacity: 0; }
+}
+
+/* ---------- Christmas lights strung across the top of the screen ---------- */
+.xmas-lights {
+  position: absolute;
+  top: -6px;
+  left: -2%;
+  right: -2%;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  height: 46px;
+  padding: 0 1%;
+  pointer-events: none;
+}
+
+/* The wire, drooping between each bulb */
+.xmas-lights::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 26px;
+  background: radial-gradient(ellipse 3.2vw 18px at 50% 0, transparent 96%, #1d3b26 97%, #1d3b26 100%, transparent 101%) 0 0 / 6.25% 26px repeat-x;
+}
+
+.xmas-light {
+  position: relative;
+  top: 16px;
+  width: 12px;
+  height: 20px;
+  border-radius: 50% 50% 46% 46% / 60% 60% 40% 40%;
+  background: var(--bulb);
+  box-shadow: 0 0 14px 3px var(--bulb);
+  animation: bulb-twinkle 1.8s ease-in-out var(--twinkle-delay) infinite;
+}
+
+/* The little cap on each bulb */
+.xmas-light::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: #2c4a35;
+}
+
+@keyframes bulb-twinkle {
+  0%, 100% { opacity: 1; filter: brightness(1.15); }
+  50%      { opacity: 0.45; filter: brightness(0.8); box-shadow: 0 0 4px 1px var(--bulb); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xmas-light {
+    animation: none;
+  }
 }
 
 /* =========================================================
@@ -531,7 +592,7 @@ body[data-screen="game"] .stage {
   padding: 0.62em 2.3em 0.5em;
   font-size: clamp(1.7rem, 3.2vw, 2.4rem);
   color: var(--color-cream);
-  text-shadow: 0 2px 0 rgba(64, 8, 36, 0.6);
+  text-shadow: 0 2px 0 rgba(56, 6, 10, 0.6);
   background: linear-gradient(180deg, var(--color-green-bright) 0%, var(--color-green-mid) 55%, var(--color-green-dark) 100%);
   border: 2px solid var(--color-gold);
   border-radius: 999px;
@@ -539,7 +600,7 @@ body[data-screen="game"] .stage {
     0 12px 30px rgba(0, 0, 0, 0.45),
     0 0 0 5px rgba(244, 199, 106, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    inset 0 -5px 12px rgba(64, 8, 36, 0.4);
+    inset 0 -5px 12px rgba(56, 6, 10, 0.4);
 }
 
 /* Light "shine" that sweeps across on hover */
@@ -561,9 +622,9 @@ body[data-screen="game"] .stage {
   box-shadow:
     0 18px 40px rgba(0, 0, 0, 0.5),
     0 0 0 6px rgba(244, 199, 106, 0.16),
-    0 0 36px rgba(224, 96, 154, 0.65),
+    0 0 36px rgba(255, 90, 90, 0.65),
     inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    inset 0 -5px 12px rgba(64, 8, 36, 0.4);
+    inset 0 -5px 12px rgba(56, 6, 10, 0.4);
 }
 
 .btn--primary:hover::before {
@@ -580,16 +641,16 @@ body[data-screen="game"] .stage {
   padding: 0.62em 1.8em 0.5em;
   font-size: clamp(1.3rem, 2.4vw, 1.8rem);
   color: var(--color-gold-light);
-  background: rgba(92, 18, 56, 0.6);
+  background: rgba(80, 10, 16, 0.6);
   border: 1px solid var(--color-border-gold);
   border-radius: 999px;
 }
 
 .btn--secondary:hover {
   transform: translateY(-2px);
-  background: rgba(192, 60, 122, 0.35);
+  background: rgba(200, 30, 40, 0.35);
   border-color: var(--color-gold);
-  box-shadow: 0 0 22px rgba(224, 96, 154, 0.4);
+  box-shadow: 0 0 22px rgba(255, 90, 90, 0.4);
 }
 
 .btn--secondary:active {
@@ -609,14 +670,14 @@ body[data-screen="game"] .stage {
   padding: 0.45em 1em 0.35em;
   font-size: 1.05rem;
   color: var(--color-gold-light);
-  background: rgba(92, 18, 56, 0.6);
+  background: rgba(80, 10, 16, 0.6);
   border: 1px solid var(--color-border-gold);
   border-radius: 999px;
 }
 
 .btn--ghost:hover {
   transform: translateY(-1px);
-  background: rgba(192, 60, 122, 0.35);
+  background: rgba(200, 30, 40, 0.35);
   border-color: var(--color-gold);
 }
 
@@ -644,7 +705,7 @@ body[data-screen="game"] .stage {
   cursor: pointer;
   color: var(--color-gold-light);
   border-radius: 50%;
-  background: rgba(92, 18, 56, 0.85);
+  background: rgba(80, 10, 16, 0.85);
   border: 1px solid var(--color-border-gold);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
   transition: transform 0.2s var(--ease-out), border-color 0.2s ease, color 0.2s ease;
@@ -667,7 +728,7 @@ body[data-screen="game"] .stage {
 
 /* Muted: dimmed, with a slash through the note */
 .music-toggle.is-off {
-  color: rgba(248, 198, 218, 0.55);
+  color: rgba(246, 231, 216, 0.55);
 }
 
 .music-toggle.is-off::after {
@@ -695,7 +756,7 @@ body[data-screen="game"] .stage {
   padding: 24px;
   background:
     repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.025) 0 2px, transparent 2px 22px),
-    radial-gradient(ellipse at center, #b83a72 0%, #6a1a42 55%, #3d0a24 100%);
+    radial-gradient(ellipse at center, #a3141f 0%, #520a10 55%, #2a0407 100%);
   transform: translateX(-101%);
 }
 

@@ -228,12 +228,14 @@ function handleBuzzerState(state) {
   handleBuzzersChanged(); // question-screen.js — pauses/resumes the question text
   handleFastMoneyServerState(state.fastMoney); // fast-money.js — phones answering Fast Money
   handleFinalWagerServerState(state.finalWager); // final-wager.js — which teams have wagered
+  handleGoldenBoostServerState(state.goldenBoost); // golden-boost.js — a wager sent from a phone
   if (typeof handleHostControl === "function") handleHostControl(state); // host-control.js — the host's phone controls
 }
 
 function sendTeamsToBuzzer() {
   if (!isBuzzerConnected) return;
-  const teamList = getTeams().map(({ id, name, color }) => ({ id, name, color }));
+  // Scores and hot streaks go too, so phones can show live scores
+  const teamList = getTeams().map(({ id, name, color, score, streak }) => ({ id, name, color, score, streak: streak || 0 }));
   // Sent as plain text so the browser doesn't need an extra permission check
   fetch("/api/teams", { method: "POST", body: JSON.stringify(teamList) }).catch(() => {});
 }
@@ -286,14 +288,14 @@ function makeJoinQrCodes() {
 
   if (joinUrl && window.QRCode && qrCodeMadeFor !== joinUrl) {
     buzzerQrElement.innerHTML = "";
-    new QRCode(buzzerQrElement, { text: joinUrl, width: 200, height: 200, colorDark: "#5c1238", colorLight: "#ffffff" });
+    new QRCode(buzzerQrElement, { text: joinUrl, width: 200, height: 200, colorDark: "#44070d", colorLight: "#ffffff" });
     qrCodeMadeFor = joinUrl;
   }
   buzzerQrElement.hidden = !qrCodeMadeFor;
 
   if (onlineUrl && window.QRCode && onlineQrMadeFor !== onlineUrl) {
     onlineQrElement.innerHTML = "";
-    new QRCode(onlineQrElement, { text: onlineUrl, width: 200, height: 200, colorDark: "#5c1238", colorLight: "#ffffff" });
+    new QRCode(onlineQrElement, { text: onlineUrl, width: 200, height: 200, colorDark: "#44070d", colorLight: "#ffffff" });
     onlineQrMadeFor = onlineUrl;
   }
   onlineQrElement.hidden = !onlineUrl || onlineQrMadeFor !== onlineUrl;

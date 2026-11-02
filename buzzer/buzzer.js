@@ -98,15 +98,24 @@ function render() {
   // (final-wager-phone.js, fast-money-phone.js)
   const isFinalWager = Boolean(latestState.finalWager && latestState.finalWager.active);
   const isFastMoney = !isFinalWager && Boolean(latestState.fastMoney && latestState.fastMoney.active);
-  buzzScreen.hidden = isFinalWager || isFastMoney;
+  // Golden Boost: the team that found it wagers on their phone (golden-boost-phone.js)
+  const goldenBoost = latestState.goldenBoost && latestState.goldenBoost.active ? latestState.goldenBoost : null;
+  const isMyGoldenBoost = !isFinalWager && !isFastMoney && Boolean(goldenBoost) && goldenBoost.teamId === myTeamId;
+  buzzScreen.hidden = isFinalWager || isFastMoney || isMyGoldenBoost;
   renderFinalWagerPhone(isFinalWager ? latestState.finalWager : null);
   renderFastMoneyPhone(isFastMoney ? latestState.fastMoney : null, teams);
-  if (isFinalWager || isFastMoney) return;
+  renderGoldenBoostPhone(isMyGoldenBoost ? goldenBoost : null);
+  renderPhoneScores(isFastMoney ? null : teams); // live scores (hidden during Fast Money)
+  if (isFinalWager || isFastMoney || isMyGoldenBoost) return;
 
   const winner = latestState.locked ? latestState.winner : null;
   const alreadyGuessed = (latestState.blocked || []).includes(myTeamId);
+  const goldenTeam = goldenBoost ? teams.find((team) => team.id === goldenBoost.teamId) : null;
 
-  if (latestState.open === false && latestState.timeUp) {
+  if (latestState.open === false && goldenTeam) {
+    showButton("locked", "⭐ Golden Boost", `${goldenTeam.name} found it!`);
+    buzzStatus.textContent = `${goldenTeam.name} is placing their wager…`;
+  } else if (latestState.open === false && latestState.timeUp) {
     showButton("locked", "Time's up", "Nobody buzzed in 30 seconds");
     buzzStatus.textContent = "Wait for the next question";
   } else if (latestState.open === false) {
@@ -140,6 +149,8 @@ function renderTeamPicker(teams) {
   buzzScreen.hidden = true;
   renderFinalWagerPhone(null);
   renderFastMoneyPhone(null, teams);
+  renderGoldenBoostPhone(null);
+  renderPhoneScores(null);
   teamScreen.hidden = false;
   changeTeamButton.hidden = true;
   noTeamsMessage.hidden = teams.length > 0;
@@ -158,6 +169,63 @@ function renderTeamPicker(teams) {
     button.style.setProperty("--team-color", team.color);
     button.addEventListener("click", () => chooseTeam(team.id));
     teamList.appendChild(button);
+  });
+}
+
+/* ---------- Live scores ----------
+   Your team's score and place in big numbers, then everyone's scores.
+   Sent by the game every time a score changes. */
+
+const phoneScores = document.getElementById("phone-scores");
+const phoneScoreMine = document.getElementById("phone-score-mine");
+const phoneScorePlace = document.getElementById("phone-score-place");
+const phoneScoreList = document.getElementById("phone-score-list");
+
+function ordinal(number) {
+  const suffix = ["th", "st", "nd", "rd"][(number % 100 - 20) % 10] || ["th", "st", "nd", "rd"][number % 100] || "th";
+  return `${number}${suffix}`;
+}
+
+function money(amount) {
+  const value = Number(amount) || 0;
+  return `${value < 0 ? "-" : ""}$${Math.abs(value).toLocaleString("en-US")}`;
+}
+
+function renderPhoneScores(teams) {
+  const myTeam = teams && teams.find((team) => team.id === myTeamId);
+  phoneScores.hidden = !myTeam;
+  if (!myTeam) return;
+
+  const sorted = [...teams].sort((a, b) => (b.score || 0) - (a.score || 0));
+  const place = 1 + teams.filter((team) => (team.score || 0) > (myTeam.score || 0)).length;
+  const tied = teams.filter((team) => team.id !== myTeam.id && (team.score || 0) === (myTeam.score || 0)).length > 0;
+
+  phoneScoreMine.textContent = money(myTeam.score);
+  phoneScorePlace.textContent = `${tied ? "Tied " : ""}${ordinal(place)} of ${teams.length}` +
+    ((myTeam.streak || 0) >= 3 ? ` · 🔥${myTeam.streak} in a row!` : "");
+
+  // Only redraw the list when something changed
+  const signature = JSON.stringify(sorted.map((team) => [team.id, team.name, team.score, team.streak, team.color]));
+  if (phoneScoreList.dataset.signature === signature) return;
+  phoneScoreList.dataset.signature = signature;
+
+  phoneScoreList.innerHTML = "";
+  sorted.forEach((team) => {
+    const row = document.createElement("li");
+    row.className = "phone-scores__row";
+    row.classList.toggle("is-mine", team.id === myTeamId);
+    row.style.setProperty("--row-color", team.color);
+
+    const name = document.createElement("span");
+    name.className = "phone-scores__name";
+    name.textContent = ((team.streak || 0) >= 3 ? "🔥 " : "") + team.name;
+
+    const score = document.createElement("span");
+    score.className = "phone-scores__score";
+    score.textContent = money(team.score);
+
+    row.append(name, score);
+    phoneScoreList.appendChild(row);
   });
 }
 

@@ -321,7 +321,7 @@ function launchConfetti(count) {
   container.innerHTML = ""; // clear pieces from a previous game
   if (prefersReducedMotion) return;
 
-  const colors = ["#f4c76a", "#ffe3a3", "#fff4dc", "#e0609a", "#f8c6da"];
+  const colors = ["#f4c76a", "#ffffff", "#d6403a", "#2fa35e", "#ffe3a3"]; // gold, snow, red, green
   const randomBetween = (min, max) => min + Math.random() * (max - min);
 
   for (let i = 0; i < count; i++) {
@@ -381,7 +381,7 @@ function fillHomeStats() {
   document.getElementById("stat-questions").textContent = questionsPerRound;
 }
 
-// Creates the slow-rising gold particles in the background
+// Creates the gently falling snow in the background
 function createBackgroundParticles(count) {
   if (prefersReducedMotion) return;
 
@@ -390,25 +390,42 @@ function createBackgroundParticles(count) {
 
   for (let i = 0; i < count; i++) {
     const particle = document.createElement("span");
-    const duration = randomBetween(16, 32);
+    const duration = randomBetween(12, 24);
 
     particle.className = "particle";
     particle.style.setProperty("--x", `${randomBetween(0, 100)}%`);
-    particle.style.setProperty("--size", `${randomBetween(2, 5)}px`);
+    particle.style.setProperty("--size", `${randomBetween(2, 6)}px`);
     particle.style.setProperty("--duration", `${duration}s`);
     particle.style.setProperty("--delay", `${-randomBetween(0, duration)}s`); // negative = already mid-flight on load
     particle.style.setProperty("--sway", `${randomBetween(-60, 60)}px`);
-    particle.style.setProperty("--opacity", randomBetween(0.25, 0.7).toFixed(2));
+    particle.style.setProperty("--opacity", randomBetween(0.35, 0.9).toFixed(2));
 
     container.appendChild(particle);
   }
+}
+
+// A string of twinkling Christmas lights across the top of the screen
+function createChristmasLights(count) {
+  const colors = ["#ff3b3b", "#2fd36b", "#ffd23f", "#3fa9ff", "#ffffff"];
+  const string = document.createElement("div");
+  string.className = "xmas-lights";
+  string.setAttribute("aria-hidden", "true");
+  for (let i = 0; i < count; i++) {
+    const bulb = document.createElement("span");
+    bulb.className = "xmas-light";
+    bulb.style.setProperty("--bulb", colors[i % colors.length]);
+    bulb.style.setProperty("--twinkle-delay", `${(i % 4) * 0.45}s`);
+    string.appendChild(bulb);
+  }
+  document.querySelector(".stage").appendChild(string);
 }
 
 /* ---------- Startup ---------- */
 
 function init() {
   fillHomeStats();
-  createBackgroundParticles(28);
+  createBackgroundParticles(55);
+  createChristmasLights(16);
 
   startButton.addEventListener("click", handleStartGame);
   menuButton.addEventListener("click", handleMenuButtonClick);

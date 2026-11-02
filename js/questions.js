@@ -64,13 +64,13 @@ const gameData = {
         // Name that song, Songless-style: the host plays 0.3s, then 1s, 2s, 8s
         // and 15s of it (song-player.js). The songs are in assets/audio/songs/.
         // Optional audioStart: 42.5 starts the clips 42.5 seconds in.
-        name: "Love at First Listen",
+        name: "A Very Merry Melody",
         questions: [
-          { value: 100, question: "Name that love song", answer: "Just the Way You Are (Bruno Mars)", audio: "assets/audio/songs/just-the-way-you-are.mp3", special: false },
-          { value: 200, question: "Name that love song", answer: "My Heart Will Go On (Celine Dion)", audio: "assets/audio/songs/my-heart-will-go-on.mp3", special: false },
-          { value: 300, question: "Name that love song", answer: "Photograph (Ed Sheeran)", audio: "assets/audio/songs/photograph.mp3", special: false },
-          { value: 400, question: "Name that love song", answer: "Risk It All (Bruno Mars)", audio: "assets/audio/songs/risk-it-all.mp3", special: false },
-          { value: 500, question: "Name that love song", answer: "Can't Help Falling in Love (Elvis Presley)", audio: "assets/audio/songs/cant-help-falling-in-love.mp3", special: false },
+          { value: 100, question: "Name that song", answer: "Just the Way You Are (Bruno Mars)", audio: "assets/audio/songs/just-the-way-you-are.mp3", special: false },
+          { value: 200, question: "Name that song", answer: "My Heart Will Go On (Celine Dion)", audio: "assets/audio/songs/my-heart-will-go-on.mp3", special: false },
+          { value: 300, question: "Name that song", answer: "Photograph (Ed Sheeran)", audio: "assets/audio/songs/photograph.mp3", special: false },
+          { value: 400, question: "Name that song", answer: "Risk It All (Bruno Mars)", audio: "assets/audio/songs/risk-it-all.mp3", special: false },
+          { value: 500, question: "Name that song", answer: "Can't Help Falling in Love (Elvis Presley)", audio: "assets/audio/songs/cant-help-falling-in-love.mp3", special: false },
         ],
       },
       {
@@ -116,14 +116,14 @@ const gameData = {
         ],
       },
       {
-        // "I love you" around the world: name the language
-        name: "Love Language",
+        // "Merry Christmas" around the world: name the language
+        name: "Season's Greetings",
         questions: [
-          { value: 200,  question: "\"Mahal kita\" means \"I love you\" in this language", answer: "Tagalog (Filipino)", special: false },
-          { value: 400,  question: "\"사랑해\" (Saranghae) means \"I love you\" in this language", answer: "Korean", special: false },
-          { value: 600,  question: "\"Ich liebe dich\" means \"I love you\" in this language", answer: "German", special: false },
-          { value: 800,  question: "\"Eu te amo\" means \"I love you\" in this language", answer: "Portuguese", special: false },
-          { value: 1000, question: "\"ฉันรักคุณ\" (Chan rak khun) means \"I love you\" in this language", answer: "Thai", special: false },
+          { value: 200,  question: "\"Maligayang Pasko\" means \"Merry Christmas\" in this language", answer: "Tagalog (Filipino)", special: false },
+          { value: 400,  question: "\"메리 크리스마스\" (Meri Keuriseumaseu) means \"Merry Christmas\" in this language", answer: "Korean", special: false },
+          { value: 600,  question: "\"Frohe Weihnachten\" means \"Merry Christmas\" in this language", answer: "German", special: false },
+          { value: 800,  question: "\"Feliz Natal\" means \"Merry Christmas\" in this language", answer: "Portuguese", special: false },
+          { value: 1000, question: "\"สุขสันต์วันคริสต์มาส\" (Suk san wan Christmas) means \"Merry Christmas\" in this language", answer: "Thai", special: false },
         ],
       },
       {

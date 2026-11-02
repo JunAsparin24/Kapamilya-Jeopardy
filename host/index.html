@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#711a26">
+  <meta name="theme-color" content="#a3141f">
   <title>PANALO! Host</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23711a26'/%3E%3Cpath d='M32 11l6.2 12.6 13.8 2-10 9.8 2.4 13.8L32 42.7l-12.4 6.5 2.4-13.8-10-9.8 13.8-2z' fill='%23f4c76a'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23a3141f'/%3E%3Cpath d='M32 11l6.2 12.6 13.8 2-10 9.8 2.4 13.8L32 42.7l-12.4 6.5 2.4-13.8-10-9.8 13.8-2z' fill='%23f4c76a'/%3E%3C/svg%3E">
 
   <!-- Fonts (falls back to Impact / system fonts if the phone is offline) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -78,6 +78,9 @@
     <section id="controls" class="controls" hidden>
       <h2 class="controls__title">Game controls</h2>
       <p class="controls__now">On screen: <strong id="controls-now"></strong></p>
+
+      <p class="controls__label">Scores</p>
+      <div id="controls-scores" class="controls__scores"></div>
 
       <p class="controls__label">Jump to</p>
       <div id="controls-jump" class="controls__jump"></div>

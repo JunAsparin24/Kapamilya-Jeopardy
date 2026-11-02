@@ -415,6 +415,7 @@ async function closeQuestionScreen(markAsPlayed) {
 
   if (markAsPlayed) {
     finishActiveQuestion();
+    recordStreaksForQuestion(); // scoreboard.js — 🔥 hot streaks
   } else {
     cancelActiveQuestion();
   }

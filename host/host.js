@@ -155,6 +155,8 @@ function renderControls(control) {
     control.screen === "finalWager" && fw.step ? `Final Wager (${fw.step})` :
     SCREEN_NAMES[control.screen] || control.screen;
 
+  renderScoreControls(control.teams || [], control.step || 100);
+
   // Jump buttons (only rebuilt when something changes, so taps aren't lost)
   const currentTarget =
     control.screen === "game" || control.screen === "roundComplete" ? `round${control.round}` :
@@ -222,6 +224,81 @@ function renderControls(control) {
     button.classList.toggle("is-active", isActive);
     button.disabled = tooLate;
   });
+}
+
+/* ---------- Scores: − / + and "set exact" for each team ---------- */
+
+const controlsScores = document.getElementById("controls-scores");
+let scoresKey = "";
+
+function renderScoreControls(teams, step) {
+  // Rebuild only when the teams or the step change; otherwise just update the numbers
+  const newKey = JSON.stringify(teams.map(({ id, name, color }) => [id, name, color])) + step;
+  if (newKey !== scoresKey) {
+    scoresKey = newKey;
+    controlsScores.innerHTML = "";
+    teams.forEach((team) => controlsScores.appendChild(makeScoreRow(team, step)));
+  }
+
+  teams.forEach((team) => {
+    const row = controlsScores.querySelector(`[data-team-id="${team.id}"]`);
+    if (!row) return;
+    row.querySelector(".score-row__score").textContent = formatMoney(team.score);
+    const streak = row.querySelector(".score-row__streak");
+    streak.hidden = (team.streak || 0) < 3;
+    streak.textContent = `🔥${team.streak}`;
+  });
+}
+
+function makeScoreRow(team, step) {
+  const row = document.createElement("div");
+  row.className = "score-row";
+  row.dataset.teamId = team.id;
+  row.style.setProperty("--team-color", team.color);
+
+  const name = document.createElement("span");
+  name.className = "score-row__name";
+  name.textContent = team.name;
+
+  const streak = document.createElement("span");
+  streak.className = "score-row__streak";
+  streak.hidden = true;
+
+  const score = document.createElement("button");
+  score.type = "button";
+  score.className = "score-row__score";
+  score.title = "Tap to type in an exact score";
+  score.addEventListener("click", () => {
+    const typed = prompt(`New score for ${team.name}:`, score.textContent.replace(/[^0-9-]/g, ""));
+    if (typed === null || typed.trim() === "") return;
+    const value = Math.round(Number(typed.replace(/[^0-9-]/g, "")));
+    if (!Number.isFinite(value)) return;
+    sendCommand({ action: "setScore", teamId: team.id, amount: value }, `${team.name} set to ${formatMoney(value)}`);
+  });
+
+  const minus = makeStepButton(team, -step);
+  const plus = makeStepButton(team, step);
+
+  row.append(name, streak, minus, score, plus);
+  return row;
+}
+
+function makeStepButton(team, amount) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "score-row__step";
+  button.textContent = amount > 0 ? `+${amount}` : `−${Math.abs(amount)}`;
+  button.setAttribute("aria-label", `${amount > 0 ? "Add" : "Take away"} ${Math.abs(amount)} ${amount > 0 ? "to" : "from"} ${team.name}`);
+  button.addEventListener("click", () => {
+    sendCommand({ action: "score", teamId: team.id, amount }, `${team.name} ${amount > 0 ? "+" : "−"}${Math.abs(amount)}`);
+  });
+  return button;
+}
+
+// 1200 → "$1,200"   -300 → "-$300"
+function formatMoney(amount) {
+  const sign = amount < 0 ? "-" : "";
+  return `${sign}$${Math.abs(amount).toLocaleString("en-US")}`;
 }
 
 function buildFinalWagerPicker(categories) {

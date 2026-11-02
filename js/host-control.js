@@ -59,6 +59,10 @@ async function runHostCommand(command) {
     setHostFinalWagerPick(command.categoryIndex, command.questionIndex);
   } else if (command.action === "fwRandom") {
     hostFinalWagerPick = null;
+  } else if (command.action === "score") {
+    changeScore(command.teamId, command.amount || 0); // teams.js — + or − from the host's phone
+  } else if (command.action === "setScore") {
+    if (command.amount !== null && command.amount !== undefined) setScore(command.teamId, command.amount); // teams.js
   }
   publishControlInfo();
 }
@@ -72,6 +76,7 @@ async function leaveCurrentScreen() {
   resetMenuButton();           // main.js
   if (isQuestionScreenOpen) await closeQuestionScreen(false); // question-screen.js — goes back on the board
   if (gameState.activeQuestion) cancelActiveQuestion();      // e.g. mid Golden Boost reveal
+  if (!document.getElementById("golden-boost").hidden) endGoldenBoostPhones(); // golden-boost.js
   document.getElementById("golden-boost").hidden = true;
   document.getElementById("fm-picker").hidden = true;
   while (isTransitioning) await wait(50); // main.js — let any wipe finish first
@@ -139,6 +144,9 @@ function publishControlInfo() {
     screen: document.body.dataset.screen,
     round: gameState.currentRound,
     totalRounds: getTotalRounds(),
+    // Scores, for editing on the host's phone
+    teams: getTeams().map(({ id, name, color, score, streak }) => ({ id, name, color, score, streak: streak || 0 })),
+    step: Math.min(...getRoundValues()), // the round's smallest value, for the + / − buttons
     busy: isTransitioning,
     finalWager: {
       step: finalWager ? finalWager.step : null,

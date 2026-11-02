@@ -25,6 +25,11 @@ const goldenWagerPrompt = document.getElementById("golden-wager-prompt");
 const goldenWagerTeams = document.getElementById("golden-wager-teams");
 const goldenWagerAmount = document.getElementById("golden-wager-amount");
 const goldenWagerHint = document.getElementById("golden-wager-hint");
+const goldenWagerPhone = document.getElementById("golden-wager-phone");
+const goldenRevealButton = document.getElementById("golden-reveal-button");
+
+// Wagering from phones: the amount the phone sent that's already been filled in
+let goldenPhoneAmountShown = null;
 
 // How long stage 1 plays before the wager step appears
 const GOLDEN_BOOST_INTRO_MS = 2200;
@@ -66,6 +71,7 @@ function playGoldenBoostIntro(question) {
         wager = { teamId: team.id, amount: Math.min(amount, maxWager) };
       }
 
+      endGoldenBoostPhones(); // the phones go back to the buzzer
       goldenBoostOverlay.classList.add("is-leaving");
       resolve(wager);
 
@@ -83,6 +89,7 @@ function showWagerStep(question) {
   currentGoldenQuestion = question;
   selectedWagerTeamId = null;
   goldenWagerAmount.value = "";
+  goldenWagerPhone.hidden = true; // shown once a team is picked (startGoldenBoostPhones)
   goldenWagerAmount.placeholder = String(question.value);
   goldenWagerAmount.removeAttribute("max");
   goldenWagerTeams.innerHTML = "";
@@ -123,7 +130,48 @@ function selectWagerTeam(teamId) {
     button.setAttribute("aria-checked", String(button.dataset.teamId === teamId));
   });
   updateWagerHint();
+  startGoldenBoostPhones(getTeam(teamId));
   goldenWagerAmount.focus({ preventScroll: true });
+}
+
+/* ---------- Wagering from the phones ----------
+   With the buzzers on, the team that found it gets a wager box on their
+   phones. Once they lock it in, the amount fills in here by itself; the
+   host just presses REVEAL QUESTION. The host can still type it instead. */
+
+function startGoldenBoostPhones(team) {
+  goldenPhoneAmountShown = null;
+  goldenWagerPhone.hidden = true;
+  goldenWagerPhone.classList.remove("is-locked");
+  if (!team || !isBuzzerConnected) return; // buzzer-host.js
+
+  goldenWagerPhone.hidden = false;
+  goldenWagerPhone.textContent = `📱 Waiting for ${team.name} to wager on their phone… (or type it in)`;
+  fetch("/api/gb/setup", {
+    method: "POST",
+    body: JSON.stringify({ teamId: team.id, max: getMaxWager(team), value: currentGoldenQuestion.value }),
+  }).catch(() => {});
+}
+
+function endGoldenBoostPhones() {
+  goldenPhoneAmountShown = null;
+  if (isBuzzerConnected) fetch("/api/gb/end", { method: "POST", body: "{}" }).catch(() => {});
+}
+
+// buzzer-host.js calls this on every check-in
+function handleGoldenBoostServerState(serverState) {
+  if (!serverState || !serverState.active || goldenWagerForm.hidden) return;
+  if (serverState.teamId !== selectedWagerTeamId) return;
+  const amount = serverState.amount;
+  if (amount === null || amount === undefined || amount === goldenPhoneAmountShown) return;
+
+  goldenPhoneAmountShown = amount;
+  goldenWagerAmount.value = String(amount);
+  const team = getTeam(selectedWagerTeamId);
+  goldenWagerPhone.textContent = `✓ ${team ? team.name : "They"} wagered ${formatMoney(amount)} from their phone`;
+  goldenWagerPhone.classList.add("is-locked");
+  playWagerLockedSound(); // sound-effects.js
+  goldenRevealButton.focus({ preventScroll: true });
 }
 
 // A team can wager up to the points it already has. A team with less

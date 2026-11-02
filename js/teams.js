@@ -95,9 +95,32 @@ function setBoardTeam(teamId) {
 
 // New game: everyone back to $0 and nobody has the board yet (team names are kept)
 function resetScores() {
-  teams.forEach((team) => { team.score = 0; });
+  teams.forEach((team) => { team.score = 0; team.streak = 0; });
   boardTeamId = null;
   teamsChanged();
+}
+
+/* ---------- 🔥 Hot streaks ----------
+   How many questions in a row each team has won. Called by scoreboard.js
+   when a question is finished: the team(s) that got it right go up by one;
+   everyone else goes back to 0 (a wrong answer, or another team winning
+   it, breaks a streak). If nobody got it right, streaks stay as they are.
+   Returns the teams that just reached HOT_STREAK_AT, for a celebration. */
+const HOT_STREAK_AT = 3;
+
+function recordQuestionResult(rightTeamIds, wrongTeamIds) {
+  const justGotHot = [];
+  teams.forEach((team) => {
+    const before = team.streak || 0;
+    if (rightTeamIds.includes(team.id)) {
+      team.streak = before + 1;
+      if (team.streak === HOT_STREAK_AT) justGotHot.push(team);
+    } else if (rightTeamIds.length > 0 || wrongTeamIds.includes(team.id)) {
+      team.streak = 0;
+    }
+  });
+  teamsChanged();
+  return justGotHot;
 }
 
 // Replaces every team at once (the random team maker, team-maker.js).
@@ -133,6 +156,7 @@ function createTeam(name, color) {
     id: "t" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
     name,
     score: 0,
+    streak: 0, // 🔥 questions won in a row
     color,
   };
 }
@@ -150,6 +174,7 @@ function loadTeams() {
           score: Number(team.score) || 0,
           color: TEAM_COLORS.includes(team.color) ? team.color : TEAM_COLORS[index % TEAM_COLORS.length],
           members: Array.isArray(team.members) ? team.members.map(String).slice(0, 20) : [],
+          streak: Number(team.streak) || 0,
         }));
       if (savedTeams.length > 0) return savedTeams;
     }
