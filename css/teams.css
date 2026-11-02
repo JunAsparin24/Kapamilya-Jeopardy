@@ -85,7 +85,10 @@
 
 /* Team name: looks like plain text, becomes an input when clicked */
 .team-chip__name {
-  width: 9ch;
+  /* grows to fit the whole name (field-sizing), with a "size" fallback set by scoreboard.js */
+  width: auto;
+  field-sizing: content;
+  max-width: 16em; /* room for a full 24-character name */
   min-width: 0;
   padding: 0.25em 0.35em 0.15em;
   font-family: var(--font-display);

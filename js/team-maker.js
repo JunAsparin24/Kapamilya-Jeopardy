@@ -26,6 +26,7 @@ const teamMakerShuffle = document.getElementById("team-maker-shuffle");
 const teamMakerUse = document.getElementById("team-maker-use");
 
 let madeTeams = null; // [{ name, members }] after a shuffle
+let customTeamNames = []; // names typed on the results screen, kept when shuffling again
 
 /* ---------- Opening & closing ---------- */
 
@@ -49,6 +50,7 @@ function showTeamMakerSetup() {
   madeTeams = null;
   teamMakerSetup.hidden = false;
   teamMakerResults.hidden = true;
+  document.getElementById("team-maker-tip").hidden = true;
   teamMakerBack.hidden = true;
   teamMakerCancel.hidden = false;
   teamMakerUse.hidden = true;
@@ -121,7 +123,7 @@ function makeTeams() {
   try { localStorage.setItem(NAMES_STORAGE_KEY, teamMakerNames.value); } catch (error) { /* fine */ }
 
   // Deal the shuffled names out like cards, so team sizes differ by at most one
-  const groups = Array.from({ length: teamCount }, (_, index) => ({ name: `Team ${index + 1}`, members: [] }));
+  const groups = Array.from({ length: teamCount }, (_, index) => ({ name: customTeamNames[index] || `Team ${index + 1}`, members: [] }));
   shuffled(names).forEach((name, index) => groups[index % teamCount].members.push(name));
   madeTeams = groups;
 
@@ -132,6 +134,7 @@ function makeTeams() {
 function renderMadeTeams() {
   teamMakerSetup.hidden = true;
   teamMakerResults.hidden = false;
+  document.getElementById("team-maker-tip").hidden = false;
   teamMakerBack.hidden = false;
   teamMakerCancel.hidden = true;
   teamMakerUse.hidden = false;
@@ -144,9 +147,22 @@ function renderMadeTeams() {
     card.style.setProperty("--team-color", TEAM_COLORS[index % TEAM_COLORS.length]); // teams.js
     card.style.setProperty("--card-delay", `${index * 140}ms`);
 
-    const title = document.createElement("p");
+    // The team name can be changed right here (it sticks if you shuffle again)
+    const title = document.createElement("input");
+    title.type = "text";
     title.className = "team-maker__team-name";
-    title.textContent = group.name;
+    title.value = group.name;
+    title.maxLength = 24;
+    title.spellcheck = false;
+    title.setAttribute("aria-label", `Name for team ${index + 1}`);
+    title.title = "Click to rename this team";
+    title.addEventListener("input", () => {
+      const name = title.value.trim();
+      group.name = name || `Team ${index + 1}`;
+      customTeamNames[index] = name;
+    });
+    title.addEventListener("keydown", (event) => { if (event.key === "Enter") title.blur(); });
+    title.addEventListener("blur", () => { if (!title.value.trim()) title.value = group.name; });
 
     const list = document.createElement("ul");
     list.className = "team-maker__members";

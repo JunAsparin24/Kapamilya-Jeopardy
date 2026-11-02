@@ -25,12 +25,29 @@
   <link rel="stylesheet" href="css/fast-money.css">
   <link rel="stylesheet" href="css/first-pick.css">
   <link rel="stylesheet" href="css/team-maker.css">
+  <link rel="stylesheet" href="css/christmas.css">
 </head>
 <body data-screen="home">
 
   <!-- ===================================================
        ANIMATED BACKGROUND (shared by every screen)
        =================================================== -->
+  <!-- A crystal snowflake drawing, reused by the ribbon and the falling flakes -->
+  <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+    <symbol id="snowflake-shape" viewBox="-12 -12 24 24">
+      <!-- six arms, each with two pairs of little branches -->
+      <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <path d="M0 0 V-10.5 M0 -4.5 L-3 -7.5 M0 -4.5 L3 -7.5 M0 -7.8 L-2 -9.8 M0 -7.8 L2 -9.8"/>
+        <path d="M0 0 V-10.5 M0 -4.5 L-3 -7.5 M0 -4.5 L3 -7.5 M0 -7.8 L-2 -9.8 M0 -7.8 L2 -9.8" transform="rotate(60)"/>
+        <path d="M0 0 V-10.5 M0 -4.5 L-3 -7.5 M0 -4.5 L3 -7.5 M0 -7.8 L-2 -9.8 M0 -7.8 L2 -9.8" transform="rotate(120)"/>
+        <path d="M0 0 V-10.5 M0 -4.5 L-3 -7.5 M0 -4.5 L3 -7.5 M0 -7.8 L-2 -9.8 M0 -7.8 L2 -9.8" transform="rotate(180)"/>
+        <path d="M0 0 V-10.5 M0 -4.5 L-3 -7.5 M0 -4.5 L3 -7.5 M0 -7.8 L-2 -9.8 M0 -7.8 L2 -9.8" transform="rotate(240)"/>
+        <path d="M0 0 V-10.5 M0 -4.5 L-3 -7.5 M0 -4.5 L3 -7.5 M0 -7.8 L-2 -9.8 M0 -7.8 L2 -9.8" transform="rotate(300)"/>
+      </g>
+      <circle r="1.6" fill="currentColor"/>
+    </symbol>
+  </svg>
+
   <div class="stage" aria-hidden="true">
     <div class="stage__glow stage__glow--one"></div>
     <div class="stage__glow stage__glow--two"></div>
@@ -60,15 +77,16 @@
           <span class="xmas-floater" style="--fx: 89%; --fy: 90%; --fs: 1.6rem; --fd: 2.6s">&#10053;</span>
         </div>
 
-        <p class="eyebrow reveal" style="--reveal-delay: 100ms">Welcome to</p>
+        <!-- These two are split into letters and animated by christmas.js -->
+        <p id="home-welcome" class="eyebrow">Welcome to</p>
 
-        <h1 id="home-title" class="game-title title-lettering reveal reveal--title" style="--reveal-delay: 200ms">PANALO!</h1>
+        <h1 id="home-title" class="game-title title-lettering">PANALO!</h1>
 
-        <!-- Candy-cane "Christmas Edition" ribbon (menu.css) -->
-        <p class="xmas-ribbon reveal" style="--reveal-delay: 380ms">
-          <span class="xmas-ribbon__icon" aria-hidden="true">&#127876;</span>
+        <!-- Candy-cane "Christmas Edition" ribbon (menu.css, christmas.css) -->
+        <p class="xmas-ribbon">
+          <svg class="xmas-ribbon__flake" viewBox="0 0 24 24" aria-hidden="true"><use href="#snowflake-shape"/></svg>
           <span class="xmas-ribbon__text">Christmas Edition</span>
-          <span class="xmas-ribbon__icon" aria-hidden="true">&#127873;</span>
+          <svg class="xmas-ribbon__flake" viewBox="0 0 24 24" aria-hidden="true"><use href="#snowflake-shape"/></svg>
         </p>
 
         <div class="star-divider reveal" style="--reveal-delay: 450ms" aria-hidden="true">
@@ -452,6 +470,7 @@
 
       <!-- Step 2: the shuffled teams -->
       <div id="team-maker-results" class="team-maker__results" hidden></div>
+      <p id="team-maker-tip" class="team-maker__tip" hidden>Tip: click a team name to rename it</p>
 
       <div class="team-maker__actions">
         <button id="team-maker-cancel" class="btn btn--ghost" type="button">Cancel</button>
@@ -555,6 +574,7 @@
   <script src="js/buzzer-host.js"></script>
   <script src="js/main.js"></script>
   <script src="js/host-control.js"></script>
+  <script src="js/christmas.js"></script>
   <script src="js/fit.js"></script>
 </body>
 </html>

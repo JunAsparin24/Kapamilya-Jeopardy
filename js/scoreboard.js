@@ -76,6 +76,8 @@ function createTeamChip(team) {
   nameInput.type = "text";
   nameInput.maxLength = 24;
   nameInput.value = team.name;
+  fitNameInput(nameInput);
+  nameInput.addEventListener("input", () => fitNameInput(nameInput));
   nameInput.spellcheck = false;
   nameInput.setAttribute("aria-label", "Team name");
   nameInput.addEventListener("keydown", (event) => {
@@ -115,6 +117,12 @@ function createTeamChip(team) {
   }
 
   return chip;
+}
+
+// Makes a name box just wide enough for the whole name (for browsers without
+// CSS field-sizing; the "size" attribute counts characters)
+function fitNameInput(input) {
+  input.size = Math.max(3, input.value.length + 1);
 }
 
 // First click asks "Remove?", second click (within 3 seconds) removes the team
@@ -172,7 +180,7 @@ function updateScoreboardScores() {
 
     const scoreButton = chip.querySelector(".team-chip__score");
     const nameInput = chip.querySelector(".team-chip__name");
-    if (nameInput && document.activeElement !== nameInput) nameInput.value = team.name;
+    if (nameInput && document.activeElement !== nameInput) { nameInput.value = team.name; fitNameInput(nameInput); }
     if (!scoreButton) return; // score is being edited
 
     updateStreakBadge(chip, team);
